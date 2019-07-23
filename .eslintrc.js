@@ -33,7 +33,8 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/no-object-literal-type-assertion': 'off',
-    '@typescript-eslint/no-parameter-properties': 'off'
+    '@typescript-eslint/no-parameter-properties': 'off',
+    'no-console': 0
   },
   globals: {
     window: true,

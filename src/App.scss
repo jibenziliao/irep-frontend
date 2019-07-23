@@ -3,6 +3,12 @@
   flex: auto;
 }
 
+.GlobalLoginPage {
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+}
+
 .GlobalContainer {
   margin: 0 auto;
   width: 1200px;
