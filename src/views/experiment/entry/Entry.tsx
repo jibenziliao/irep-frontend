@@ -1,6 +1,6 @@
 import React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router'
-import styles from './Entry.module.scss'
+import styles from './Entry.module.less'
 
 const EntryComponent = (props: RouteComponentProps) => {
   const handleClick = () => {

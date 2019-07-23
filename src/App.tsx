@@ -6,7 +6,7 @@ import routes from './routers/Router'
 import NavBar from './components/navbar/NavBar'
 import NavBarLogin from './components/navbar/NavBarLogin'
 import CopyRight from './components/footer/CopyRight'
-import './App.scss'
+import './App.less'
 
 const history = createBrowserHistory()
 

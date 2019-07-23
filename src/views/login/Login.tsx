@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Dispatch } from 'redux'
-import styles from './Login.module.scss'
+import styles from './Login.module.less'
 import userName from '../../assets/login/username.png'
 import { requestFn } from '../../utils/request'
 import { useDispatch } from '../../store/Store'

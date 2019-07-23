@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './Steps.module.scss'
+import styles from './Steps.module.less'
 import checkedImg from '../../assets/steps/checked.png'
 import unChekedImg from '../../assets/steps/unchecked.png'
 

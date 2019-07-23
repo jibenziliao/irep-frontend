@@ -1,6 +1,6 @@
 import React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
-import styles from './Team.module.scss'
+import styles from './Team.module.less'
 
 const TeamComponet = (props: RouteComponentProps) => {
   const switchRoute = (path: string) => {

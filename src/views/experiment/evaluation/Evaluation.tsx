@@ -1,6 +1,6 @@
 import React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router'
-import styles from './Evaluation.module.scss'
+import styles from './Evaluation.module.less'
 import Steps from '../../../components/steps/Steps'
 
 /**

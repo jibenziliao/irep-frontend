@@ -1,6 +1,6 @@
 import React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
-import styles from './Background.module.scss'
+import styles from './Background.module.less'
 
 const BackgroundComponet = (props: RouteComponentProps) => {
   const switchRoute = (path: string) => {

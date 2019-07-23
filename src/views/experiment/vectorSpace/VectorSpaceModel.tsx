@@ -1,6 +1,6 @@
 import React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router'
-import styles from './VectorSpaceModal.module.scss'
+import styles from './VectorSpaceModal.module.less'
 import Steps from '../../../components/steps/Steps'
 
 /**

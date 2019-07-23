@@ -1,6 +1,6 @@
 import React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router'
-import styles from './Experiment.module.scss'
+import styles from './Experiment.module.less'
 
 /**
  * 预处理实验

@@ -3,4 +3,5 @@
 /.vscode
 node_modules
 /src/registerServiceWorker.ts
+config-overrides.js
 src/**/__tests__/**

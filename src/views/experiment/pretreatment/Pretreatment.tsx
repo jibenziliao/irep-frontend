@@ -1,6 +1,6 @@
 import React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router'
-import styles from './Pretreatment.module.scss'
+import styles from './Pretreatment.module.less'
 import Steps from '../../../components/steps/Steps'
 
 /**

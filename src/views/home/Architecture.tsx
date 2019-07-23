@@ -1,6 +1,6 @@
 import React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
-import styles from './Architecture.module.scss'
+import styles from './Architecture.module.less'
 
 const ArchitectureComponet = (props: RouteComponentProps) => {
   const switchRoute = (path: string) => {

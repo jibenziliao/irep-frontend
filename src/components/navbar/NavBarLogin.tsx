@@ -1,6 +1,6 @@
 import React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
-import styles from './NavBarLogin.module.scss'
+import styles from './NavBarLogin.module.less'
 
 const NavBarComponet = (props: RouteComponentProps) => {
   return (
