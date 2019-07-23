@@ -47,7 +47,7 @@ const NavBarComponet = (props: RouteComponentProps) => {
 
   return (
     <div className={styles.Container}>
-      <div className={styles.Logo} onClick={() => goRoute('/register')}></div>
+      <div className={styles.Logo} onClick={() => goRoute('/')}></div>
       <ul className={styles.NavItems}>{renderNavs()}</ul>
       <div className={styles.ButtonGroup}>
         <Button type="primary" className={styles.LoginBtn} onClick={() => goRoute('/login')}>
