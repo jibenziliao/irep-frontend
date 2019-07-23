@@ -1,6 +1,7 @@
 import loadable from '@loadable/component'
 
 const Login = loadable(() => import('../views/login/Login'))
+const Register = loadable(() => import('../views/register/Register'))
 const Background = loadable(() => import('../views/home/Background'))
 const Team = loadable(() => import('../views/home/Team'))
 const Architecture = loadable(() => import('../views/home/Architecture'))
@@ -17,6 +18,7 @@ const Evaluation = loadable(() => import('../views/experiment/evaluation/Evaluat
 const Simulation = loadable(() => import('../views/experiment/simulation/Simulation'))
 const Description = loadable(() => import('../views/description/Description'))
 const Report = loadable(() => import('../views/report/Report'))
+const Notice = loadable(() => import('../views/notice/Notice'))
 const Discussion = loadable(() => import('../views/discussion/Discussion'))
 
 const routes = [
@@ -108,6 +110,11 @@ const routes = [
     name: '实验报告'
   },
   {
+    component: Notice,
+    path: '/notice',
+    name: '系统通知'
+  },
+  {
     component: Discussion,
     path: '/discussion',
     name: '交流讨论'
@@ -116,6 +123,11 @@ const routes = [
     component: Login,
     path: '/login',
     name: '登录'
+  },
+  {
+    component: Register,
+    path: '/register',
+    name: '注册'
   }
 ]
 

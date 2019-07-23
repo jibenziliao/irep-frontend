@@ -1,19 +1,24 @@
 import React, { useState } from 'react'
 import { Dispatch } from 'redux'
 import { Form, notification, Button, Input, Icon, Checkbox } from 'antd'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { FormComponentProps } from 'antd/lib/form/Form'
 import styles from './Login.module.less'
 import { requestFn } from '../../utils/request'
 import { useDispatch } from '../../store/Store'
 import { Actions } from '../../store/Actions'
 import { setStore } from '../../utils/util'
+import Announcement from './Announcement'
+import LoginStatus from './LoginStatus'
 
 interface Params {
   userName: string
   password: string
 }
 
-const LoginForm = (props: FormComponentProps) => {
+interface LoginProp extends RouteComponentProps, FormComponentProps {}
+
+const LoginForm = (props: LoginProp) => {
   const [loading, setLoading] = useState(false)
   const dispatch: Dispatch<Actions> = useDispatch()
 
@@ -57,6 +62,10 @@ const LoginForm = (props: FormComponentProps) => {
       message,
       description
     })
+  }
+
+  const goRoute = (path: string) => {
+    props.history.push(path)
   }
 
   const goLabSpace = () => {
@@ -108,7 +117,13 @@ const LoginForm = (props: FormComponentProps) => {
                 >
                   登录
                 </Button>
-                <Button type="primary" ghost size="large" className={`${styles.FormButton}`}>
+                <Button
+                  type="primary"
+                  ghost
+                  size="large"
+                  className={`${styles.FormButton}`}
+                  onClick={() => goRoute('/register')}
+                >
                   注册
                 </Button>
               </Form.Item>
@@ -123,13 +138,23 @@ const LoginForm = (props: FormComponentProps) => {
         </div>
       </div>
       <div className={styles.Bottom}>
-        <div className={styles.NoticeWrapper}></div>
-        <div className={styles.Information}></div>
+        <div className={styles.NoticeWrapper}>
+          <Announcement />
+        </div>
+        <div className={styles.Information}>
+          <LoginStatus />
+        </div>
+      </div>
+      <div className={styles.BrowserWrapper}>
+        <span>为保证实验效果，建议使用</span>
+        <span className={styles.Brower}>Chrome、FireFox</span>
+        <span>浏览器打开</span>
       </div>
     </div>
   )
 }
 
-const Login = Form.create<FormComponentProps>({ name: 'LoginForm' })(LoginForm)
+const LoginWithoutRouter = Form.create<LoginProp>({ name: 'LoginForm' })(LoginForm)
+const Login = withRouter(LoginWithoutRouter)
 
 export default Login
