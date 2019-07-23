@@ -1,0 +1,10 @@
+.Container {
+  margin: 0 auto;
+  width: 1200px;
+  position: relative;
+  display: flex;
+  .Content {
+    flex: 1;
+    min-height: initial;
+  }
+}

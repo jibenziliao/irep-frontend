@@ -1,0 +1,6 @@
+/config/*
+/.git
+/.vscode
+node_modules
+/src/registerServiceWorker.ts
+src/**/__tests__/**

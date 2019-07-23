@@ -1,26 +1,55 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { Router, Route, Switch, Redirect } from 'react-router-dom'
+import { createBrowserHistory } from 'history'
+import Login from './views/login/Login'
+import routes from './routers/Router'
+import NavBar from './components/navbar/NavBar'
+import CopyRight from './components/footer/CopyRight'
+import './App.scss'
 
-const App: React.FC = () => {
+const history = createBrowserHistory()
+
+const routerMatch = () => {
+  const renderRoutes = () => {
+    return routes.map(router => {
+      if (router.children && router.children.length > 0) {
+        return router.children.map(item => {
+          return <Route path={item.path} key={item.path} component={item.component} />
+        })
+      } else {
+        return <Route path={router.path} key={router.path} exact={router.exact} component={router.component} />
+      }
+    })
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <NavBar />
+      <main className="GlobalMainContainer">{renderRoutes()}</main>
+      <CopyRight />
+    </>
+  )
 }
 
-export default App;
+const App: React.FC = () => {
+  const renderLogin = () => {
+    return (
+      <div>
+        <NavBar />
+        <Login />
+      </div>
+    )
+  }
+  return (
+    <Router history={history}>
+      <Switch>
+        <Route path={'/login'} key={'/login'} render={renderLogin} />
+        <Route path="/introduction" exact={true} render={() => <Redirect to="/introduction/background" />} />
+        <Route path="/experiment" exact={true} render={() => <Redirect to="/experiment/index" />} />
+        {routerMatch()}
+      </Switch>
+    </Router>
+  )
+}
+
+export default App
