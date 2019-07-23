@@ -7,6 +7,7 @@ import NavBar from './components/navbar/NavBar'
 import NavBarLogin from './components/navbar/NavBarLogin'
 import CopyRight from './components/footer/CopyRight'
 import './App.less'
+import { getStore } from './utils/util'
 
 const history = createBrowserHistory()
 
@@ -23,9 +24,17 @@ const routerMatch = () => {
     })
   }
 
+  const renderNavBar = () => {
+    if (getStore('token')) {
+      return <NavBar />
+    } else {
+      return <NavBarLogin />
+    }
+  }
+
   return (
     <>
-      <NavBar />
+      {renderNavBar()}
       <main className="GlobalMainContainer">{renderRoutes()}</main>
       <CopyRight />
     </>

@@ -1,6 +1,9 @@
 import React from 'react'
+import { Dropdown, Button, Icon, Menu } from 'antd'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import styles from './NavBar.module.less'
+import userAvatar from '../../assets/navbar/user.png'
+import { removeAllStore } from '../../utils/util'
 
 const navs = [
   {
@@ -30,6 +33,16 @@ const navs = [
 ]
 
 const NavBarComponet = (props: RouteComponentProps) => {
+  function handleMenuClick() {
+    removeAllStore()
+    window.location.href = window.location.origin
+  }
+
+  const menu = (
+    <Menu onClick={handleMenuClick}>
+      <Menu.Item key="1">注销</Menu.Item>
+    </Menu>
+  )
   const handleActive = (path: string) => {
     return window.location.pathname.includes(path)
   }
@@ -52,6 +65,15 @@ const NavBarComponet = (props: RouteComponentProps) => {
     <div className={styles.Container}>
       <div className={styles.Logo} onClick={() => goRoute('/')}></div>
       <ul className={styles.NavItems}>{renderNavs()}</ul>
+      <Dropdown overlay={menu} className={styles.Dropdown}>
+        <div>
+          <img src={userAvatar} alt="用户图标" />
+          <Button ghost className={styles.DropdownBtn}>
+            <span className={styles.UserName}>张三</span>
+            <Icon type="caret-down" />
+          </Button>
+        </div>
+      </Dropdown>
     </div>
   )
 }
