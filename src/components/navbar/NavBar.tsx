@@ -34,14 +34,14 @@ const NavBarComponet = (props: RouteComponentProps) => {
     return window.location.pathname.includes(path)
   }
 
-  const handleClick = (path: string) => {
-    props.history.push(path)
+  const goRoute = (path: string) => {
+    props.history.replace(path)
   }
 
   const renderNavs = () => {
     return navs.map(i => {
       return (
-        <li key={i.name} className={styles.Item} onClick={() => handleClick(i.path)}>
+        <li key={i.name} className={styles.Item} onClick={() => goRoute(i.path)}>
           <span className={`${styles.NavText} ${handleActive(i.path) ? styles.Active : ''}`}>{i.name}</span>
         </li>
       )
@@ -50,7 +50,7 @@ const NavBarComponet = (props: RouteComponentProps) => {
 
   return (
     <div className={styles.Container}>
-      <div className={styles.Logo}></div>
+      <div className={styles.Logo} onClick={() => goRoute('/')}></div>
       <ul className={styles.NavItems}>{renderNavs()}</ul>
     </div>
   )

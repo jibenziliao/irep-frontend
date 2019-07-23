@@ -1,3 +1,5 @@
+@import "../../theme/theme.less";
+
 .LoginContainer {
   width: 100%;
   background-image: url(../../assets/login/login_background.png);
@@ -21,5 +23,55 @@
       background-position: center;
       background-size: auto;
     }
+    .LoginForm {
+      background-color: #fff;
+      width: 380px;
+      height: 420px;
+      padding: 30px 30px 94px 30px;
+      box-sizing: border-box;
+      .Title {
+        font-size: 16px;
+        color: @primary-text-color;
+        margin-bottom: 24px;
+        display: block;
+      }
+      .Form {
+        .FormRow {
+          height: 30px;
+          margin-bottom: 0;
+        }
+        .ForgetPasswordFormItem {
+          display: flex;
+          justify-content: space-between;
+          line-height: 30px;
+          height: 30px;
+        }
+        .FormButton {
+          width: 144px;
+        }
+        .LoginButton {
+          margin-right: 32px;
+        }
+      }
+    }
+    .Experience {
+      color: #ff6600;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
   }
+}
+.Bottom {
+  width: 1200px;
+  height: 230px;
+  margin: 20px auto 30px auto;
+  display: flex;
+  justify-content: space-between;
+}
+.NoticeWrapper {
+  width: 700px;
+  height: inherit;
+  margin-right: 20px;
+  border: 1px solid @border-color;
 }
