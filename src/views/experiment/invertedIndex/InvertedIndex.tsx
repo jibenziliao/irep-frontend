@@ -6,7 +6,7 @@ import styles from './InvertedIndex.module.less'
 import Steps from '../../../components/steps/Steps'
 import Knowledge from '../../../components/knowledge/Knowledge'
 import Examination, { ScoreObj } from '../../../components/examination/Examination'
-import { entryCompletionQuestions, entryChoiceQuestions } from '../../../config/Constant'
+import { invertedIndexCompletionQuestions, invertedIndexChoiceQuestions } from '../../../config/Constant'
 import { requestFn } from '../../../utils/request'
 import { useDispatch, useMappedState, State } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
@@ -86,8 +86,8 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
           </TabPane>
           <TabPane tab="知识自查" key="2" disabled={!tabDisabled}>
             <Examination
-              completionQuestions={entryCompletionQuestions}
-              choiceQuestions={entryChoiceQuestions}
+              completionQuestions={invertedIndexCompletionQuestions}
+              choiceQuestions={invertedIndexChoiceQuestions}
               save={saveExaminationScore}
               loading={examLoading}
             />
