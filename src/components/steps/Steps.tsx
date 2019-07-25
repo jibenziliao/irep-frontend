@@ -3,7 +3,12 @@ import styles from './Steps.module.less'
 import checkedImg from '../../assets/steps/checked.png'
 import unChekedImg from '../../assets/steps/unchecked.png'
 
-const steps = [
+interface Steps {
+  current: string
+  finishedItems: number
+}
+
+const defaultSteps = [
   {
     name: '构建我的索引器',
     finished: true,
@@ -56,12 +61,23 @@ const steps = [
   }
 ]
 
-const Steps = () => {
+const Steps = (props: Steps) => {
+  const steps = defaultSteps.map((i, index) => {
+    return {
+      ...i,
+      finished: props.finishedItems > index,
+      current: props.current === i.name
+    }
+  })
+
   const renderSteps = () => {
     return steps.map(i => {
       return (
-        <div key={i.name} className={`${styles.Item} ${i.finished ? styles.Finished : ''}`}>
-          <span className={`${styles.Name} ${i.finished ? styles.FinishedName : ''}`}>{i.name}</span>
+        <div
+          key={i.name}
+          className={`${styles.Item} ${i.finished ? styles.Finished : i.current ? styles.Current : ''}`}
+        >
+          <span>{i.name}</span>
           <img src={i.finished ? checkedImg : unChekedImg} alt="" className={styles.Status} />
         </div>
       )

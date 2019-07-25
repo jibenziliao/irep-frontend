@@ -13,7 +13,7 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
 
   return (
     <div className={styles.Container}>
-      <Steps />
+      <Steps current="构建倒排索引表" finishedItems={2} />
       <div className={styles.Content}>
         <h1>倒排索引实验</h1>
         <button onClick={handleClick}>下一步</button>

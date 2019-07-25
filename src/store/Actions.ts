@@ -20,3 +20,11 @@ export type Actions =
         pageLoading: boolean
       }
     }
+  | {
+      type: 'handle_entry_card'
+      payload: {
+        name: string
+        type: 'add' | 'selected' | 'remove'
+        index: number
+      }
+    }

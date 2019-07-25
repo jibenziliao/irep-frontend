@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Dispatch } from 'redux'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { Tabs, notification } from 'antd'
@@ -8,7 +8,7 @@ import EntryExperiment from './EntryExperiment'
 import { entryCompletionQuestions, entryChoiceQuestions } from '../../../config/Constant'
 import Examination, { ScoreObj } from '../../../components/examination/Examination'
 import { requestFn } from '../../../utils/request'
-import { useDispatch } from '../../../store/Store'
+import { useDispatch, useMappedState, State } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
 import Knowledge from '../../../components/knowledge/Knowledge'
 
@@ -16,9 +16,11 @@ const { TabPane } = Tabs
 
 const EntryComponent = (props: RouteComponentProps) => {
   const [examLoading, setExamLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [activeTabKey, setActiveTabKey] = useState('1')
   const [tabDisabled, setTabDisabled] = useState(true)
   const dispatch: Dispatch<Actions> = useDispatch()
+  const state: State = useMappedState(useCallback((globalState: State) => globalState, []))
 
   /**
    * 保存知识自查分数到后台
@@ -70,8 +72,28 @@ const EntryComponent = (props: RouteComponentProps) => {
   /**
    * 保存构建模型并前往下一步
    */
-  const saveExperiment = () => {
-    props.history.replace('/experiment/pretreatment')
+  const saveExperiment = async () => {
+    setLoading(true)
+    const experimentSteps = state.entryExperimentCards.map(i => i)
+    const finalSteps = experimentSteps.sort((pre, cur) => cur.index - pre.index).map(i => i.name)
+    const res = await requestFn(dispatch, {
+      url: '/saveOrder', // 接口还没完成，这里是个假的示例
+      method: 'post',
+      params: {},
+      data: {
+        steps: finalSteps
+      }
+    })
+    if (res && res.status === 200 && res.data) {
+      // TODO: 保存用户在入口实验中选择的构建模型顺序
+      setLoading(false)
+      props.history.replace('/experiment/pretreatment')
+    } else {
+      setLoading(false)
+      // 保存顺序失败
+      errorTips('保存顺序失败', res && res.data && res.data.message ? res.data.message : '请求错误，请重试！')
+      props.history.replace('/experiment/pretreatment')
+    }
   }
 
   return (
@@ -91,7 +113,7 @@ const EntryComponent = (props: RouteComponentProps) => {
             />
           </TabPane>
           <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>
-            <EntryExperiment save={saveExperiment} />
+            <EntryExperiment save={saveExperiment} loading={loading} />
           </TabPane>
         </Tabs>
       </div>

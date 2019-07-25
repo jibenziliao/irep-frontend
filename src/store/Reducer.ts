@@ -27,6 +27,47 @@ export default function reducer(state: State = INITIAL_STATE, action: Actions) {
       }
     }
 
+    case 'handle_entry_card': {
+      const newEntryExperimentCards = state.entryExperimentCards.map(i => {
+        return {
+          ...i,
+          current: action.payload.name === i.name && action.payload.type === 'selected',
+          disabled:
+            i.current && action.payload.type === 'add'
+              ? true
+              : action.payload.type === 'remove' && action.payload.index === i.index
+              ? false
+              : i.disabled,
+          index:
+            action.payload.type === 'add' && i.current
+              ? action.payload.index
+              : action.payload.type === 'remove' && action.payload.index === i.index
+              ? -1
+              : i.index
+        }
+      })
+      const newSteps = state.steps.map((i, index) => {
+        const nameIndex = newEntryExperimentCards.findIndex(j => j.name === i.name)
+        const tmpIndex = newEntryExperimentCards.findIndex(j => j.index === action.payload.index)
+        if (action.payload.type === 'add') {
+          return {
+            name: tmpIndex > -1 && index === action.payload.index ? newEntryExperimentCards[index].name : i.name
+          }
+        } else if (action.payload.type === 'remove') {
+          return {
+            name: nameIndex > -1 && index === action.payload.index ? '' : i.name
+          }
+        } else {
+          return i
+        }
+      })
+      return {
+        ...state,
+        entryExperimentCards: newEntryExperimentCards,
+        steps: newSteps
+      }
+    }
+
     default:
       return state
   }

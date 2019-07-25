@@ -13,7 +13,7 @@ const EvaluationComponet = (props: RouteComponentProps) => {
 
   return (
     <div className={styles.Container}>
-      <Steps />
+      <Steps current="分析检索模型性能" finishedItems={8} />
       <div className={styles.Content}>
         <h1>模型评价</h1>
         <button onClick={handleClick}>下一步</button>

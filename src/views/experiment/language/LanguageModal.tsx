@@ -13,7 +13,7 @@ const LanguageModalComponet = (props: RouteComponentProps) => {
 
   return (
     <div className={styles.Container}>
-      <Steps />
+      <Steps current="构建语言模型" finishedItems={7} />
       <div className={styles.Content}>
         <h1>语言模型实验</h1>
         <button onClick={handleClick}>下一步</button>

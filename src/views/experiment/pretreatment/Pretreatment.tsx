@@ -13,7 +13,7 @@ const PretreatmentComponet = (props: RouteComponentProps) => {
 
   return (
     <div className={styles.Container}>
-      <Steps />
+      <Steps current="预处理实验" finishedItems={1} />
       <div className={styles.Content}>
         <h1>预处理实验</h1>
         <button onClick={handleClick}>下一步</button>

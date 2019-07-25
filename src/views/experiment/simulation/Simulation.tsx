@@ -13,7 +13,7 @@ const SimulationComponent = (props: RouteComponentProps) => {
 
   return (
     <div className={styles.Container}>
-      <Steps />
+      <Steps current="仿真我的搜索引擎" finishedItems={9} />
       <div className={styles.Content}>
         <h1>仿真我的搜索引擎</h1>
         <button onClick={handleClick}>下一步</button>
