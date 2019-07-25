@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import { Dispatch } from 'redux'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { Tabs, notification } from 'antd'
+import { Tabs, notification, Button } from 'antd'
 import styles from './Entry.module.less'
 import StepsExam from '../../../components/steps/StepsExam'
 import EntryExperiment from './EntryExperiment'
@@ -96,11 +96,21 @@ const EntryComponent = (props: RouteComponentProps) => {
     }
   }
 
+  const operations = (
+    <Button
+      onClick={() => {
+        props.history.replace('/experiment/pretreatment')
+      }}
+    >
+      跳过(仅调试用)
+    </Button>
+  )
+
   return (
     <div className={styles.Container}>
       <StepsExam />
       <div className={styles.Content}>
-        <Tabs defaultActiveKey="1" activeKey={activeTabKey} onTabClick={tabClick}>
+        <Tabs defaultActiveKey="1" activeKey={activeTabKey} onTabClick={tabClick} tabBarExtraContent={operations}>
           <TabPane tab="温故知新" key="1" disabled={!tabDisabled}>
             <Knowledge />
           </TabPane>
