@@ -4,13 +4,13 @@ import { withRouter, RouteComponentProps } from 'react-router'
 import { Tabs, notification } from 'antd'
 import styles from './Entry.module.less'
 import StepsExam from '../../../components/steps/StepsExam'
-import EntryKnowledge from './EntryKnowledge'
 import EntryExperiment from './EntryExperiment'
 import { entryCompletionQuestions, entryChoiceQuestions } from '../../../config/Constant'
 import Examination, { ScoreObj } from '../../../components/examination/Examination'
 import { requestFn } from '../../../utils/request'
 import { useDispatch } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
+import Knowledge from '../../../components/knowledge/Knowledge'
 
 const { TabPane } = Tabs
 
@@ -80,7 +80,7 @@ const EntryComponent = (props: RouteComponentProps) => {
       <div className={styles.Content}>
         <Tabs defaultActiveKey="1" activeKey={activeTabKey} onTabClick={tabClick}>
           <TabPane tab="温故知新" key="1" disabled={!tabDisabled}>
-            <EntryKnowledge />
+            <Knowledge />
           </TabPane>
           <TabPane tab="知识自查" key="2" disabled={!tabDisabled}>
             <Examination
