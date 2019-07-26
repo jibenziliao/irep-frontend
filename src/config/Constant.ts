@@ -141,27 +141,6 @@ export const entryChoiceQuestions: ChoiceQuestion[] = [
 ]
 
 /**
- * 入口实验--温故知新知识点富文本
- */
-export const entryKnowledges = [
-  {
-    title: '术语',
-    items: [
-      {
-        content: `<p><em>1.词项(term)</em>是索引的单位，通常可以用词来表示。</p>
-        <p><em>2.文档(document)</em>信息系统检索的对象</p>
-        <p><em>3.语言学预处理目的:</em></p>监理此条的等价类`,
-        expressionId: '' // 公式id 前端根据不同的id渲染不同的公式，可在前端写死
-      },
-      {
-        content: '<em>语言学预处理目的:</em>建立此条的等价类...',
-        expressionId: '1' // 公式id 前端根据不同的id渲染不同的公式，可在前端写死
-      }
-    ]
-  }
-]
-
-/**
  * 构建预处理器--原始填空题数据(需要处理下划线)
  */
 export const pretreatmentCompletionQuestions: OriginCompletionQuestion[] = [

@@ -10,6 +10,7 @@ import { booleanCompletionQuestions, booleanChoiceQuestions } from '../../../con
 import { requestFn } from '../../../utils/request'
 import { useDispatch, useMappedState, State } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
+import { booleanKnowledge } from '../../../config/booleanKnowledge'
 
 const { TabPane } = Tabs
 
@@ -83,7 +84,7 @@ const BooleanModalComponet = (props: RouteComponentProps) => {
       <div className={styles.Content}>
         <Tabs defaultActiveKey="1" activeKey={activeTabKey} onTabClick={tabClick} tabBarExtraContent={operations}>
           <TabPane tab="温故知新" key="1" disabled={!tabDisabled}>
-            <Knowledge />
+            <Knowledge knowledge={booleanKnowledge} />
           </TabPane>
           <TabPane tab="知识自查" key="2" disabled={!tabDisabled}>
             <Examination

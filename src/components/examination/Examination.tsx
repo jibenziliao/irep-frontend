@@ -159,6 +159,6 @@ const ExamForm = (props: ExamFormProps) => {
  *
  * 所有的实验项目通用
  */
-const EntryExam = Form.create<ExamFormProps>({ name: 'ExamForm' })(ExamForm)
+const Examination = Form.create<ExamFormProps>({ name: 'ExamForm' })(ExamForm)
 
-export default EntryExam
+export default Examination

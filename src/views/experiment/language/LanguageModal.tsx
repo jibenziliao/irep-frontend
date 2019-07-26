@@ -10,6 +10,7 @@ import { languageCompletionQuestions, languageChoiceQuestions } from '../../../c
 import { requestFn } from '../../../utils/request'
 import { useDispatch, useMappedState, State } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
+import { languageKnowledge } from '../../../config/languageKnowledge'
 
 const { TabPane } = Tabs
 
@@ -82,7 +83,7 @@ const LanguageModalComponet = (props: RouteComponentProps) => {
       <div className={styles.Content}>
         <Tabs defaultActiveKey="1" activeKey={activeTabKey} onTabClick={tabClick} tabBarExtraContent={operations}>
           <TabPane tab="温故知新" key="1" disabled={!tabDisabled}>
-            <Knowledge />
+            <Knowledge knowledge={languageKnowledge} />
           </TabPane>
           <TabPane tab="知识自查" key="2" disabled={!tabDisabled}>
             <Examination
