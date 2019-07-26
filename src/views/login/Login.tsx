@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Dispatch } from 'redux'
-import { Form, notification, Button, Input, Icon, Checkbox } from 'antd'
+import { Form, notification, Button, Input, Icon, Checkbox, message } from 'antd'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { FormComponentProps } from 'antd/lib/form/Form'
 import styles from './Login.module.less'
@@ -38,23 +38,33 @@ const LoginForm = (props: LoginProp) => {
 
   const loginRequest = async (fieldValue: Params) => {
     const res = await requestFn(dispatch, {
-      url: '/login',
+      url: '/user/login',
       method: 'post',
-      params: {},
-      data: {
+      params: {
         username: fieldValue.userName,
         password: fieldValue.password
-      }
+      },
+      data: {}
     })
-    if (res && res.status === 200 && res.data) {
-      console.log(res)
+    setLoading(false)
+    if (res && res.status === 200 && res.data && res.data.code === 101) {
+      setStore('user', res.data.data || { username: '张三' })
+      successTips('登录成功', '')
+      setTimeout(() => {
+        // 使用原生跳转，以更新权限
+        window.location.href = window.location.origin
+      }, 1000)
     } else {
-      setLoading(false)
-      setStore('token', 'login_success')
-      // errorTips('登录失败', res && res.data && res.data.message ? res.data.message : '请求错误，请重试！')
-      // 使用原生跳转，以更新权限
-      window.location.href = window.location.origin
+      errorTips('登录失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
+  }
+
+  const successTips = (message = '', description = '') => {
+    notification.success({
+      message,
+      duration: 1,
+      description
+    })
   }
 
   const errorTips = (message = '', description = '') => {

@@ -51,7 +51,7 @@ const VectorSpaceModalComponet = (props: RouteComponentProps) => {
       setTabDisabled(false)
     } else {
       // 保存分数失败
-      errorTips('保存分数失败', res && res.data && res.data.message ? res.data.message : '请求错误，请重试！')
+      errorTips('保存分数失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
       setActiveTabKey('3')
       setTabDisabled(false)
     }

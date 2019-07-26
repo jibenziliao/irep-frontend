@@ -25,7 +25,7 @@ const routerMatch = () => {
   }
 
   const renderNavBar = () => {
-    if (getStore('token')) {
+    if (getStore('user')) {
       return <NavBar />
     } else {
       return <NavBarLogin />

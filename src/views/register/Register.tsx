@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Form, Input, Radio, Button } from 'antd'
+import { Form, Input, Radio, Button, notification } from 'antd'
 import { Dispatch } from 'redux'
 import { FormComponentProps } from 'antd/lib/form/Form'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
@@ -9,7 +9,7 @@ import userAvatar from '../../assets/login/user.png'
 import { requestFn } from '../../utils/request'
 import { useDispatch } from '../../store/Store'
 import { Actions } from '../../store/Actions'
-import { setStore } from '../../utils/util'
+import { defaultMobileRegExp, defaultUserEmailRegExp } from '../../config/Constant'
 
 interface RegisterProp extends RouteComponentProps, FormComponentProps {}
 
@@ -81,15 +81,30 @@ const RegisterForm = (props: RegisterProp) => {
         workSpace: fieldValue.department
       }
     })
-    if (res && res.status === 200 && res.data) {
-      console.log(res)
+    setLoading(false)
+    if (res && res.status === 200 && res.data && res.data.code === 0) {
+      successTips('注册成功', '')
+      setTimeout(() => {
+        props.history.replace('/login')
+      }, 1000)
     } else {
-      setLoading(false)
-      setStore('token', 'login_success')
-      // errorTips('登录失败', res && res.data && res.data.message ? res.data.message : '请求错误，请重试！')
-      // 使用原生跳转，以更新权限
-      window.location.href = window.location.origin
+      errorTips('注册失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
+  }
+
+  const successTips = (message = '', description = '') => {
+    notification.success({
+      message,
+      duration: 1,
+      description
+    })
+  }
+
+  const errorTips = (message = '', description = '') => {
+    notification.error({
+      message,
+      description
+    })
   }
 
   const changeUserType = (e: RadioChangeEvent) => {
@@ -136,12 +151,12 @@ const RegisterForm = (props: RegisterProp) => {
           </Form.Item>
           <Form.Item label="手机号">
             {getFieldDecorator('mobile', {
-              rules: [{ required: true, message: '请输入手机号' }]
+              rules: [{ pattern: defaultMobileRegExp, message: '请输入正确的手机号' }]
             })(<Input placeholder="请输入手机号" size="large" />)}
           </Form.Item>
           <Form.Item label="邮箱">
             {getFieldDecorator('email', {
-              rules: [{ required: true, message: '请输入邮箱' }]
+              rules: [{ pattern: defaultUserEmailRegExp, message: '请输入正确的邮箱地址' }]
             })(<Input placeholder="请输入邮箱" size="large" />)}
           </Form.Item>
           <Form.Item label="工作单位">

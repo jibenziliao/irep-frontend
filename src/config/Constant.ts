@@ -15,6 +15,16 @@ export const REQUEST_TIME_OUT = 10000
 export const RESPONSE_DELAY = 1000
 
 /**
+ * 默认用户邮箱正则表达式
+ */
+export const defaultUserEmailRegExp: RegExp = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
+
+/**
+ * 默认用户手机号正则表达式
+ */
+export const defaultMobileRegExp: RegExp = /^1[3456789]\d{9}$/
+
+/**
  * 入口实验--原始填空题数据(需要处理下划线)
  */
 export const entryCompletionQuestions: OriginCompletionQuestion[] = [

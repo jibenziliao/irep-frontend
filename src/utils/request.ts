@@ -1,9 +1,10 @@
 import axios, { ResponseType, Method, AxiosPromise, AxiosResponse } from 'axios'
 import { Dispatch } from 'redux'
 import Qs from 'qs'
+import { Modal } from 'antd'
 import { Actions } from '../store/Actions'
 import { API_URL, REQUEST_TIME_OUT } from '../config/Constant'
-import { setStore, getStore, removeAllStore, removeAllLocalStore } from './util'
+import { removeAllStore, removeAllLocalStore } from './util'
 
 /**
  * token过期错误提示次数(token过期时，一个页面可能会有多次请求，只显示第一次的错误提示)
@@ -27,9 +28,16 @@ export interface Params {
 const tokenExpired = () => {
   if (!expiredCount) {
     expiredCount += 1
-    removeAllStore()
-    removeAllLocalStore()
-    window.location.reload()
+    Modal.error({
+      title: '你的登录信息已过期',
+      content: '因长时间未操作，你的登录信息已过期，点击确定重新登录。',
+      okText: '确定',
+      onOk: () => {
+        removeAllStore()
+        removeAllLocalStore()
+        window.location.reload()
+      }
+    })
   }
 }
 
@@ -46,10 +54,6 @@ export const requestFn = (dispatch: Dispatch<Actions>, params: Params): AxiosPro
     })
     axios.interceptors.response.use(
       response => {
-        if (response && response.status === 200 && response.data && response.data.token) {
-          axios.defaults.headers.common.Authorization = `Bearer ${response.data.token}`
-          setStore('token', response.data.token)
-        }
         return response
       },
       error => {
@@ -72,7 +76,7 @@ export const requestFn = (dispatch: Dispatch<Actions>, params: Params): AxiosPro
       .request({
         url: params.url,
         method: params.method || 'get',
-        baseURL: `${API_URL}/api`,
+        baseURL: `${API_URL}`,
         params: params.params || {},
         paramsSerializer: arg => {
           // https://github.com/ljharb/qs
@@ -80,7 +84,6 @@ export const requestFn = (dispatch: Dispatch<Actions>, params: Params): AxiosPro
           return Qs.stringify(arg, { arrayFormat: 'repeat' })
         },
         headers: {
-          ...(getStore('token') ? { Authorization: `Bearer ${getStore('token')}` } : {}),
           // 某些请求data直接是数组或字符串，这里需要改变Content-Type值
           ...(params.data && typeof params.data === 'string' ? { 'Content-Type': 'text/uri-list' } : {})
         },
@@ -95,7 +98,8 @@ export const requestFn = (dispatch: Dispatch<Actions>, params: Params): AxiosPro
           // 除了401错误，所有响应码都接受，每个请求错误单独处理。
           return status !== 401
         },
-        responseType: params.responseType || 'json'
+        responseType: params.responseType || 'json',
+        withCredentials: true
       })
       .then(res => {
         dispatch({
