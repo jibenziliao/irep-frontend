@@ -17,10 +17,74 @@ export const languageKnowledge = [
     title: '实现步骤',
     content: `
       <p style="text-indent: 2em;">
-        对文档集中的每篇文档d 构建其对应的语言模型。目标是将文档按照其与查询相关的似然P(d|q)排序。最普遍的计算P(d|q)的方法是使用多项式一元语言模型，该模型等价于多项式朴素贝叶斯模型，其中这里的文档相当于后者中的类别，每篇文档在估计中都是一门独立的&ldquo; 语言&rdquo; 。 在基于语言模型（简记为LM）的检索中，可以将查询的生成看成一个随机过程。具体的方法是：
+        对文档集中的每篇文档
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <mi> d </mi>
+        </math>
+        构建其对应的语言模型。目标是将文档按照其与查询相关的似然
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <mi> P </mi>
+          <mfenced>
+            <mrow>
+              <mi> d </mi>
+              <mo> | </mo>
+              <mi> q </mi>
+            </mrow>
+          </mfenced>
+        </math>
+        排序。最普遍的计算
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <mi> P </mi>
+          <mfenced>
+            <mrow>
+              <mi> d </mi>
+              <mo> | </mo>
+              <mi> q </mi>
+            </mrow>
+          </mfenced>
+        </math>
+        的方法是使用多项式一元语言模型，该模型等价于多项式朴素贝叶斯模型，其中这里的文档相当于后者中的类别，每篇文档在估计中都是一门独立的&ldquo;语言&rdquo;。在基于语言模型（简记为
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <mi> L </mi>
+          <mi> M </mi>
+        </math>
+        ）的检索中，可以将查询的生成看成一个随机过程。具体的方法是：
       </p>
-      <p>(1) 对每篇文档推导出其LM；</p>
-      <p>(2) 估计查询在每个文档di 的LM 下的生成概率P(q|Md)</p>
+      <p>(1) 对每篇文档推导出其
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <mi> L </mi>
+          <mi> M </mi>
+        </math>
+      ；</p>
+      <p>(2) 估计查询在每个文档
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <msub>
+            <mrow>
+              <mi> d </mi>
+            </mrow>
+            <mrow>
+              <mi> i </mi>
+            </mrow>
+          </msub>
+        </math>
+      的
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <mi> L </mi>
+          <mi> M </mi>
+        </math>
+      下的生成概率
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <mi> P </mi>
+          <mfenced>
+            <mrow>
+              <mi> d </mi>
+              <mo> | </mo>
+              <mi> M </mi>
+              <mi> q </mi>
+            </mrow>
+          </mfenced>
+        </math>
+      </p>
       <p>(3) 按照上述概率对文档进行排序。</p>
     `
   },
