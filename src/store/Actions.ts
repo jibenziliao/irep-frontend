@@ -28,3 +28,11 @@ export type Actions =
         index: number
       }
     }
+  | {
+      type: 'handle_inverted_card'
+      payload: {
+        name: string
+        type: 'add' | 'selected' | 'remove'
+        index: number
+      }
+    }

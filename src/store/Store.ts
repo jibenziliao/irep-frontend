@@ -21,6 +21,8 @@ export interface State {
   pageLoading: boolean
   entryExperimentCards: ExperimentCard[]
   steps: { name: string }[]
+  invertedIndexCards: ExperimentCard[]
+  invertedSteps: { name: string }[]
 }
 
 /**
@@ -126,13 +128,93 @@ const steps = [
   }
 ]
 
+const invertedIndexCards: ExperimentCard[] = [
+  {
+    name: '词典',
+    current: false,
+    disabled: false,
+    index: -1
+  },
+  {
+    name: '词典',
+    current: false,
+    disabled: false,
+    index: -1
+  },
+  {
+    name: '词项',
+    current: false,
+    disabled: false,
+    index: -1
+  },
+  {
+    name: '全体倒排记录表',
+    current: false,
+    disabled: false,
+    index: -1
+  },
+  {
+    name: '倒排记录表',
+    current: false,
+    disabled: false,
+    index: -1
+  },
+  {
+    name: '全体倒排记录表',
+    current: false,
+    disabled: false,
+    index: -1
+  },
+  {
+    name: '文档频率',
+    current: false,
+    disabled: false,
+    index: -1
+  },
+  {
+    name: '文档频率',
+    current: false,
+    disabled: false,
+    index: -1
+  }
+]
+
+const invertedSteps = [
+  {
+    name: ''
+  },
+  {
+    name: ''
+  },
+  {
+    name: ''
+  },
+  {
+    name: ''
+  },
+  {
+    name: ''
+  },
+  {
+    name: ''
+  },
+  {
+    name: ''
+  },
+  {
+    name: ''
+  }
+]
+
 /**
  * 全局初始状态
  */
 export const INITIAL_STATE: State = {
   pageLoading: false,
   entryExperimentCards,
-  steps
+  steps,
+  invertedIndexCards,
+  invertedSteps
 }
 
 export const { StoreContext, useDispatch, useMappedState } = create<State, Actions, Store<State, Actions>>()

@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback } from 'react'
 import { Icon } from 'antd'
 import { Dispatch } from 'redux'
-import { useDispatch, useMappedState, State, ExperimentCard } from '../../store/Store'
+import { useDispatch, useMappedState, State } from '../../store/Store'
 import { Actions } from '../../store/Actions'
 import styles from './StepsExam.module.less'
 

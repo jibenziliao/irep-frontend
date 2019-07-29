@@ -11,6 +11,7 @@ import { requestFn } from '../../../utils/request'
 import { useDispatch, useMappedState, State } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
 import { invertedIndexKnowledge } from '../../../config/invertedIndexKnowledge'
+import InvertedIndexExperiment from './InvertedIndexExperiment'
 
 const { TabPane } = Tabs
 
@@ -24,6 +25,7 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
   const [tabDisabled, setTabDisabled] = useState(true)
   const dispatch: Dispatch<Actions> = useDispatch()
   const state: State = useMappedState(useCallback((globalState: State) => globalState, []))
+
   const handleClick = () => {
     props.history.replace('/experiment/boolean')
   }
@@ -94,7 +96,7 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
             />
           </TabPane>
           <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>
-            <button onClick={handleClick}>下一步</button>
+            <InvertedIndexExperiment />
           </TabPane>
         </Tabs>
       </div>
