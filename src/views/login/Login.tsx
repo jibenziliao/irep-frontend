@@ -40,11 +40,11 @@ const LoginForm = (props: LoginProp) => {
     const res = await requestFn(dispatch, {
       url: '/user/login',
       method: 'post',
-      params: {
+      params: {},
+      data: {
         username: fieldValue.userName,
         password: fieldValue.password
-      },
-      data: {}
+      }
     })
     setLoading(false)
     if (res && res.status === 200 && res.data && res.data.code === 101) {
