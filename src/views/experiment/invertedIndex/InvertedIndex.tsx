@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { Dispatch } from 'redux'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { Tabs, notification, Button } from 'antd'
@@ -20,11 +20,55 @@ const { TabPane } = Tabs
  */
 const InvertedIndexComponent = (props: RouteComponentProps) => {
   const [examLoading, setExamLoading] = useState(false)
-  const [loading, setLoading] = useState(false)
   const [activeTabKey, setActiveTabKey] = useState('1')
   const [tabDisabled, setTabDisabled] = useState(true)
   const dispatch: Dispatch<Actions> = useDispatch()
   const state: State = useMappedState(useCallback((globalState: State) => globalState, []))
+
+  useEffect(() => {
+    /**
+     * 更新加载索引的请求状态和成功状态
+     */
+    const updateLoadindexStatus = (loading: boolean, success?: boolean) => {
+      dispatch({
+        type: 'update_loadindex',
+        payload: {
+          loadindexLoading: loading,
+          ...(success !== undefined ? { loadindexSuccess: success } : {})
+        }
+      })
+    }
+
+    /**
+     * 加载索引
+     */
+    const loadIndex = async () => {
+      const res = await requestFn(dispatch, {
+        url: '/IRforCN/invertedIndex/loadIndex',
+        method: 'post'
+      })
+      if (res && res.status === 200 && res.data.code === 0) {
+        updateLoadindexStatus(false, true)
+      } else {
+        updateLoadindexStatus(false, false)
+        errorTips('加载索引失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+      }
+    }
+
+    /**
+     * 根据loading状态判断是否需要加载索引
+     */
+    const initLoadIndex = (loading: boolean) => {
+      if (loading) {
+        loadIndex()
+      }
+    }
+
+    /**
+     * state.loadindexLoading发生变换时，触发此钩子中的函数
+     */
+    initLoadIndex(state.loadindexLoading)
+  }, [dispatch, state.loadindexLoading])
 
   const handleClick = () => {
     props.history.replace('/experiment/boolean')

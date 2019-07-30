@@ -36,3 +36,10 @@ export type Actions =
         index: number
       }
     }
+  | {
+      type: 'update_loadindex'
+      payload: {
+        loadindexLoading: true | false
+        loadindexSuccess?: true | false
+      }
+    }

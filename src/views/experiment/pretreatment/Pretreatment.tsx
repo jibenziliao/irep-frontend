@@ -60,6 +60,40 @@ const PretreatmentComponet = (props: RouteComponentProps) => {
   }
 
   /**
+   * 构建预处理器，仅调试用
+   */
+  const preProcess = async () => {
+    const res = await requestFn(dispatch, {
+      url: '/IRforCN/preProcessing/preProcess',
+      method: 'post',
+      params: {
+        token: '绿茶软件园;资讯茶小编带来了qq群北',
+        analyzerName: 'standard',
+        isRemoveStopWord: false
+      }
+    })
+    if (res && res.status === 200 && res.data) {
+      successTips('构建成功', '')
+      setTimeout(() => {
+        props.history.replace('/experiment/invertedIndex')
+      }, 1000)
+    } else {
+      errorTips('构建失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+    }
+  }
+
+  /**
+   * 成功提示
+   */
+  const successTips = (message = '', description = '') => {
+    notification.success({
+      message,
+      duration: 1,
+      description
+    })
+  }
+
+  /**
    * 错误提示
    */
   const errorTips = (message = '', description = '') => {
@@ -95,6 +129,9 @@ const PretreatmentComponet = (props: RouteComponentProps) => {
             />
           </TabPane>
           <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>
+            <Button type="primary" onClick={preProcess}>
+              构建预处理器并前往下一步
+            </Button>
             <button onClick={handleClick}>下一步</button>
           </TabPane>
         </Tabs>

@@ -42,9 +42,7 @@ const NavBarComponet = (props: RouteComponentProps) => {
   const logOut = async () => {
     const res = await requestFn(dispatch, {
       url: '/user/out',
-      method: 'post',
-      params: {},
-      data: {}
+      method: 'post'
     })
     if (res && res.status === 200 && res.data && res.data.code === 0) {
       removeAllStore()

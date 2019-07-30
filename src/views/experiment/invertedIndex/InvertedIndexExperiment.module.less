@@ -34,13 +34,16 @@
     .TopBox {
       background-color: #e2eef7;
       height: 104px;
+      border-left: 1px dashed #2e7fc1;
+      border-top: 1px dashed #2e7fc1;
       .BoxLeft {
         display: inline-block;
         vertical-align: top;
         .BoxLeftTop {
           width: 220px;
           height: 52px;
-          border: 1px dashed #2e7fc1;
+          border-right: 1px dashed #2e7fc1;
+          border-bottom: 1px dashed #2e7fc1;
           box-sizing: border-box;
         }
         .BoxLeftBottom {
@@ -48,7 +51,8 @@
           & .BoxItem {
             width: 110px;
             height: 52px;
-            border: 1px dashed #2e7fc1;
+            border-right: 1px dashed #2e7fc1;
+            border-bottom: 1px dashed #2e7fc1;
             box-sizing: border-box;
           }
         }
@@ -56,7 +60,8 @@
       .BoxMiddle {
         height: 104px;
         width: 170px;
-        border: 1px dashed #2e7fc1;
+        border-right: 1px dashed #2e7fc1;
+        border-bottom: 1px dashed #2e7fc1;
         box-sizing: border-box;
         display: inline-block;
         vertical-align: top;
@@ -67,7 +72,8 @@
         .BoxRightTop {
           width: 330px;
           height: 52px;
-          border: 1px dashed #2e7fc1;
+          border-right: 1px dashed #2e7fc1;
+          border-bottom: 1px dashed #2e7fc1;
           box-sizing: border-box;
         }
         .BoxRightBottom {
@@ -75,7 +81,8 @@
           & .BoxItem {
             width: 110px;
             height: 52px;
-            border: 1px dashed #2e7fc1;
+            border-right: 1px dashed #2e7fc1;
+            border-bottom: 1px dashed #2e7fc1;
             box-sizing: border-box;
           }
         }
@@ -87,7 +94,8 @@
       align-items: center;
       justify-content: center;
       position: relative;
-      &:hover .IconWrapper, &:hover .Icon {
+      &:hover .IconWrapper,
+      &:hover .Icon {
         opacity: 1;
       }
       .Name {
@@ -114,7 +122,7 @@
       .IconWrapper {
         opacity: 0;
         background-color: rgba(255, 255, 255, 0.7);
-        transition: opacity cubic-bezier(0.215, 0.610, 0.355, 1) 0.2s;
+        transition: opacity cubic-bezier(0.215, 0.61, 0.355, 1) 0.2s;
         position: absolute;
         left: 0;
         top: 0;
@@ -122,7 +130,7 @@
         height: inherit;
       }
       .Icon {
-        transition: opacity cubic-bezier(0.215, 0.610, 0.355, 1) 0.2s;
+        transition: opacity cubic-bezier(0.215, 0.61, 0.355, 1) 0.2s;
         opacity: 0;
         font-size: 32px;
         position: absolute;
@@ -234,6 +242,12 @@
         height: 34px;
         line-height: 34px;
         outline: none;
+        padding: 0 4px;
+        box-sizing: border-box;
+        &:active,
+        &:focus {
+          border: 1px solid @primary-color;
+        }
       }
     }
     .TableName {
@@ -259,36 +273,127 @@
     background-color: #51b7a2;
     margin-bottom: 24px;
     cursor: pointer;
+    &:hover {
+      background-color: #51b7a2cc;
+    }
   }
-  .Table {
-    width: 100%;
-    .TableHeadRow {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 36px;
-      height: 36px;
-      span {
-        flex: 1;
+  .TableGroup {
+    display: block;
+    .Spin {
+      display: inline-block;
+      vertical-align: top;
+    }
+    .Table {
+      width: 100%;
+      .TableHeadRow {
         display: flex;
-        text-align: center;
         align-items: center;
+        justify-content: center;
+        line-height: 36px;
+        height: 36px;
+        span {
+          flex: 1;
+          display: flex;
+          text-align: center;
+          align-items: center;
+        }
+      }
+      th {
+        vertical-align: inherit;
+        text-align: center;
+        line-height: 36px;
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .ThColorBlue {
+        background-color: #6190cc;
+      }
+      .ThColorGreen {
+        background-color: #80ac76;
+      }
+      thead {
+        th {
+          border-right: 1px solid #fff;
+          border-bottom: 1px solid #fff;
+        }
+      }
+      tbody {
+        border-collapse: separate;
+        border-spacing: 0;
+        tr {
+          height: 42px;
+          font-size: 16px;
+          cursor: pointer;
+          border-bottom: 1px solid @border-color;
+          border-right: 1px solid @border-color;
+          border-left: 1px solid @border-color;
+          &:nth-child(odd) {
+            background-color: #dce3f0;
+          }
+          &:nth-child(even) {
+            background-color: #fff;
+          }
+          &:active {
+            color: #fff;
+            background-color: #99c092;
+          }
+        }
+        .Active {
+          color: #fff;
+          background-color: #99c092 !important;
+        }
+      }
+      td {
+        padding: 0 18px;
+        text-align: center;
+        vertical-align: middle;
+      }
+      .CollipsisTd {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        width: 239px;
+        max-width: 239px;
+        border-right: 1px solid @border-color;
       }
     }
-    th {
-      vertical-align: inherit;
-      text-align: center;
-      border: 1px solid #fff;
-      line-height: 36px;
-      color: #fff;
-      font-size: 16px;
-      font-weight: bold;
-    }
-    .ThColorBlue {
-      background-color: #6190cc;
-    }
-    .ThColorGreen {
-      background-color: #80ac76;
+    .TableDetail {
+      tbody {
+        tr {
+          height: 42px;
+          font-size: 16px;
+          border-left: none;
+          &:nth-child(odd) {
+            background-color: #fafafa;
+          }
+          &:nth-child(even) {
+            background-color: #fff;
+          }
+          &:active {
+            color: #fff;
+            background-color: #64a47a;
+          }
+        }
+        .Active {
+          color: #fff;
+          background-color: #64a47a !important;
+        }
+      }
     }
   }
+  .OriginDoc {
+    padding: 18px 30px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    background-color: #fafafa;
+    font-size: 16px;
+    height: 240px;
+    word-break: break-word;
+  }
+}
+.NextStep {
+  text-align: right;
+  margin-bottom: 50px;
+  padding-right: 40px;
 }

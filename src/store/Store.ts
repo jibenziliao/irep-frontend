@@ -23,6 +23,8 @@ export interface State {
   steps: { name: string }[]
   invertedIndexCards: ExperimentCard[]
   invertedSteps: { name: string }[]
+  loadindexLoading: boolean
+  loadindexSuccess: boolean
 }
 
 /**
@@ -214,7 +216,9 @@ export const INITIAL_STATE: State = {
   entryExperimentCards,
   steps,
   invertedIndexCards,
-  invertedSteps
+  invertedSteps,
+  loadindexLoading: true, // 加载索引请求状态
+  loadindexSuccess: false // 加载索引成功状态
 }
 
 export const { StoreContext, useDispatch, useMappedState } = create<State, Actions, Store<State, Actions>>()

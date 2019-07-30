@@ -61,14 +61,25 @@ export const requestFn = (dispatch: Dispatch<Actions>, params: Params): AxiosPro
           tokenExpired()
           return reject(error)
         } else {
-          const result: AxiosResponse<any> = {
-            data: error.response.data,
-            status: error.response.status,
-            statusText: error.response.data.msg,
-            headers: error.response.config.headers,
-            config: error.response.config
+          if (error.message.includes('timeout')) {
+            const result: AxiosResponse<any> = {
+              data: { msg: '请求超时' },
+              status: 408,
+              statusText: '请求超时',
+              headers: error.config.headers,
+              config: error.config
+            }
+            return resolve(result)
+          } else {
+            const result: AxiosResponse<any> = {
+              data: error.response && error.response.data ? error.response.data : null,
+              status: error.response.status,
+              statusText: error.response.data.msg,
+              headers: error.response.config.headers,
+              config: error.response.config
+            }
+            return resolve(result)
           }
-          return resolve(result)
         }
       }
     )

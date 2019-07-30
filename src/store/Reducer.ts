@@ -135,6 +135,14 @@ export default function reducer(state: State = INITIAL_STATE, action: Actions) {
       }
     }
 
+    case 'update_loadindex': {
+      return {
+        ...state,
+        loadindexLoading: action.payload.loadindexLoading,
+        ...(action.payload.loadindexSuccess !== undefined ? { loadindexSuccess: action.payload.loadindexSuccess } : {})
+      }
+    }
+
     default:
       return state
   }
