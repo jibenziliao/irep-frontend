@@ -21,7 +21,7 @@ const EntryExperiment = (props: ExperimaentProps) => {
     props.save()
   }
 
-  const selectCard = (name: string, disabled: boolean) => {
+  const selectCard = (name: string, index: number, disabled: boolean) => {
     if (disabled) {
       return false
     }
@@ -30,7 +30,7 @@ const EntryExperiment = (props: ExperimaentProps) => {
       payload: {
         name,
         type: 'selected',
-        index: -1
+        index
       }
     })
   }
@@ -41,7 +41,7 @@ const EntryExperiment = (props: ExperimaentProps) => {
         <div
           key={index}
           className={`${styles.Card} ${i.disabled ? styles.CardDisabled : ''}`}
-          onClick={() => selectCard(i.name, i.disabled)}
+          onClick={() => selectCard(i.name, index, i.disabled)}
         >
           {i.name}
         </div>

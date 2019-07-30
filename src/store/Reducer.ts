@@ -28,10 +28,15 @@ export default function reducer(state: State = INITIAL_STATE, action: Actions) {
     }
 
     case 'handle_entry_card': {
-      const newEntryExperimentCards = state.entryExperimentCards.map(i => {
+      const newEntryExperimentCards = state.entryExperimentCards.map((i, index) => {
         return {
           ...i,
-          current: action.payload.name === i.name && action.payload.type === 'selected',
+          current:
+            action.payload.name === i.name && action.payload.type === 'selected' && action.payload.index === index
+              ? true
+              : action.payload.type !== 'selected'
+              ? i.current
+              : false,
           disabled:
             i.current && action.payload.type === 'add'
               ? true
@@ -47,23 +52,29 @@ export default function reducer(state: State = INITIAL_STATE, action: Actions) {
         }
       })
       const newSteps = state.steps.map((i, index) => {
-        const nameIndex = newEntryExperimentCards.findIndex(j => j.name === i.name)
-        const tmpIndex = newEntryExperimentCards.findIndex(j => j.index === action.payload.index)
+        const currentIndex = newEntryExperimentCards.findIndex(j => j.current)
         if (action.payload.type === 'add') {
           return {
-            name: tmpIndex > -1 && index === action.payload.index ? newEntryExperimentCards[index].name : i.name
+            name:
+              currentIndex > -1 && index === action.payload.index ? newEntryExperimentCards[currentIndex].name : i.name
           }
         } else if (action.payload.type === 'remove') {
           return {
-            name: nameIndex > -1 && index === action.payload.index ? '' : i.name
+            name: index === action.payload.index ? '' : i.name
           }
         } else {
           return i
         }
       })
+      const finalEntryExperimentCards = newEntryExperimentCards.map(i => {
+        return {
+          ...i,
+          current: action.payload.type === 'add' ? false : i.current
+        }
+      })
       return {
         ...state,
-        entryExperimentCards: newEntryExperimentCards,
+        entryExperimentCards: finalEntryExperimentCards,
         steps: newSteps
       }
     }

@@ -71,9 +71,12 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
   const renderCard = (name: string, index: number) => {
     if (name) {
       return (
-        <span className={`${styles.Name}`} onClick={() => removeCard(name, index)}>
-          {`${index + 1}.${name}`}
-        </span>
+        <div className={`${styles.Name}`} onClick={() => removeCard(name, index)}>
+          <span>{`${index + 1}.${name}`}</span>
+          <div className={styles.IconWrapper}>
+            <Icon type="close-circle" className={styles.Icon} />
+          </div>
+        </div>
       )
     } else {
       return (
@@ -272,10 +275,10 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
             </div>
           </div>
         </div>
-        <p className={styles.BoxTips}>
+        <div className={styles.BoxTips}>
           <span>点击下方卡片选中，再点击上面的方框，填入正确的架构。</span>
           {renderCurrentCard()}
-        </p>
+        </div>
         <div className={styles.BoxWrapper}>{renderCards()}</div>
       </div>
       <div className={styles.Section}>
