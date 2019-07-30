@@ -263,6 +263,17 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
   }
 
   /**
+   * 加载索引成功后才能构建倒排索引
+   */
+  const canGetFullIndex = () => {
+    if (!state.loadindexLoading && state.loadindexSuccess) {
+      getFullIndex()
+    } else {
+      return false
+    }
+  }
+
+  /**
    * 构建我的倒排索引表
    */
   const getFullIndex = async () => {
@@ -662,7 +673,10 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
         {renderInvertedIndexForm()}
       </div>
       <div className={styles.Section}>
-        <div className={styles.RunBtn} onClick={getFullIndex}>
+        <div
+          className={`${styles.RunBtn} ${state.loadindexLoading ? styles.RunBtnDisabled : ''}`}
+          onClick={canGetFullIndex}
+        >
           构建我的倒排索引表
         </div>
         <div className={styles.TableGroup}>

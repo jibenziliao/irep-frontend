@@ -47,7 +47,7 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
         url: '/IRforCN/invertedIndex/loadIndex',
         method: 'post'
       })
-      if (res && res.status === 200 && res.data.code === 0) {
+      if (res && res.status === 200 && parseInt(res.data.code) === 1) {
         updateLoadindexStatus(false, true)
       } else {
         updateLoadindexStatus(false, false)
@@ -121,7 +121,11 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
     setActiveTabKey(tabIndex)
   }
 
-  const operations = <Button onClick={handleClick}>跳过(仅调试用)</Button>
+  const operations = (
+    <Button disabled type="primary" onClick={handleClick}>
+      跳过(仅调试用)
+    </Button>
+  )
 
   return (
     <div className={styles.Container}>

@@ -32,7 +32,6 @@ const EntryComponent = (props: RouteComponentProps) => {
     const res = await requestFn(dispatch, {
       url: '/updateScore', // 接口还没完成，这里是个假的示例
       method: 'post',
-      params: {},
       data: {
         // eslint-disable-next-line @typescript-eslint/camelcase
         experiment_id: 'xxx', // 更新指定实验的知识自查分数
@@ -51,6 +50,26 @@ const EntryComponent = (props: RouteComponentProps) => {
       setTabDisabled(false)
     }
     setExamLoading(false)
+  }
+
+  /**
+   * 保存用户填写的知识自查答案到后台
+   */
+  const saveExaninationAnswer = async (answer: any) => {
+    setExamLoading(true)
+    const res = await requestFn(dispatch, {
+      url: '/score/updateChoiceAndCompletionScore', // 接口还没完成，这里是个假的示例
+      method: 'post',
+      data: {
+        experimentId: 1,
+        ...answer
+      }
+    })
+    if (res && res.status === 200 && res.data) {
+      console.log(res.data)
+    } else {
+      errorTips('保存答案失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+    }
   }
 
   /**
@@ -121,6 +140,7 @@ const EntryComponent = (props: RouteComponentProps) => {
               choiceQuestions={entryChoiceQuestions}
               save={saveExaminationScore}
               loading={examLoading}
+              saveAnswer={saveExaninationAnswer}
             />
           </TabPane>
           <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>

@@ -1,3 +1,5 @@
+@import './theme/theme.less';
+
 .GlobalMainContainer {
   padding-top: 70px;
   flex: auto;
@@ -20,10 +22,21 @@
 .GlobalExamItem {
   .ant-form-item-control {
     line-height: 40px;
+    .ant-form-explain {
+      display: none;
+    }
     .ant-input {
       border: none;
       border-bottom: 1px solid #e0e0e0;
       border-radius: 0;
+    }
+  }
+  .has-error {
+    .ant-input {
+      border-color: @error-color;
+    }
+    .ant-checkbox-inner {
+      border-color: @error-color;
     }
   }
 }
