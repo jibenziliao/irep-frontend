@@ -41,7 +41,7 @@ const PretreatmentComponet = (props: RouteComponentProps) => {
         isRemoveStopWord: false
       }
     })
-    if (res && res.status === 200 && res.data && res.data.code === 0) {
+    if (res && res.status === 200 && res.data) {
       successTips('构建成功', '')
       setTimeout(() => {
         setLoading(false)
