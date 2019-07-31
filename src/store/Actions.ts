@@ -43,3 +43,11 @@ export type Actions =
         loadindexSuccess?: true | false
       }
     }
+  | {
+      type: 'handle_vectorSpace_card'
+      payload: {
+        name: string
+        type: 'add' | 'selected' | 'remove'
+        index: number
+      }
+    }

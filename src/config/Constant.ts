@@ -1,4 +1,5 @@
 import { Choice, ChoiceQuestion, OriginCompletionQuestion } from '../modal/Question'
+import { Options } from '../modal/VectorSpace'
 /**
  * api请求地址
  */
@@ -17,12 +18,12 @@ export const RESPONSE_DELAY = 1000
 /**
  * 默认用户邮箱正则表达式
  */
-export const defaultUserEmailRegExp: RegExp = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
+export const defaultUserEmailRegExp = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
 
 /**
  * 默认用户手机号正则表达式
  */
-export const defaultMobileRegExp: RegExp = /^1[3456789]\d{9}$/
+export const defaultMobileRegExp = /^1[3456789]\d{9}$/
 
 /**
  * 入口实验--原始填空题数据(需要处理下划线)
@@ -1020,5 +1021,51 @@ export const evaluationChoiceQuestions: ChoiceQuestion[] = [
         value: '半自动标引'
       }
     ]
+  }
+]
+
+/**
+ * 向量空间模型--标准查询语句
+ */
+export const vectorSpaceQueryOptions: Options[] = [
+  {
+    label: 'qq群共享文件下载失败',
+    value: 'qq群共享文件下载失败'
+  },
+  {
+    label: '名捕震关东',
+    value: '名捕震关东'
+  },
+  {
+    label: '广东会计信息服务平台',
+    value: '广东会计信息服务平台'
+  },
+  {
+    label: '广场舞一生兄弟一生情',
+    value: '广场舞一生兄弟一生情'
+  },
+  {
+    label: '我的世界合成表',
+    value: '我的世界合成表'
+  },
+  {
+    label: '澳门签证多久签一次',
+    value: '澳门签证多久签一次'
+  },
+  {
+    label: '生死狙击好号和密码有金币',
+    value: '生死狙击好号和密码有金币'
+  },
+  {
+    label: '笔记本怎么开热点',
+    value: '笔记本怎么开热点'
+  },
+  {
+    label: '购买火车票12306',
+    value: '购买火车票12306'
+  },
+  {
+    label: '风尘劫txt下载',
+    value: '风尘劫txt下载'
   }
 ]

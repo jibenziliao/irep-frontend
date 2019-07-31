@@ -7,6 +7,7 @@ import Knowledge from '../../../components/knowledge/Knowledge'
 import Examination from '../../../components/examination/Examination'
 import { vectorSpaceCompletionQuestions, vectorSpaceChoiceQuestions } from '../../../config/Constant'
 import { vectorSpaceKnowledge } from '../../../config/vectorSpaceKnowledge'
+import VectorSpaceExperiment from './VectorSpaceExperiment'
 
 const { TabPane } = Tabs
 
@@ -55,7 +56,7 @@ const VectorSpaceModalComponet = (props: RouteComponentProps) => {
             />
           </TabPane>
           <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>
-            <button onClick={handleClick}>下一步</button>
+            <VectorSpaceExperiment />
           </TabPane>
         </Tabs>
       </div>

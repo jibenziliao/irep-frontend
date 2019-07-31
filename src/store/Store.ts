@@ -26,6 +26,8 @@ export interface State {
   invertedSteps: { name: string }[]
   loadindexLoading: boolean
   loadindexSuccess: boolean
+  vectorSpaceCards: ExperimentCard[]
+  vectorSteps: { name: string }[]
 }
 
 /**
@@ -228,6 +230,102 @@ const invertedSteps = [
 ]
 
 /**
+ * 向量空间默认卡片
+ *
+ * 包含正确的顺序
+ */
+const vectorSpaceCards: ExperimentCard[] = [
+  {
+    name: '求查询向量',
+    current: false,
+    disabled: false,
+    correctIndex: 4,
+    index: -1
+  },
+  {
+    name: '求查询的TF',
+    current: false,
+    disabled: false,
+    correctIndex: 3,
+    index: -1
+  },
+  {
+    name: '查询预处理',
+    current: false,
+    disabled: false,
+    correctIndex: 2,
+    index: -1
+  },
+  {
+    name: '求文档IDF',
+    current: false,
+    disabled: false,
+    correctIndex: 1,
+    index: -1
+  },
+  {
+    name: '求各文档TF',
+    current: false,
+    disabled: false,
+    correctIndex: 5,
+    index: -1
+  },
+  {
+    name: '求文档向量',
+    current: false,
+    disabled: false,
+    correctIndex: 6,
+    index: -1
+  },
+  {
+    name: '求相似度',
+    current: false,
+    disabled: false,
+    correctIndex: 7,
+    index: -1
+  },
+  {
+    name: '求相似度降序排序',
+    current: false,
+    disabled: false,
+    correctIndex: 8,
+    index: -1
+  }
+]
+
+/**
+ * 向量空间顺序
+ *
+ * 用户自己排的顺序
+ */
+const vectorSteps = [
+  {
+    name: ''
+  },
+  {
+    name: ''
+  },
+  {
+    name: ''
+  },
+  {
+    name: ''
+  },
+  {
+    name: ''
+  },
+  {
+    name: ''
+  },
+  {
+    name: ''
+  },
+  {
+    name: ''
+  }
+]
+
+/**
  * 全局初始状态
  */
 export const INITIAL_STATE: State = {
@@ -237,7 +335,9 @@ export const INITIAL_STATE: State = {
   invertedIndexCards,
   invertedSteps,
   loadindexLoading: true, // 加载索引请求状态
-  loadindexSuccess: false // 加载索引成功状态
+  loadindexSuccess: false, // 加载索引成功状态
+  vectorSpaceCards,
+  vectorSteps
 }
 
 export const { StoreContext, useDispatch, useMappedState } = create<State, Actions, Store<State, Actions>>()

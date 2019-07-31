@@ -143,6 +143,59 @@ export default function reducer(state: State = INITIAL_STATE, action: Actions) {
       }
     }
 
+    case 'handle_vectorSpace_card': {
+      const newvectorSpaceCards = state.vectorSpaceCards.map((i, index) => {
+        return {
+          ...i,
+          current:
+            action.payload.name === i.name && action.payload.type === 'selected' && action.payload.index === index
+              ? true
+              : action.payload.type !== 'selected'
+              ? i.current
+              : false,
+          disabled:
+            i.current && action.payload.type === 'add'
+              ? true
+              : action.payload.type === 'remove' && action.payload.index === i.index
+              ? false
+              : i.disabled,
+          index:
+            action.payload.type === 'add' && i.current
+              ? action.payload.index
+              : action.payload.type === 'remove' && action.payload.index === i.index
+              ? -1
+              : i.index
+        }
+      })
+      const newSteps = state.vectorSteps.map((i, index) => {
+        const currentIndex = newvectorSpaceCards.findIndex(i => i.current)
+        if (action.payload.type === 'add') {
+          return {
+            name: currentIndex > -1 && index === action.payload.index ? newvectorSpaceCards[currentIndex].name : i.name
+          }
+        } else if (action.payload.type === 'remove') {
+          return {
+            name: index === action.payload.index ? '' : i.name
+          }
+        } else {
+          return i
+        }
+      })
+
+      const finalVectorSpaceCards = newvectorSpaceCards.map(i => {
+        return {
+          ...i,
+          current: action.payload.type === 'add' ? false : i.current
+        }
+      })
+
+      return {
+        ...state,
+        vectorSpaceCards: finalVectorSpaceCards,
+        vectorSteps: newSteps
+      }
+    }
+
     default:
       return state
   }

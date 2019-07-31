@@ -98,11 +98,7 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
     setActiveTabKey(tabIndex)
   }
 
-  const operations = (
-    <Button disabled type="primary" onClick={handleClick}>
-      跳过(仅调试用)
-    </Button>
-  )
+  const operations = <Button onClick={handleClick}>跳过(仅调试用)</Button>
 
   return (
     <div className={styles.Container}>
