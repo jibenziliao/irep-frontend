@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Dispatch } from 'redux'
-import { Form, notification, Button, Input, Icon, Checkbox, message } from 'antd'
+import { Form, notification, Button, Input, Icon, Checkbox } from 'antd'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import { FormComponentProps } from 'antd/lib/form/Form'
 import styles from './Login.module.less'

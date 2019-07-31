@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Input, Checkbox, Button } from 'antd'
+import { Dispatch } from 'redux'
+import { Form, Input, Checkbox, Button, notification } from 'antd'
 import { FormComponentProps } from 'antd/lib/form/Form'
 import styles from './Examination.module.less'
 import titleLeftImg from '../../assets/experiment/exam/completion_title_left.png'
 import titleRightImg from '../../assets/experiment/exam/completion_title_right.png'
 import { OriginCompletionQuestion, ChoiceQuestion, ProcessedCompletionQuestion, Option } from '../../modal/Question'
+import { requestFn } from '../../utils/request'
+import { useDispatch } from '../../store/Store'
+import { Actions } from '../../store/Actions'
 
 const CheckboxGroup = Checkbox.Group
 
@@ -22,17 +26,19 @@ export interface ScoreObj {
 interface ExamFormProps extends FormComponentProps {
   completionQuestions: OriginCompletionQuestion[]
   choiceQuestions: ChoiceQuestion[]
-  save: (param: ScoreObj) => void
-  loading: boolean
-  saveAnswer?: (param: any) => void
+  readonly experimentId?: number
+  goNextStep?: () => void
 }
 
 /**
  * 知识自查表单组件
  */
 const ExamForm = (props: ExamFormProps) => {
+  const dispatch: Dispatch<Actions> = useDispatch()
   const [completionQuestions, setCompletionQuestions] = useState<ProcessedCompletionQuestion[]>([])
   const [validError, setValidError] = useState(false)
+  const [loading, setLoading] = useState(false)
+
   const { getFieldDecorator, validateFields, getFieldsValue } = props.form
 
   useEffect(() => {
@@ -58,23 +64,74 @@ const ExamForm = (props: ExamFormProps) => {
    * 点击确认答案
    */
   const confirmAnswer = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     validateFields((err: any) => {
       if (!err) {
         setValidError(false)
         const fieldValue = getFieldsValue()
-        // const scoreObj = caclulateScore(fieldValue)
-        // props.save(scoreObj)
-        if (props.saveAnswer) {
-          const newFiledValue = handleAnser(fieldValue)
-          console.log(newFiledValue)
-          props.saveAnswer(newFiledValue)
-        }
+        const newFiledValue = handleAnser(fieldValue)
+        saveExaminationAnswer(newFiledValue)
       } else {
         setValidError(true)
       }
     })
   }
 
+  /**
+   * 保存用户填写的知识自查答案到后台
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const saveExaminationAnswer = async (answer: any) => {
+    setLoading(true)
+    const res = await requestFn(dispatch, {
+      url: '/score/updateChoiceAndCompletionScore', // 接口还没完成，这里是个假的示例
+      method: 'post',
+      data: {
+        experimentId: props.experimentId,
+        ...answer
+      }
+    })
+    if (res && res.status === 200 && res.data && res.data.code === 0) {
+      successTips('保存答案成功', '')
+      setTimeout(() => {
+        setLoading(false)
+        if (props.goNextStep) {
+          props.goNextStep()
+        }
+      }, 1000)
+    } else {
+      setLoading(false)
+      errorTips('保存答案失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+    }
+  }
+
+  /**
+   * 成功提示
+   */
+  const successTips = (message = '', description = '') => {
+    notification.success({
+      message,
+      duration: 1,
+      description
+    })
+  }
+
+  /**
+   * 错误提示
+   */
+  const errorTips = (message = '', description = '') => {
+    notification.error({
+      message,
+      description
+    })
+  }
+
+  /**
+   * 处理用户的答案
+   *
+   * 将选择题由数组变成字符串(若多选，则直接元素拼接)
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleAnser = (answer: any) => {
     for (let i of Object.keys(answer)) {
       if (answer[i] instanceof Array) {
@@ -82,29 +139,6 @@ const ExamForm = (props: ExamFormProps) => {
       }
     }
     return answer
-  }
-
-  /**
-   * 计算完成题和选择题分数
-   */
-  const caclulateScore = (fieldValue: any) => {
-    let completionSore = 0
-    let choiceScore = 0
-    for (let i = 0; i < completionQuestions.length; i++) {
-      if (fieldValue[`completion${i + 1}`] === completionQuestions[i].answer) {
-        completionSore += completionQuestions[i].score
-      }
-    }
-    for (let i = 0; i < props.choiceQuestions.length; i++) {
-      if (
-        fieldValue[`choice${i + 1}`] &&
-        fieldValue[`choice${i + 1}`].length === 1 &&
-        fieldValue[`choice${i + 1}`][0] === props.choiceQuestions[i].answer
-      ) {
-        choiceScore += props.choiceQuestions[i].score
-      }
-    }
-    return { completionSore, choiceScore }
   }
 
   /**
@@ -125,7 +159,7 @@ const ExamForm = (props: ExamFormProps) => {
           <Form.Item className={`GlobalExamItem ${styles.FormInput}`}>
             {getFieldDecorator(`completion${index + 1}`, {
               rules: [{ required: true, message: '请输入答案' }]
-            })(<Input placeholder="" onChange={clearErrorTips} />)}
+            })(<Input placeholder="" onChange={clearErrorTips} autoComplete="off" />)}
           </Form.Item>
           <span className={styles.QuestionText}>{`${i.suffix}`}</span>
         </div>
@@ -184,7 +218,7 @@ const ExamForm = (props: ExamFormProps) => {
       <p className={styles.QuestionTitle}>选择题（既有单选也有多选）</p>
       <div className={styles.QuestionsWrapper}>{renderChoiceQuestion()}</div>
       {renderTips()}
-      <Button type="primary" className={styles.ConfirmBtn} onClick={confirmAnswer} loading={props.loading}>
+      <Button type="primary" className={styles.ConfirmBtn} onClick={confirmAnswer} loading={loading}>
         确认答案
       </Button>
     </div>

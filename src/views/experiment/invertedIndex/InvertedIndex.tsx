@@ -5,7 +5,7 @@ import { Tabs, notification, Button } from 'antd'
 import styles from './InvertedIndex.module.less'
 import Steps from '../../../components/steps/Steps'
 import Knowledge from '../../../components/knowledge/Knowledge'
-import Examination, { ScoreObj } from '../../../components/examination/Examination'
+import Examination from '../../../components/examination/Examination'
 import { invertedIndexCompletionQuestions, invertedIndexChoiceQuestions } from '../../../config/Constant'
 import { requestFn } from '../../../utils/request'
 import { useDispatch, useMappedState, State } from '../../../store/Store'
@@ -19,7 +19,6 @@ const { TabPane } = Tabs
  * 倒排索引
  */
 const InvertedIndexComponent = (props: RouteComponentProps) => {
-  const [examLoading, setExamLoading] = useState(false)
   const [activeTabKey, setActiveTabKey] = useState('1')
   const [tabDisabled, setTabDisabled] = useState(true)
   const dispatch: Dispatch<Actions> = useDispatch()
@@ -75,36 +74,6 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
   }
 
   /**
-   * 保存知识自查分数到后台
-   */
-  const saveExaminationScore = async (scoreObj: ScoreObj) => {
-    setExamLoading(true)
-    // TODO: 保存知识自查分数到后台接口
-    const res = await requestFn(dispatch, {
-      url: '/updateScore', // 接口还没完成，这里是个假的示例
-      method: 'post',
-      params: {},
-      data: {
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        experiment_id: 'xxx', // 更新指定实验的知识自查分数
-        score: scoreObj.choiceScore + scoreObj.completionSore
-      }
-    })
-    if (res && res.status === 200 && res.data) {
-      // 保存分数成功
-      // TODO: 保存成功后，切换到构建模型tab页
-      setActiveTabKey('3')
-      setTabDisabled(false)
-    } else {
-      // 保存分数失败
-      errorTips('保存分数失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
-      setActiveTabKey('3')
-      setTabDisabled(false)
-    }
-    setExamLoading(false)
-  }
-
-  /**
    * 错误提示
    */
   const errorTips = (message = '', description = '') => {
@@ -112,6 +81,14 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
       message,
       description
     })
+  }
+
+  /**
+   * 知识自查，完成后前往构建模型tab页
+   */
+  const goNextStep = () => {
+    setActiveTabKey('3')
+    setTabDisabled(false)
   }
 
   /**
@@ -139,8 +116,8 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
             <Examination
               completionQuestions={invertedIndexCompletionQuestions}
               choiceQuestions={invertedIndexChoiceQuestions}
-              save={saveExaminationScore}
-              loading={examLoading}
+              experimentId={3}
+              goNextStep={goNextStep}
             />
           </TabPane>
           <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>

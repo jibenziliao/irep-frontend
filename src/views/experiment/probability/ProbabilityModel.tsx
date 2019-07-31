@@ -1,15 +1,11 @@
-import React, { useState, useCallback } from 'react'
-import { Dispatch } from 'redux'
+import React, { useState } from 'react'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { Tabs, notification, Button } from 'antd'
+import { Tabs, Button } from 'antd'
 import styles from './ProbabilityModal.module.less'
 import Steps from '../../../components/steps/Steps'
 import Knowledge from '../../../components/knowledge/Knowledge'
-import Examination, { ScoreObj } from '../../../components/examination/Examination'
+import Examination from '../../../components/examination/Examination'
 import { probabilityCompletionQuestions, probabilityChoiceQuestions } from '../../../config/Constant'
-import { requestFn } from '../../../utils/request'
-import { useDispatch, useMappedState, State } from '../../../store/Store'
-import { Actions } from '../../../store/Actions'
 import { probabilityKnowledge } from '../../../config/probabilityKnowledge'
 
 const { TabPane } = Tabs
@@ -18,54 +14,19 @@ const { TabPane } = Tabs
  * 概率检索模型实验
  */
 const ProbabilityModalComponet = (props: RouteComponentProps) => {
-  const [examLoading, setExamLoading] = useState(false)
-  const [loading, setLoading] = useState(false)
   const [activeTabKey, setActiveTabKey] = useState('1')
   const [tabDisabled, setTabDisabled] = useState(true)
-  const dispatch: Dispatch<Actions> = useDispatch()
-  const state: State = useMappedState(useCallback((globalState: State) => globalState, []))
+
   const handleClick = () => {
     props.history.replace('/experiment/language')
   }
 
   /**
-   * 保存知识自查分数到后台
+   * 知识自查，完成后前往构建模型tab页
    */
-  const saveExaminationScore = async (scoreObj: ScoreObj) => {
-    setExamLoading(true)
-    // TODO: 保存知识自查分数到后台接口
-    const res = await requestFn(dispatch, {
-      url: '/updateScore', // 接口还没完成，这里是个假的示例
-      method: 'post',
-      params: {},
-      data: {
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        experiment_id: 'xxx', // 更新指定实验的知识自查分数
-        score: scoreObj.choiceScore + scoreObj.completionSore
-      }
-    })
-    if (res && res.status === 200 && res.data) {
-      // 保存分数成功
-      // TODO: 保存成功后，切换到构建模型tab页
-      setActiveTabKey('3')
-      setTabDisabled(false)
-    } else {
-      // 保存分数失败
-      errorTips('保存分数失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
-      setActiveTabKey('3')
-      setTabDisabled(false)
-    }
-    setExamLoading(false)
-  }
-
-  /**
-   * 错误提示
-   */
-  const errorTips = (message = '', description = '') => {
-    notification.error({
-      message,
-      description
-    })
+  const goNextStep = () => {
+    setActiveTabKey('3')
+    setTabDisabled(false)
   }
 
   /**
@@ -89,8 +50,8 @@ const ProbabilityModalComponet = (props: RouteComponentProps) => {
             <Examination
               completionQuestions={probabilityCompletionQuestions}
               choiceQuestions={probabilityChoiceQuestions}
-              save={saveExaminationScore}
-              loading={examLoading}
+              experimentId={6}
+              goNextStep={goNextStep}
             />
           </TabPane>
           <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>

@@ -6,9 +6,9 @@ import styles from './Entry.module.less'
 import StepsExam from '../../../components/steps/StepsExam'
 import EntryExperiment from './EntryExperiment'
 import { entryCompletionQuestions, entryChoiceQuestions } from '../../../config/Constant'
-import Examination, { ScoreObj } from '../../../components/examination/Examination'
+import Examination from '../../../components/examination/Examination'
 import { requestFn } from '../../../utils/request'
-import { useDispatch, useMappedState, State } from '../../../store/Store'
+import { useDispatch, useMappedState, State, ExperimentCard } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
 import Knowledge from '../../../components/knowledge/Knowledge'
 import { entryKnowledge } from '../../../config/entryKnowledge'
@@ -16,7 +16,6 @@ import { entryKnowledge } from '../../../config/entryKnowledge'
 const { TabPane } = Tabs
 
 const EntryComponent = (props: RouteComponentProps) => {
-  const [examLoading, setExamLoading] = useState(false)
   const [loading, setLoading] = useState(false)
   const [activeTabKey, setActiveTabKey] = useState('1')
   const [tabDisabled, setTabDisabled] = useState(true)
@@ -24,52 +23,14 @@ const EntryComponent = (props: RouteComponentProps) => {
   const state: State = useMappedState(useCallback((globalState: State) => globalState, []))
 
   /**
-   * 保存知识自查分数到后台
+   * 成功提示
    */
-  const saveExaminationScore = async (scoreObj: ScoreObj) => {
-    setExamLoading(true)
-    // TODO: 保存知识自查分数到后台接口
-    const res = await requestFn(dispatch, {
-      url: '/updateScore', // 接口还没完成，这里是个假的示例
-      method: 'post',
-      data: {
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        experiment_id: 'xxx', // 更新指定实验的知识自查分数
-        score: scoreObj.choiceScore + scoreObj.completionSore
-      }
+  const successTips = (message = '', description = '') => {
+    notification.success({
+      message,
+      duration: 1,
+      description
     })
-    if (res && res.status === 200 && res.data) {
-      // 保存分数成功
-      // TODO: 保存成功后，切换到构建模型tab页
-      setActiveTabKey('3')
-      setTabDisabled(false)
-    } else {
-      // 保存分数失败
-      errorTips('保存分数失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
-      setActiveTabKey('3')
-      setTabDisabled(false)
-    }
-    setExamLoading(false)
-  }
-
-  /**
-   * 保存用户填写的知识自查答案到后台
-   */
-  const saveExaninationAnswer = async (answer: any) => {
-    setExamLoading(true)
-    const res = await requestFn(dispatch, {
-      url: '/score/updateChoiceAndCompletionScore', // 接口还没完成，这里是个假的示例
-      method: 'post',
-      data: {
-        experimentId: 1,
-        ...answer
-      }
-    })
-    if (res && res.status === 200 && res.data) {
-      console.log(res.data)
-    } else {
-      errorTips('保存答案失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
-    }
   }
 
   /**
@@ -90,24 +51,46 @@ const EntryComponent = (props: RouteComponentProps) => {
   }
 
   /**
+   * 获取用户排序的索引
+   */
+  const getStepIndex = (steps: { name: string }[], cards: ExperimentCard[]) => {
+    const stepIndex = []
+    for (let i of steps) {
+      const index = cards.findIndex(j => j.name === i.name)
+      // 接口排序的index从1开始
+      stepIndex.push(cards[index].index + 1)
+    }
+    return stepIndex
+  }
+
+  /**
+   * 知识自查，完成后前往构建模型tab页
+   */
+  const goNextStep = () => {
+    setActiveTabKey('3')
+    setTabDisabled(false)
+  }
+
+  /**
    * 保存构建模型并前往下一步
    */
   const saveExperiment = async () => {
     setLoading(true)
-    const experimentSteps = state.entryExperimentCards.map(i => i)
-    const finalSteps = experimentSteps.sort((pre, cur) => cur.index - pre.index).map(i => i.name)
     const res = await requestFn(dispatch, {
-      url: '/saveOrder', // 接口还没完成，这里是个假的示例
+      url: '/score/updateRankingScore', // 接口还没完成，这里是个假的示例
       method: 'post',
       params: {},
       data: {
-        steps: finalSteps
+        experimentId: 1,
+        rankingResult: getStepIndex(state.steps, state.entryExperimentCards)
       }
     })
-    if (res && res.status === 200 && res.data) {
-      // TODO: 保存用户在入口实验中选择的构建模型顺序
-      setLoading(false)
-      props.history.replace('/experiment/pretreatment')
+    if (res && res.status === 200 && res.data && res.data.code === 0) {
+      successTips('保存顺序成功', '')
+      setTimeout(() => {
+        setLoading(false)
+        props.history.replace('/experiment/pretreatment')
+      }, 1000)
     } else {
       setLoading(false)
       // 保存顺序失败
@@ -138,9 +121,8 @@ const EntryComponent = (props: RouteComponentProps) => {
             <Examination
               completionQuestions={entryCompletionQuestions}
               choiceQuestions={entryChoiceQuestions}
-              save={saveExaminationScore}
-              loading={examLoading}
-              saveAnswer={saveExaninationAnswer}
+              experimentId={1}
+              goNextStep={goNextStep}
             />
           </TabPane>
           <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>
