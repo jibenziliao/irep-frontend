@@ -11,6 +11,7 @@ export interface ExperimentCard {
   name: string
   current: boolean
   disabled: boolean
+  correctIndex: number
   index: number
 }
 
@@ -39,60 +40,70 @@ const entryExperimentCards: ExperimentCard[] = [
     name: '构建我的索引器',
     current: false,
     disabled: false,
+    correctIndex: 1,
     index: -1
   },
   {
     name: '构建布尔模型',
     current: false,
     disabled: false,
+    correctIndex: 5,
     index: -1
   },
   {
     name: '构建向量空间模型',
     current: false,
     disabled: false,
+    correctIndex: 6,
     index: -1
   },
   {
     name: '构建预处理器',
     current: false,
     disabled: false,
+    correctIndex: 2,
     index: -1
   },
   {
     name: '构建倒排索引表',
     current: false,
     disabled: false,
+    correctIndex: 3,
     index: -1
   },
   {
     name: '构建我的检索器',
     current: false,
     disabled: false,
+    correctIndex: 4,
     index: -1
   },
   {
     name: '构建概率检索模型',
     current: false,
     disabled: false,
+    correctIndex: 7,
     index: -1
   },
   {
     name: '构建语言模型',
     current: false,
     disabled: false,
+    correctIndex: 8,
     index: -1
   },
   {
     name: '分析检索模型性能',
     current: false,
     disabled: false,
+    correctIndex: 9,
     index: -1
   },
   {
     name: '仿真我的搜索引擎',
     current: false,
     disabled: false,
+    correctIndex: 10,
     index: -1
   }
 ]
@@ -135,48 +146,56 @@ const invertedIndexCards: ExperimentCard[] = [
     name: '词典',
     current: false,
     disabled: false,
+    correctIndex: 1,
     index: -1
   },
   {
     name: '词典',
     current: false,
     disabled: false,
+    correctIndex: 2,
     index: -1
   },
   {
     name: '词项',
     current: false,
     disabled: false,
+    correctIndex: 3,
     index: -1
   },
   {
     name: '全体倒排记录表',
     current: false,
     disabled: false,
+    correctIndex: 4,
     index: -1
   },
   {
     name: '倒排记录表',
     current: false,
     disabled: false,
+    correctIndex: 5,
     index: -1
   },
   {
     name: '全体倒排记录表',
     current: false,
     disabled: false,
+    correctIndex: 6,
     index: -1
   },
   {
     name: '文档频率',
     current: false,
     disabled: false,
+    correctIndex: 7,
     index: -1
   },
   {
     name: '文档频率',
     current: false,
     disabled: false,
+    correctIndex: 8,
     index: -1
   }
 ]

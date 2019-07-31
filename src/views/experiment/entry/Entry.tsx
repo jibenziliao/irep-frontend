@@ -54,11 +54,13 @@ const EntryComponent = (props: RouteComponentProps) => {
    * 获取用户排序的索引
    */
   const getStepIndex = (steps: { name: string }[], cards: ExperimentCard[]) => {
+    const newCards = cards.map(i => i)
+    newCards.sort((pre, cur) => pre.correctIndex - cur.correctIndex)
     const stepIndex = []
-    for (let i of steps) {
-      const index = cards.findIndex(j => j.name === i.name)
+    for (let i of newCards) {
+      const index = steps.findIndex(j => j.name === i.name)
       // 接口排序的index从1开始
-      stepIndex.push(cards[index].index + 1)
+      stepIndex.push(index + 1)
     }
     return stepIndex
   }
