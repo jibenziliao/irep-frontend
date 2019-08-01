@@ -99,3 +99,22 @@
 .ant-select-dropdown {
   z-index: 2 !important;
 }
+
+.GlobalEvaluationRadioGroup {
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+    background-color: @information-color !important;
+    border-color: @information-color !important;
+    box-shadow: -1px 0 0 0 @information-color;
+  }
+  .ant-radio-button-wrapper:hover {
+    color: @information-color;
+  }
+  .ant-radio-button-wrapper {
+    height: 46px;
+    line-height: 44px;
+    padding: 0 20px;
+  }
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
+    background-color: @information-color !important;
+  }
+}
