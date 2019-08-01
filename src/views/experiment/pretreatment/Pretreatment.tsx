@@ -11,6 +11,7 @@ import { requestFn } from '../../../utils/request'
 import { useDispatch } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
 import { pretreatmentKnowledge } from '../../../config/pretreatmentKnowledge'
+import PretreatmentExperiment from "./PretreatmentExperiment"
 
 const { TabPane } = Tabs
 
@@ -107,7 +108,8 @@ const PretreatmentComponet = (props: RouteComponentProps) => {
               goNextStep={goNextStep}
             />
           </TabPane>
-          <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>
+          <TabPane tab="构建模型页" key="3" disabled={!tabDisabled}>
+            <PretreatmentExperiment/>
             <Button type="primary" onClick={preProcess} loading={loading}>
               构建预处理器并前往下一步(仅调试用)
             </Button>
