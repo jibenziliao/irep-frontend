@@ -70,5 +70,32 @@
         background-color: #fff;
       }
     }
+    td {
+      height: 59px;
+      vertical-align: middle;
+    }
   }
+
+  .GlobalVectorSpaceTdEllipsis {
+    max-width: 220px;
+    width: 220px;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    // see https://github.com/postcss/autoprefixer/issues/776#issuecomment-392346351
+    /* autoprefixer: ignore next */
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    text-align: left;
+    line-height: 21px;
+  }
+  .GlobalVectorSapceTd {
+    line-height: 42px;
+    text-align: center;
+  }
+}
+
+// ant-design 默认选择空间的下拉选项的z-index为1050
+.ant-select-dropdown {
+  z-index: 2 !important;
 }
