@@ -3,47 +3,53 @@
     padding: 0 10px;
     box-sizing: border-box;
     margin-bottom: 42px;
-    .title{
+    .SectionTitle {
         font-size: 16px;
+        font-weight: bold;
         color: @second-text-color;
+        position: relative;
+        padding-left: 20px;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+        &:before {
+          content: '';
+          display: block;
+          width: 4px;
+          height: 20px;
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          left: 0;
+          background-color: @information-color;
+        }
     }
+
     .articleNavBar{
         margin-left:10px;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         font-size:16px;
-        .numberChangeBox{
-            width:25px;
-            height:25px;
-            color:white;
-            background-color: @primary-color;
-            border:none;
-            border-radius:2px;
-            text-align: center;
-        }
-        .numberBox{
-            width:40px;
-            height:25px;
-            text-align:center;
-            border:none;
-            border-top: solid 1px @third-text-color;
-            border-bottom: solid 1px @third-text-color;
+        .articelNumberBox{
+            font-size: 16px;
+            color:@second-text-color;
         }
     }
     .originalArticleBox{
         height:160px;
         margin-left:10px;
         border:solid 1px @border-color;
-        font-size: 14px;
+        font-size: 15px;
         text-align: justify;
         padding:8px;
         overflow-y: auto;
         overflow-x: hidden;
+        word-break:break-all; 
     }
     ::-webkit-scrollbar {
         width: 1px;
     }
+
     // 词云部分
     .wordCloudSection{
         display: flex;
@@ -52,20 +58,39 @@
         margin-left:10px;
         margin-top:20px;
         .wordSection{
-            width:47%;
+            width:45%;
             .wordCloudSectionTitle{
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
+                // display: flex;
+                // justify-content: space-between;
+                // align-items: center;
                 font-size: 16px;
+                font-weight: bold;
                 color: @second-text-color;
-               
+                position: relative;
+                padding-left: 20px;
+                box-sizing: border-box;
+                margin-bottom: 10px;
+                &:before {
+                  content: '';
+                  display: block;
+                  width: 4px;
+                  height: 20px;
+                  position: absolute;
+                  top: 50%;
+                  transform: translateY(-50%);
+                  left: 0;
+                  background-color: @information-color;
+                }
             }
             .wordCloudBox{
                 height:300px;
                 border:solid 1px @border-color;
                 text-align: center;
                 width:100%;
+                overflow-y: auto;
+                overflow-x: hidden;
+                word-break:break-all; 
+                padding:5px;
             }
             .wordCloudChoose{
                 margin-top:5px;
@@ -82,9 +107,10 @@
             }
         }
     }
+
     //总结部分
     .concludeSection{
-        margin:20px 0px 20px 10px;
+        margin:30px 0px 20px 10px;
         .button{
             background-color: @information-color;
             color:white;
@@ -94,16 +120,29 @@
             margin-top:5px;
         }
     }
+
 // 底下实验部分
     .experimentSection{
         margin-left: 10px;
         padding-top:30px;
-       
         .experimentChoose{
             display: flex;
-            margin-top:5px;
-            margin-bottom: 10px;
+            padding:20px 0px 20px 20px;
+            margin-bottom:10px;
             justify-content: space-between;
+            align-items: center;
+            background-color:#fafafa;
+            .segmentChoose{
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                .title{
+                    font-size: 16px;
+                    color:@second-text-color;
+                    margin-right:10px;
+                }
+            }
             .button{
                 background-color: @information-color;
                 color:white;
