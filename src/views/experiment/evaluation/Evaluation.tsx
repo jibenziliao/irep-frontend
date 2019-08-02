@@ -15,7 +15,7 @@ const { TabPane } = Tabs
  * 模型评价
  */
 const EvaluationComponet = (props: RouteComponentProps) => {
-  const [activeTabKey, setActiveTabKey] = useState('1')
+  const [activeTabKey, setActiveTabKey] = useState('3')
   const [tabDisabled, setTabDisabled] = useState(true)
 
   const handleClick = () => {

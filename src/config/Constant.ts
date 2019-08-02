@@ -1069,3 +1069,21 @@ export const vectorSpaceQueryOptions: Options[] = [
     value: '风尘劫txt下载'
   }
 ]
+
+/**
+ * 图表颜色配置
+ */
+export const defaultChartColors: string[] = [
+  '#00aaff',
+  '#2ecc71',
+  '#badc58',
+  '#f03e3e',
+  '#34495e',
+  '#f1c40f',
+  '#e67e22',
+  '#95a5a6',
+  '#686de0',
+  '#26C0C0',
+  '#74c0fc',
+  '#087f5b'
+]
