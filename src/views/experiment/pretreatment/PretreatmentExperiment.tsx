@@ -1,13 +1,10 @@
 import React, { useCallback, useState } from 'react'
-import { Button,Col,Row, Select,Radio,Input,Checkbox,InputNumber} from 'antd'
+import { Button,Select,Input,Checkbox,InputNumber} from 'antd'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { Dispatch } from 'redux'
 import { useDispatch, useMappedState, State } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
 import styles from './PretreatmentExperiment.module.less'
-import { stat } from 'fs';
-import { number } from 'prop-types';
-import { render } from 'react-dom';
 import { requestFn } from '../../../utils/request'
 
 
@@ -37,11 +34,11 @@ const WordCloud =(props)=>{
                 url: '/IRforCN/preProcessing/preProcess',
                 method: 'post',
                 params: {
-                    // 测试用
+                    // 测试用，需要改成body接收参数，否则会报431错误
                     token: originalArticle.substring(0,1005),
                     analyzerName:analyzerName,
                     isRemoveStopWord: isRemoveStopWord
-                },
+                }
             })
             if(res && res.status === 200 && res.data){
                 getWordCloud(res.data)
@@ -158,7 +155,7 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) =>{
                 url: '/IRforCN/preProcessing/preProcess',
                 method: 'post',
                 params: {
-                    // 测试用
+                    // 测试用，需要改成body接收参数，否则会报431错误
                     token:originalArticle.substring(0,1005),  
                     analyzerName:analyzerName,
                     isRemoveStopWord: isRemoveStopWord
