@@ -3,7 +3,7 @@ import React from 'react'
 const Discussion = () => {
   return (
     <div className="GlobalContainer">
-      <h1>交流讨论</h1>
+      <h1>联系我们</h1>
     </div>
   )
 }
