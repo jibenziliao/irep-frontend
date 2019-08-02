@@ -1,0 +1,49 @@
+@import '../../../theme/theme.less';
+
+.NextStepBtn {
+  margin: 40px auto 50px auto;
+  display: block;
+}
+.SearchWrapper {
+  display: flex;
+  align-items: center;
+  .SearchLabel {
+    margin-right: 10px;
+  }
+  .Select {
+    width: 360px;
+    margin-right: 10px;
+  }
+}
+.ModalWrapper {
+  margin: 20px 0 42px 0;
+  .RadioGroup {
+    :global {
+      .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
+        background-color: @information-color !important;
+      }
+    }
+  }
+}
+.TableNames {
+  display: flex;
+  justify-content: space-between;
+  p {
+    margin-bottom: 24px;
+    font-weight: bold;
+    font-size: 16px;
+    width: 400px;
+    text-align: center;
+  }
+}
+.TableGroup {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 42px;
+  .Table {
+    width: 400px;
+  }
+  .TableLeft {
+    margin-right: 20px;
+  }
+}

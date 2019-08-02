@@ -7,6 +7,7 @@ import Knowledge from '../../../components/knowledge/Knowledge'
 import Examination from '../../../components/examination/Examination'
 import { evaluationCompletionQuestions, evaluationChoiceQuestions } from '../../../config/Constant'
 import { evaluationKnowledge } from '../../../config/evaluationKnowledge'
+import EvluationExperiment from './EvaluationExperiment'
 
 const { TabPane } = Tabs
 
@@ -55,7 +56,7 @@ const EvaluationComponet = (props: RouteComponentProps) => {
             />
           </TabPane>
           <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>
-            <button onClick={handleClick}>下一步</button>
+            <EvluationExperiment />
           </TabPane>
         </Tabs>
       </div>
