@@ -11,7 +11,7 @@ import { requestFn } from '../../../utils/request'
 import { useDispatch } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
 import { pretreatmentKnowledge } from '../../../config/pretreatmentKnowledge'
-import PretreatmentExperiment from "./PretreatmentExperiment"
+import PretreatmentExperiment from './PretreatmentExperiment'
 
 const { TabPane } = Tabs
 
@@ -109,7 +109,7 @@ const PretreatmentComponet = (props: RouteComponentProps) => {
             />
           </TabPane>
           <TabPane tab="构建模型页" key="3" disabled={!tabDisabled}>
-            <PretreatmentExperiment/>
+            <PretreatmentExperiment />
           </TabPane>
         </Tabs>
       </div>

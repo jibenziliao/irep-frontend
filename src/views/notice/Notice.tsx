@@ -1,10 +1,10 @@
-import React from 'react'
-import { withRouter, RouteComponentProps } from 'react-router-dom'
-import styles from './notice.module.less'
-import { number } from 'prop-types'
+import React, { useState, useEffect } from 'react'
 import { Pagination } from 'antd'
+import styles from './notice.module.less'
 
-const notices = [
+const defaultPageSize = 5
+
+const defaultNotices = [
   {
     title:
       '教育部高等教育司关于开展2019年国家精品在先开发课程认定工作的通知（教高司函【2019】33号）教育部高等教育司关于开展2019年国家精品在先开发课程认定工作的通知（教高司函【2019】33号）',
@@ -40,18 +40,33 @@ const notices = [
 
 function itemRender(current, type, originalElement) {
   if (type === 'prev') {
-    return <a>上一页</a>
+    return <span>上一页</span>
   }
   if (type === 'next') {
-    return <a>下一页</a>
+    return <span>下一页</span>
   }
   return originalElement
 }
 
-const NoticeConmponet = (props: RouteComponentProps) => {
-  const switchRoute = (path: string) => {
-    props.history.replace(path)
+const Notice = () => {
+  const [notices, setNotices] = useState<{ title: string; date: string; year: string }[]>([])
+  const [currentPageIndex, setCurrentPageIndex] = useState(1)
+
+  useEffect(() => {
+    const initNotices = () => {
+      const newNotices = defaultNotices.filter((i, index) => {
+        return index >= (currentPageIndex - 1) * defaultPageSize && index < currentPageIndex * defaultPageSize
+      })
+      setNotices(newNotices)
+    }
+
+    initNotices()
+  }, [currentPageIndex])
+
+  const onPageChange = (page: number) => {
+    setCurrentPageIndex(page)
   }
+
   const renderNotices = () => {
     return notices.map((i, index: number) => {
       return (
@@ -76,14 +91,18 @@ const NoticeConmponet = (props: RouteComponentProps) => {
         <div className={styles.notices}>
           {renderNotices()}
           <div className={styles.Pagination}>
-            <Pagination defaultCurrent={1} total={100} itemRender={itemRender} defaultPageSize={5} />
+            <Pagination
+              defaultCurrent={currentPageIndex}
+              total={defaultNotices.length}
+              itemRender={itemRender}
+              defaultPageSize={defaultPageSize}
+              onChange={onPageChange}
+            />
           </div>
         </div>
       </div>
     </div>
   )
 }
-
-const Notice = withRouter(NoticeConmponet)
 
 export default Notice
