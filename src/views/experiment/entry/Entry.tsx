@@ -79,9 +79,8 @@ const EntryComponent = (props: RouteComponentProps) => {
   const saveExperiment = async () => {
     setLoading(true)
     const res = await requestFn(dispatch, {
-      url: '/score/updateRankingScore', // 接口还没完成，这里是个假的示例
+      url: '/score/updateRankingScore',
       method: 'post',
-      params: {},
       data: {
         experimentId: 1,
         rankingResult: getStepIndex(state.steps, state.entryExperimentCards)
