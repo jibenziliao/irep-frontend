@@ -110,10 +110,6 @@ const PretreatmentComponet = (props: RouteComponentProps) => {
           </TabPane>
           <TabPane tab="构建模型页" key="3" disabled={!tabDisabled}>
             <PretreatmentExperiment/>
-            <Button type="primary" onClick={preProcess} loading={loading}>
-              构建预处理器并前往下一步(仅调试用)
-            </Button>
-            <button onClick={handleClick}>下一步</button>
           </TabPane>
         </Tabs>
       </div>
