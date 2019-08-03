@@ -6,6 +6,7 @@ import Steps from '../../../components/steps/Steps'
 import Knowledge from '../../../components/knowledge/Knowledge'
 import Examination from '../../../components/examination/Examination'
 import { booleanCompletionQuestions, booleanChoiceQuestions } from '../../../config/Constant'
+import BooleanExperiment from './BooleanExperiment'
 
 import { booleanKnowledge } from '../../../config/booleanKnowledge'
 
@@ -15,7 +16,7 @@ const { TabPane } = Tabs
  * 布尔模型实验
  */
 const BooleanModalComponet = (props: RouteComponentProps) => {
-  const [activeTabKey, setActiveTabKey] = useState('1')
+  const [activeTabKey, setActiveTabKey] = useState('3')
   const [tabDisabled, setTabDisabled] = useState(true)
 
   const handleClick = () => {
@@ -56,7 +57,7 @@ const BooleanModalComponet = (props: RouteComponentProps) => {
             />
           </TabPane>
           <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>
-            <button onClick={handleClick}>下一步</button>
+            <BooleanExperiment />
           </TabPane>
         </Tabs>
       </div>

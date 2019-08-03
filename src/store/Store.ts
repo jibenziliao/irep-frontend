@@ -3,6 +3,7 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import { create } from 'redux-react-hook'
 import { Actions } from './Actions'
 import reducer from './Reducer'
+import BooleanExperimentComponent from '../views/experiment/boolean/BooleanExperiment'
 
 /**
  * 实验流程卡片数组接口
@@ -26,6 +27,8 @@ export interface State {
   invertedSteps: { name: string }[]
   loadindexLoading: boolean
   loadindexSuccess: boolean
+  booleanExperimentSteps: { name: string }[]
+  booleanExperimentCards: ExperimentCard[]
   vectorSpaceCards: ExperimentCard[]
   vectorSteps: { name: string }[]
 }
@@ -229,6 +232,52 @@ const invertedSteps = [
   }
 ]
 
+const booleanExperimentCards: ExperimentCard[] = [
+  {
+    name: '查询预处理',
+    current: false,
+    disabled: false,
+    correctIndex: 1,
+    index: -1
+  },
+  {
+    name: '计算布尔向量',
+    current: false,
+    disabled: false,
+    correctIndex: 2,
+    index: -1
+  },
+  {
+    name: '进行布尔运算',
+    current: false,
+    disabled: false,
+    correctIndex: 3,
+    index: -1
+  },
+  {
+    name: '召回目标文档',
+    current: false,
+    disabled: false,
+    correctIndex: 4,
+    index: -1
+  }
+]
+
+const booleanExperimentSteps = [
+  {
+    name: ''
+  },
+  {
+    name: ''
+  },
+  {
+    name: ''
+  },
+  {
+    name: ''
+  }
+]
+
 /**
  * 向量空间默认卡片
  *
@@ -336,6 +385,8 @@ export const INITIAL_STATE: State = {
   invertedSteps,
   loadindexLoading: true, // 加载索引请求状态
   loadindexSuccess: false, // 加载索引成功状态
+  booleanExperimentCards,
+  booleanExperimentSteps,
   vectorSpaceCards,
   vectorSteps
 }

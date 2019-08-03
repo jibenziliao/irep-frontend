@@ -51,3 +51,11 @@ export type Actions =
         index: number
       }
     }
+  | {
+      type: 'handle_booleanExperiment_card'
+      payload: {
+        name: string
+        type: 'add' | 'selected' | 'remove'
+        index: number
+      }
+    }
