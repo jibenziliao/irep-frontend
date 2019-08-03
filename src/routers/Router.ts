@@ -20,6 +20,7 @@ const Description = loadable(() => import('../views/description/Description'))
 const Report = loadable(() => import('../views/report/Report'))
 const Notice = loadable(() => import('../views/notice/Notice'))
 const Discussion = loadable(() => import('../views/discussion/Discussion'))
+const Contactus = loadable(() => import('../views/contactus/Contactus'))
 
 const routes = [
   {
@@ -118,6 +119,11 @@ const routes = [
     component: Discussion,
     path: '/discussion',
     name: '交流讨论'
+  },
+  {
+    component: Contactus,
+    path: '/contactus',
+    name: '联系我们'
   },
   {
     component: Login,
