@@ -22,7 +22,7 @@ const navs = [
   },
   {
     name: '联系我们',
-    path: '/discussion'
+    path: '/contactus'
   }
 ]
 

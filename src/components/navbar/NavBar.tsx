@@ -33,10 +33,6 @@ const navs = [
   {
     name: '交流讨论',
     path: '/discussion'
-  },
-  {
-    name: '联系我们',
-    path: '/contactus'
   }
 ]
 
