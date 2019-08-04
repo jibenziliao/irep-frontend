@@ -59,3 +59,11 @@ export type Actions =
         index: number
       }
     }
+  | {
+      type: 'handle_probabilityExperiment_card'
+      payload: {
+        name: string
+        type: 'add' | 'selected' | 'remove'
+        index: number
+      }
+    }

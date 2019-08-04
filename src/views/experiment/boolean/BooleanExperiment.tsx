@@ -33,8 +33,8 @@ const BooleanExperimentComponent = (props: RouteComponentProps) => {
       url: '/score/updateRankingScore', // 接口还没完成，这里是个假的示例
       method: 'post',
       data: {
-        experimentId: 5,
-        rankingResult: getStepIndex(state.vectorSteps, state.vectorSpaceCards)
+        experimentId: 4,
+        rankingResult: getStepIndex(state.booleanExperimentSteps, state.booleanExperimentCards)
       }
     })
     if (res && res.status === 200 && res.data && res.data.code === 0) {

@@ -7,6 +7,7 @@ import Knowledge from '../../../components/knowledge/Knowledge'
 import Examination from '../../../components/examination/Examination'
 import { probabilityCompletionQuestions, probabilityChoiceQuestions } from '../../../config/Constant'
 import { probabilityKnowledge } from '../../../config/probabilityKnowledge'
+import ProbabilityExperiment from './ProbabilityExperiment'
 
 const { TabPane } = Tabs
 
@@ -14,7 +15,7 @@ const { TabPane } = Tabs
  * 概率检索模型实验
  */
 const ProbabilityModalComponet = (props: RouteComponentProps) => {
-  const [activeTabKey, setActiveTabKey] = useState('1')
+  const [activeTabKey, setActiveTabKey] = useState('3')
   const [tabDisabled, setTabDisabled] = useState(true)
 
   const handleClick = () => {
@@ -55,7 +56,7 @@ const ProbabilityModalComponet = (props: RouteComponentProps) => {
             />
           </TabPane>
           <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>
-            <button onClick={handleClick}>下一步</button>
+            <ProbabilityExperiment />
           </TabPane>
         </Tabs>
       </div>
