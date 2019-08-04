@@ -33,6 +33,8 @@ export interface State {
   vectorSteps: { name: string }[]
   probabilityExperimentCards: ExperimentCard[]
   probabilityExperimentSteps: { name: string }[]
+  languageExperimentCards: ExperimentCard[]
+  languageExperimentSteps: { name: string }[]
 }
 
 /**
@@ -412,11 +414,6 @@ const probabilityExperimentCards: ExperimentCard[] = [
   }
 ]
 
-/**
- * 向量空间顺序
- *
- * 用户自己排的顺序
- */
 const probabilityExperimentSteps = [
   {
     name: ''
@@ -431,6 +428,53 @@ const probabilityExperimentSteps = [
     name: ''
   }
 ]
+
+const languageExperimentCards: ExperimentCard[] = [
+  {
+    name: '查询预处理',
+    current: false,
+    disabled: false,
+    correctIndex: 1,
+    index: -1
+  },
+  {
+    name: '计算LM',
+    current: false,
+    disabled: false,
+    correctIndex: 2,
+    index: -1
+  },
+  {
+    name: '计算生成概率',
+    current: false,
+    disabled: false,
+    correctIndex: 3,
+    index: -1
+  },
+  {
+    name: '按生成概率降序排序',
+    current: false,
+    disabled: false,
+    correctIndex: 4,
+    index: -1
+  }
+]
+
+const languageExperimentSteps = [
+  {
+    name: ''
+  },
+  {
+    name: ''
+  },
+  {
+    name: ''
+  },
+  {
+    name: ''
+  }
+]
+
 
 /**
  * 全局初始状态
@@ -448,7 +492,9 @@ export const INITIAL_STATE: State = {
   vectorSpaceCards,
   vectorSteps,
   probabilityExperimentCards,
-  probabilityExperimentSteps
+  probabilityExperimentSteps,
+  languageExperimentCards,
+  languageExperimentSteps,
 }
 
 export const { StoreContext, useDispatch, useMappedState } = create<State, Actions, Store<State, Actions>>()
