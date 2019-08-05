@@ -183,16 +183,6 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
     }
   }
 
-  useEffect(() => {
-    // @ts-ignore
-    if (window.MathJax && window.MathJax.Hub) {
-      // 如果，不传入第三个参数，则渲染整个document
-      // @ts-ignore
-      // eslint-disable-next-line no-undef
-      window.MathJax.Hub.Queue(['Typeset', MathJax.Hub, document.getElementById('vectorSpaceMathJaxContent')])
-    }
-  }, [])
-
   /**
    * 选中卡片
    */
