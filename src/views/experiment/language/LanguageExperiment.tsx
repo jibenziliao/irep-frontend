@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Dispatch } from 'redux'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { Button, Icon, Radio, InputNumber, Select, notification, Input, Spin, Table } from 'antd'
-import { RadioChangeEvent } from 'antd/lib/radio/interface'
+import { Button, Icon, InputNumber, Select, notification, Input, Spin, Table } from 'antd'
 import styles from './LanguageExperiment.module.less'
 import Arrow from '../../../assets/experiment/vectorSpace/arrow.png'
 import { useDispatch, useMappedState, State, ExperimentCard } from '../../../store/Store'
@@ -195,14 +194,17 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
   }, [])
 
   /**
-   * 点击方框移除已放入的卡片
+   * 选中卡片
    */
-  const removeCard = (name: string, index: number) => {
+  const selectCard = (name: string, index: number, disabled: boolean) => {
+    if (disabled) {
+      return false
+    }
     dispatch({
       type: 'handle_languageExperiment_card',
       payload: {
-        name,
-        type: 'remove',
+        name:name,
+        type: 'selected',
         index
       }
     })
@@ -226,18 +228,15 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
     })
   }
 
-  /**
-   * 选中卡片
+    /**
+   * 点击方框移除已放入的卡片
    */
-  const selectCard = (name: string, index: number, disabled: boolean) => {
-    if (disabled) {
-      return false
-    }
+  const removeCard = (name: string, index: number) => {
     dispatch({
       type: 'handle_languageExperiment_card',
       payload: {
         name,
-        type: 'selected',
+        type: 'remove',
         index
       }
     })
@@ -288,7 +287,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
       url: '/score/updateRankingScore', // 接口还没完成，这里是个假的示例
       method: 'post',
       data: {
-        experimentId: 5,
+        experimentId: 7,
         rankingResult: getStepIndex(state.languageExperimentSteps, state.languageExperimentCards)
       }
     })
@@ -350,7 +349,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
         <div className={styles.ExamBox}>
           <div className={styles.BoxWrapper}>
             <div className={styles.BoxGroup}>
-              <div className={styles.BoxItem}>{renderCard(state.booleanExperimentSteps[0].name, 0)}</div>
+              <div className={styles.BoxItem}>{renderCard(state.languageExperimentSteps[0].name, 0)}</div>
             </div>
             <div className={styles.ArrowGroup}>
               <div className={styles.ArrowBox}>
@@ -358,7 +357,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
               </div>
             </div>
             <div className={styles.BoxGroup}>
-              <div className={styles.BoxItem}>{renderCard(state.booleanExperimentSteps[1].name, 1)}</div>
+              <div className={styles.BoxItem}>{renderCard(state.languageExperimentSteps[1].name, 1)}</div>
             </div>
             <div className={styles.ArrowGroup}>
               <div className={styles.ArrowBox}>
@@ -366,7 +365,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
               </div>
             </div>
             <div className={styles.BoxGroup}>
-              <div className={styles.BoxItem}>{renderCard(state.booleanExperimentSteps[2].name, 2)}</div>
+              <div className={styles.BoxItem}>{renderCard(state.languageExperimentSteps[2].name, 2)}</div>
             </div>
             <div className={styles.ArrowGroup}>
               <div className={styles.ArrowBox}>
@@ -374,7 +373,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
               </div>
             </div>
             <div className={styles.BoxGroup}>
-              <div className={styles.BoxItem}>{renderCard(state.booleanExperimentSteps[3].name, 3)}</div>
+              <div className={styles.BoxItem}>{renderCard(state.languageExperimentSteps[3].name, 3)}</div>
             </div>
           </div>
         </div>
