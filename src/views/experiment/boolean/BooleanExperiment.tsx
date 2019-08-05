@@ -1,28 +1,47 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Dispatch } from 'redux'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { Button, Icon, Radio, InputNumber, Select, notification, Input, Spin, Table } from 'antd'
-import { RadioChangeEvent } from 'antd/lib/radio/interface'
+import { Button, Icon, notification, Input, Spin, Select, Form } from 'antd'
+import { FormComponentProps } from 'antd/lib/form/Form'
 import styles from './BooleanExperiment.module.less'
 import Arrow from '../../../assets/experiment/vectorSpace/arrow.png'
 import { useDispatch, useMappedState, State, ExperimentCard } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
 import { requestFn } from '../../../utils/request'
 
-const BooleanExperimentComponent = (props: RouteComponentProps) => {
+const { Option } = Select
+
+type Operator = 'or' | 'and' | 'not'
+
+interface BooleanExperimentProps extends FormComponentProps, RouteComponentProps {}
+
+/**
+ * 默认的检索关键词
+ */
+const defaultSearchTerms = ['', '', '']
+
+/**
+ * 默认的检索条件逻辑关系符
+ */
+const defaultOperators: Operator[] = ['or', 'or']
+
+const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
   const dispatch: Dispatch<Actions> = useDispatch()
   const state: State = useMappedState(useCallback((globalState: State) => globalState, []))
   // 保存顺序加载状态
   const [saveOrderLoading, setSaveOrderLoading] = useState(false)
-  // 保存顺序按钮禁用状态
-  const [saveOrderDisabled, setSaveOrderDisabled] = useState(true)
   // 仿真我的搜索引擎，输入框中的值
   const [query, setQuery] = useState('')
   const [searchLoading, setSearchLoading] = useState(false)
   // 仿真我的搜索引擎步骤索引
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
+  const [lastStepIndex, setLastStepIndex] = useState(0)
   // 仿真我的搜索引擎，每一步的请求loading状态
   const [stepLoading, setStepLoading] = useState(false)
+  const [searchTerms, setSearchTerms] = useState(defaultSearchTerms)
+  const [searchOperators, setSearchOperators] = useState<Operator[]>(defaultOperators)
+
+  const { getFieldDecorator, validateFields, getFieldsValue } = props.form
 
   /**
    * 保存用户选择的构建顺序
@@ -39,7 +58,7 @@ const BooleanExperimentComponent = (props: RouteComponentProps) => {
     })
     if (res && res.status === 200 && res.data && res.data.code === 0) {
       successTips('保存顺序成功', '')
-      setSaveOrderDisabled(true)
+      updateSaveOrderBtnStatus()
     } else {
       // 保存顺序失败
       errorTips('保存顺序失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
@@ -83,6 +102,14 @@ const BooleanExperimentComponent = (props: RouteComponentProps) => {
     return stepIndex
   }
 
+  const shouldRemoveCard = (bool: boolean, name: string, index: number) => {
+    if (!bool) {
+      return false
+    } else {
+      removeCard(name, index)
+    }
+  }
+
   /**
    * 点击方框移除已放入的卡片
    */
@@ -116,12 +143,24 @@ const BooleanExperimentComponent = (props: RouteComponentProps) => {
   }
 
   /**
+   * 更新布尔模型实验，保存顺序按钮的状态
+   */
+  const updateSaveOrderBtnStatus = () => {
+    dispatch({
+      type: 'update_saveOrderBtnStatus',
+      payload: {
+        field: 'bool'
+      }
+    })
+  }
+
+  /**
    * 渲染方框中的卡片
    */
   const renderCard = (name: string, index: number) => {
     if (name) {
       return (
-        <div className={`${styles.Name}`} onClick={() => removeCard(name, index)}>
+        <div className={`${styles.Name}`} onClick={() => shouldRemoveCard(!state.saveOrderBtn.bool.saved, name, index)}>
           <span>{`${index + 1}.${name}`}</span>
           <div className={styles.IconWrapper}>
             <Icon type="close-circle" className={styles.Icon} />
@@ -163,7 +202,9 @@ const BooleanExperimentComponent = (props: RouteComponentProps) => {
         <div className={styles.ExamBox}>
           <div className={styles.BoxWrapper}>
             <div className={styles.BoxGroup}>
-              <div className={styles.BoxItem}>{renderCard(state.booleanExperimentSteps[0].name, 0)}</div>
+              <div className={`${styles.BoxItem} ${state.saveOrderBtn.bool.saved ? styles.BoxItemDisabled : ''}`}>
+                {renderCard(state.booleanExperimentSteps[0].name, 0)}
+              </div>
             </div>
             <div className={styles.ArrowGroup}>
               <div className={styles.ArrowBox}>
@@ -171,7 +212,9 @@ const BooleanExperimentComponent = (props: RouteComponentProps) => {
               </div>
             </div>
             <div className={styles.BoxGroup}>
-              <div className={styles.BoxItem}>{renderCard(state.booleanExperimentSteps[1].name, 1)}</div>
+              <div className={`${styles.BoxItem} ${state.saveOrderBtn.bool.saved ? styles.BoxItemDisabled : ''}`}>
+                {renderCard(state.booleanExperimentSteps[1].name, 1)}
+              </div>
             </div>
             <div className={styles.ArrowGroup}>
               <div className={styles.ArrowBox}>
@@ -179,7 +222,9 @@ const BooleanExperimentComponent = (props: RouteComponentProps) => {
               </div>
             </div>
             <div className={styles.BoxGroup}>
-              <div className={styles.BoxItem}>{renderCard(state.booleanExperimentSteps[2].name, 2)}</div>
+              <div className={`${styles.BoxItem} ${state.saveOrderBtn.bool.saved ? styles.BoxItemDisabled : ''}`}>
+                {renderCard(state.booleanExperimentSteps[2].name, 2)}
+              </div>
             </div>
             <div className={styles.ArrowGroup}>
               <div className={styles.ArrowBox}>
@@ -187,13 +232,20 @@ const BooleanExperimentComponent = (props: RouteComponentProps) => {
               </div>
             </div>
             <div className={styles.BoxGroup}>
-              <div className={styles.BoxItem}>{renderCard(state.booleanExperimentSteps[3].name, 3)}</div>
+              <div className={`${styles.BoxItem} ${state.saveOrderBtn.bool.saved ? styles.BoxItemDisabled : ''}`}>
+                {renderCard(state.booleanExperimentSteps[3].name, 3)}
+              </div>
             </div>
           </div>
         </div>
         <div className={styles.BoxContainer}>{renderCards()}</div>
         <div className={styles.SaveOrder}>
-          <Button type="primary" disabled={saveOrderDisabled} loading={saveOrderLoading} onClick={saveOrder}>
+          <Button
+            type="primary"
+            disabled={!state.saveOrderBtn.bool.completed || state.saveOrderBtn.bool.saved}
+            loading={saveOrderLoading}
+            onClick={saveOrder}
+          >
             保存
           </Button>
         </div>
@@ -218,15 +270,41 @@ const BooleanExperimentComponent = (props: RouteComponentProps) => {
     })
   }
 
+  const beforeSearch = () => {
+    validateFields((err: any) => {
+      if (!err) {
+        const fieldValue = getFieldsValue()
+        const queryString = handleSearchQuery(fieldValue)
+        setQuery(queryString)
+        searchQuery(queryString)
+      }
+    })
+  }
+
+  /**
+   * 处理仿真我的搜索引擎表单参数
+   */
+  const handleSearchQuery = (fieldValue: any) => {
+    let str = ''
+    for (let i = 0; i < searchTerms.length; i++) {
+      if (i === searchTerms.length - 1) {
+        str += fieldValue[`terms_${i}`]
+        continue
+      }
+      str += fieldValue[`terms_${i}`] + ' ' + fieldValue[`operator_${i}`] + ' '
+    }
+    return str
+  }
+
   /**
    * 检索请求
    */
-  const searchQuery = async () => {
+  const searchQuery = async (query: string) => {
     setSearchLoading(true)
     const res = await requestFn(dispatch, {
       url: '/IRforCN/Retrieval/boolModel/search',
       method: 'post',
-      params: {
+      data: {
         query
       }
     })
@@ -239,36 +317,103 @@ const BooleanExperimentComponent = (props: RouteComponentProps) => {
   }
 
   /**
-   * 更新仿真我的搜索引擎的检索条件
+   * 仿真搜索引擎添加表单项
    */
-  const updateQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value)
+  const addSearchFormItem = () => {
+    setSearchTerms([...searchTerms, ''])
+    setSearchOperators([...searchOperators, 'or'])
   }
+
   /**
-   * 渲染仿真我的搜索引擎区域的表单
+   * 仿真搜索引擎移除一个表单项
    */
-  const renderSearchForm = () => {
-    return (
-      <div className={styles.SearchWrapper}>
-        <div className={styles.SearchRow}>
-          <Button className={styles.Button} type="primary">
-            <Icon type="plus" />
-          </Button>
-          <span className={styles.SearchLabel}>基础条件:</span>
-          <Input autoComplete="off" size="large" value={query} onChange={updateQuery} />
-          <Button type="primary" size="large" onClick={searchQuery}>
-            检索
-          </Button>
+  const removeSearchFormItem = (index: number) => {
+    const newTerms = searchTerms.filter((_, idx) => idx !== index)
+    const newOperators = searchOperators.filter((_, idx) => idx !== index)
+    setSearchTerms(newTerms)
+    setSearchOperators(newOperators)
+  }
+
+  /**
+   * 渲染仿真我的搜索引擎单个表单项
+   */
+  const renderSearchFormItem = () => {
+    return searchTerms.map((i, index) => {
+      return (
+        <div key={index} className={styles.SearchRow}>
+          {renderSearchFormAddBtn(index)}
+          {renderSelectItem(index)}
+          <Form.Item className={`${styles.FormItem}`}>
+            {getFieldDecorator(`terms_${index}`, {
+              rules: [{ required: true, message: '请输入检索关键词' }]
+            })(<Input autoComplete="off" size="large" />)}
+          </Form.Item>
+          {renderSearchBtn(index === searchTerms.length - 1)}
         </div>
-        <div className={styles.SearchRow}>
-          <Button className={styles.Button} type="primary">
-            <Icon type="minus" />
-          </Button>
-          <span className={styles.SearchLabel}>基础条件:</span>
-          <Input autoComplete="off" size="large" value={query} onChange={updateQuery} />
-        </div>
-      </div>
-    )
+      )
+    })
+  }
+
+  /**
+   * 渲染仿真我的搜索引擎表单项的新增和删除按钮
+   */
+  const renderSearchFormAddBtn = (index: number) => {
+    if (index === 0) {
+      return (
+        <Button className={styles.Button} type="primary" onClick={addSearchFormItem}>
+          <Icon type="plus" />
+        </Button>
+      )
+    } else {
+      return (
+        <Button className={styles.Button} type="primary" onClick={() => removeSearchFormItem(index)}>
+          <Icon type="minus" />
+        </Button>
+      )
+    }
+  }
+
+  /**
+   * 渲染仿真我的搜索引擎表单中的下拉选择框
+   */
+  const renderSelectItem = (index: number) => {
+    if (index === 0) {
+      return <span className={styles.SearchLabel}>基础条件:</span>
+    } else {
+      return (
+        <Form.Item className={`${styles.FormItem}`}>
+          {getFieldDecorator(`operator_${index - 1}`, {
+            initialValue: 'OR'
+          })(
+            <Select className={styles.SearchSelect} size="large">
+              <Option value="AND">and</Option>
+              <Option value="OR">or</Option>
+              <Option value="NOT">not</Option>
+            </Select>
+          )}
+        </Form.Item>
+      )
+    }
+  }
+
+  /**
+   * 渲染仿真我的搜索引擎表单中的检索按钮
+   */
+  const renderSearchBtn = (showBtn: boolean) => {
+    if (showBtn) {
+      return (
+        <Button
+          type="primary"
+          size="large"
+          disabled={!state.saveOrderBtn.bool.saved}
+          loading={searchLoading}
+          className={styles.SearchFormBtn}
+          onClick={beforeSearch}
+        >
+          检索
+        </Button>
+      )
+    }
   }
 
   /**
@@ -279,12 +424,15 @@ const BooleanExperimentComponent = (props: RouteComponentProps) => {
     const res = await requestFn(dispatch, {
       url,
       method: 'post',
-      params: {
+      data: {
         query
       }
     })
     if (res && res.status === 200 && res.data) {
       setCurrentStepIndex(index + 1)
+      if (index === 3) {
+        setLastStepIndex(index + 1)
+      }
     } else {
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
@@ -327,7 +475,7 @@ const BooleanExperimentComponent = (props: RouteComponentProps) => {
    * 渲染检索步骤
    */
   const renderSearchSteps = () => {
-    if (saveOrderDisabled) {
+    if (state.saveOrderBtn.bool.saved) {
       return (
         <div>
           <div className={styles.ExamBox}>
@@ -380,7 +528,7 @@ const BooleanExperimentComponent = (props: RouteComponentProps) => {
         </div>
       )
     } else {
-      return <div className={styles.StepTips}>请先按顺序构建空间向量模型，并保存</div>
+      return <div className={styles.StepTips}>请先按顺序构建布尔模型，并保存</div>
     }
   }
 
@@ -404,17 +552,22 @@ const BooleanExperimentComponent = (props: RouteComponentProps) => {
         <div className={styles.SectionTitle}>请按正确顺序构建布尔模型：</div>
         {renderCardSection()}
         <div className={styles.SectionTitle}>仿真我的搜索引擎：</div>
-        {renderSearchForm()}
+        <div className={styles.SearchWrapper}>{renderSearchFormItem()}</div>
         <Spin spinning={searchLoading}>{renderSearchSteps()}</Spin>
         <p className={styles.SearchResultTitle}>检索结果:</p>
         <Spin spinning={stepLoading}>{renderSearchResult()}</Spin>
       </div>
-      <Button type="primary" onClick={goNextExperiment} className={styles.NextBtn}>
+      <Button type="primary" disabled={lastStepIndex !== 4} onClick={goNextExperiment} className={styles.NextBtn}>
         下一步
       </Button>
     </div>
   )
 }
-const BooleanExperiment = withRouter(BooleanExperimentComponent)
+
+const BooleanExperimentWithoutRouter = Form.create<BooleanExperimentProps>({ name: 'BooleanExperimentComponent' })(
+  BooleanExperimentComponent
+)
+
+const BooleanExperiment = withRouter(BooleanExperimentWithoutRouter)
 
 export default BooleanExperiment

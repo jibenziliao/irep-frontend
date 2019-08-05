@@ -75,3 +75,9 @@ export type Actions =
         index: number
       }
     }
+  | {
+      type: 'update_saveOrderBtnStatus'
+      payload: {
+        field: 'bool' | 'invertedIndex' | 'vectorSpace' | 'language' | 'probability'
+      }
+    }

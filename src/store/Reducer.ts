@@ -196,6 +196,79 @@ export default function reducer(state: State = INITIAL_STATE, action: Actions) {
       }
     }
 
+    case 'handle_booleanExperiment_card': {
+      const newboolExperimentCards = state.booleanExperimentCards.map((i, index) => {
+        return {
+          ...i,
+          current:
+            action.payload.name === i.name && action.payload.type === 'selected' && action.payload.index === index
+              ? true
+              : action.payload.type !== 'selected'
+              ? i.current
+              : false,
+          disabled:
+            i.current && action.payload.type === 'add'
+              ? true
+              : action.payload.type === 'remove' && action.payload.index === i.index
+              ? false
+              : i.disabled,
+          index:
+            action.payload.type === 'add' && i.current
+              ? action.payload.index
+              : action.payload.type === 'remove' && action.payload.index === i.index
+              ? -1
+              : i.index
+        }
+      })
+      const newSteps = state.booleanExperimentSteps.map((i, index) => {
+        const currentIndex = newboolExperimentCards.findIndex(i => i.current)
+        if (action.payload.type === 'add') {
+          return {
+            name:
+              currentIndex > -1 && index === action.payload.index ? newboolExperimentCards[currentIndex].name : i.name
+          }
+        } else if (action.payload.type === 'remove') {
+          return {
+            name: index === action.payload.index ? '' : i.name
+          }
+        } else {
+          return i
+        }
+      })
+
+      const finalBooleanCards = newboolExperimentCards.map(i => {
+        return {
+          ...i,
+          current: action.payload.type === 'add' ? false : i.current
+        }
+      })
+
+      return {
+        ...state,
+        booleanExperimentCards: finalBooleanCards,
+        booleanExperimentSteps: newSteps,
+        saveOrderBtn: {
+          ...state.saveOrderBtn,
+          bool: {
+            ...state.saveOrderBtn.bool,
+            completed: finalBooleanCards.every(i => i.disabled)
+          }
+        }
+      }
+    }
+
+    case 'update_saveOrderBtnStatus':
+      return {
+        ...state,
+        saveOrderBtn: {
+          ...state.saveOrderBtn,
+          [`${action.payload.field}`]: {
+            ...state.saveOrderBtn[`${action.payload.field}`],
+            saved: true
+          }
+        }
+      }
+
     default:
       return state
   }

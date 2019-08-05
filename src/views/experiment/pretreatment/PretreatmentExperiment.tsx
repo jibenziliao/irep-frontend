@@ -13,7 +13,7 @@ const WordCloud = props => {
   const { Option } = Select
   const [analyzerName, setAnalyzerName] = useState('standard')
   const [isRemoveStopWord, setisRemoveStopWord] = useState(false)
-  const [segmentResult, setsegmentResult] = useState('词云图')
+  const [segmentResult, setSegmentResult] = useState('词云图')
   const { originalArticle } = props
 
   //处理分词器选择
@@ -26,20 +26,40 @@ const WordCloud = props => {
     setisRemoveStopWord(event.target.checked)
   }
 
+  /**
+   * 成功提示
+   */
+  const successTips = (message = '', description = '') => {
+    notification.success({
+      message,
+      duration: 1,
+      description
+    })
+  }
+
+  /**
+   * 错误提示
+   */
+  const errorTips = (message = '', description = '') => {
+    notification.error({
+      message,
+      description
+    })
+  }
+
   // 获得分词结果
   const segmentConfirm = async () => {
     if (originalArticle.length > 0) {
       const res = await requestFn(dispatch, {
         url: '/IRforCN/preProcessing/preProcess',
         method: 'post',
-        params: {
-          // 测试用，需要改成body接收参数，否则会报431错误
-          token: originalArticle.substring(0, 1005),
+        data: {
+          token: originalArticle,
           analyzerName: analyzerName,
           isRemoveStopWord: isRemoveStopWord
         }
       })
-      if (res && res.status === 200 && res.data) {
+      if (res && res.status === 200 && res.data && res.data.code === 0) {
         getWordCloud(res.data)
       }
     } else {
@@ -58,7 +78,7 @@ const WordCloud = props => {
   }
 
   const getWordCloud = data => {
-    setsegmentResult(data.join(' '))
+    setSegmentResult(data.join(' '))
   }
 
   return (
@@ -95,7 +115,8 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
   )
   const [analyzerName, setAnalyzerName] = useState('standard')
   const [isRemoveStopWord, setisRemoveStopWord] = useState(false)
-  const [segmentResult, setsegmentResult] = useState('分词结果')
+  const [segmentResult, setSegmentResult] = useState('分词结果')
+  const [analysisText, setAnalysisText] = useState('')
 
   //处理文本选择框的变化
   const DocIdChange = (value: number | undefined) => {
@@ -125,7 +146,7 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
       method: 'post',
       params: {
         experimentId: 2,
-        analyticalContent: 'standard'
+        analyticalContent: analysisText
       }
     })
     if (res && res.status === 200 && res.data) {
@@ -176,14 +197,18 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
         url: '/IRforCN/preProcessing/preProcess',
         method: 'post',
         params: {
-          // 测试用，需要改成body接收参数，否则会报431错误
-          token: originalArticle.substring(0, 1005),
+          // token: originalArticle,
+          token: '绿茶软件园;资讯茶小编带来了qq群北',
           analyzerName: analyzerName,
           isRemoveStopWord: isRemoveStopWord
         }
       })
       if (res && res.status === 200 && res.data) {
-        setsegmentResult(res.data.join(' '))
+        if (res.data.push) {
+          setSegmentResult(res.data.join(' '))
+        }
+      } else {
+        errorTips('分析失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
       }
     } else {
       errorTips('请选择要预处理的文档')
@@ -205,6 +230,13 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
     props.history.replace('/experiment/boolean')
   }
 
+  /**
+   * 实时更新用户输入的综合分析文本
+   */
+  const udpateAnalysisText = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setAnalysisText(event.target.value)
+  }
+
   return (
     <div className={styles.Section}>
       <div className={styles.articleNavBar}>
@@ -221,7 +253,7 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
       </div>
       <div className={styles.concludeSection}>
         <div className={styles.SectionTitle}>请结合词云分析结果简要概述各预处理器处理效果：</div>
-        <TextArea rows={6} />
+        <TextArea rows={6} value={analysisText} onChange={udpateAnalysisText} />
         <Button className={styles.button} onClick={concludeConfirm}>
           确定
         </Button>
@@ -246,9 +278,11 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
         </div>
         <div className={styles.SectionTitle}>预处理结果：</div>
         <div className={styles.resultBox}>{segmentResult}</div>
-        <Button onClick={handleClick} className={styles.button} disabled={experimentDisabled}>
-          下一步
-        </Button>
+        <div className={styles.NextBtn}>
+          <Button onClick={handleClick} disabled={experimentDisabled}>
+            下一步
+          </Button>
+        </div>
       </div>
     </div>
   )

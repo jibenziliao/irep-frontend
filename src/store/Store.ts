@@ -3,7 +3,6 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import { create } from 'redux-react-hook'
 import { Actions } from './Actions'
 import reducer from './Reducer'
-import BooleanExperimentComponent from '../views/experiment/boolean/BooleanExperiment'
 
 /**
  * 实验流程卡片数组接口
@@ -14,6 +13,25 @@ export interface ExperimentCard {
   disabled: boolean
   correctIndex: number
   index: number
+}
+
+/**
+ * 单个排序卡片实验，保存按钮的状态
+ */
+interface SaveOrderBtnStatus {
+  completed: boolean
+  saved: boolean
+}
+
+/**
+ * 全部排序卡片实验中，保存按钮的状态
+ */
+export interface SaveOrderBtn {
+  bool: SaveOrderBtnStatus
+  invertedIndex: SaveOrderBtnStatus
+  vectorSpace: SaveOrderBtnStatus
+  language: SaveOrderBtnStatus
+  probability: SaveOrderBtnStatus
 }
 
 /**
@@ -35,6 +53,7 @@ export interface State {
   probabilityExperimentSteps: { name: string }[]
   languageExperimentCards: ExperimentCard[]
   languageExperimentSteps: { name: string }[]
+  saveOrderBtn: SaveOrderBtn
 }
 
 /**
@@ -379,7 +398,7 @@ const vectorSteps = [
 ]
 
 /**
- * 向量空间默认卡片
+ * 概率模型默认卡片
  *
  * 包含正确的顺序
  */
@@ -429,6 +448,11 @@ const probabilityExperimentSteps = [
   }
 ]
 
+/**
+ * 语言模型默认卡片
+ *
+ * 包含正确的顺序
+ */
 const languageExperimentCards: ExperimentCard[] = [
   {
     name: '查询预处理',
@@ -475,6 +499,31 @@ const languageExperimentSteps = [
   }
 ]
 
+/**
+ * 几个默认卡片顺序保存按钮的状态
+ */
+const saveOrderBtn: SaveOrderBtn = {
+  bool: {
+    completed: false,
+    saved: false
+  },
+  invertedIndex: {
+    completed: false,
+    saved: false
+  },
+  vectorSpace: {
+    completed: false,
+    saved: false
+  },
+  language: {
+    completed: false,
+    saved: false
+  },
+  probability: {
+    completed: false,
+    saved: false
+  }
+}
 
 /**
  * 全局初始状态
@@ -495,6 +544,7 @@ export const INITIAL_STATE: State = {
   probabilityExperimentSteps,
   languageExperimentCards,
   languageExperimentSteps,
+  saveOrderBtn
 }
 
 export const { StoreContext, useDispatch, useMappedState } = create<State, Actions, Store<State, Actions>>()
