@@ -126,7 +126,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
   // 保存顺序加载状态
   const [saveOrderLoading, setSaveOrderLoading] = useState(false)
   // 保存顺序按钮禁用状态
-  const [saveOrderDisabled, setSaveOrderDisabled] = useState(true)
+  const [saveOrderDisabled, setSaveOrderDisabled] = useState(false)
   // 仿真我的搜索引擎，输入框中的值
   const [query, setQuery] = useState('')
   const [searchLoading, setSearchLoading] = useState(false)
