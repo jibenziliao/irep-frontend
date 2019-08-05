@@ -51,16 +51,17 @@ const WordCloud = props => {
   const segmentConfirm = async () => {
     if (originalArticle.length > 0) {
       const res = await requestFn(dispatch, {
-        url: '/IRforCN/preProcessing/preProcess',
+        url: '/IRforCN/preProcessing/createTermCloud',
         method: 'post',
-        data: {
+        params: {
           token: originalArticle,
           analyzerName: analyzerName,
           isRemoveStopWord: isRemoveStopWord
         }
       })
-      if (res && res.status === 200 && res.data && res.data.code === 0) {
-        getWordCloud(res.data)
+      if (res && res.status === 200 && res.data) {
+        // getWordCloud(res.data)
+        console.log(res.data)
       }
     } else {
       alert('请选择要处理的文档')
@@ -134,6 +135,7 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
       }
     })
     if (res && res.status === 200 && res.data) {
+      console.log(res.data)
       setOriginalArticle(res.data.content)
     }
   }
