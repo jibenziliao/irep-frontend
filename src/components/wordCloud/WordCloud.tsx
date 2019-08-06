@@ -37,6 +37,9 @@ const WordCloudComponent = (props: WordCloudProps) => {
   const { getFieldDecorator, validateFields, getFieldsValue } = props.form
 
   useEffect(() => {
+    /**
+     * 获取词云数据
+     */
     const getWordCloud = async (id: number, name: string, bool: boolean) => {
       const res = await requestFn(dispatch, {
         url: '/IRforCN/preProcessing/createTermCloud',
@@ -49,10 +52,32 @@ const WordCloudComponent = (props: WordCloudProps) => {
       })
       if (res && res.status === 200 && res.data && res.data.data) {
         setWordClouds(handleTerms(res.data.data))
+        updateScore()
       } else {
         errorTips('获取词云分析失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
       }
       setWordCloudLoading(false)
+    }
+
+    /**
+     * 更新(保存)获取词云操作
+     *
+     * 用于评估分数
+     */
+    const updateScore = async () => {
+      const res = await requestFn(dispatch, {
+        url: '/score/createOperationRecord',
+        method: 'post',
+        data: {
+          experimentId: 2,
+          operationName: '词云分析'
+        }
+      })
+      if (res && res.status === 200 && res.data && res.data.code === 0) {
+        successTips('分析成功', '动作-"词云分析"已保存')
+      } else {
+        errorTips('获取词云分析失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+      }
     }
 
     if (wordCloudLoading) {
@@ -76,6 +101,7 @@ const WordCloudComponent = (props: WordCloudProps) => {
    * 点击分析按钮
    */
   const handleAnalyze = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     validateFields((err: any) => {
       if (!err) {
         const fieldValue = getFieldsValue(['analyzerName', 'isRemoveStopWord'])
@@ -83,6 +109,17 @@ const WordCloudComponent = (props: WordCloudProps) => {
         setIsRemoveStopWord(fieldValue.isRemoveStopWord)
         setWordCloudLoading(true)
       }
+    })
+  }
+
+  /**
+   * 成功提示
+   */
+  const successTips = (message = '', description = '') => {
+    notification.success({
+      message,
+      duration: 1,
+      description
     })
   }
 
