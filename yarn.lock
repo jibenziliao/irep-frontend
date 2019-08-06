@@ -1307,6 +1307,52 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/d3-array@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.npm.taobao.org/@types/d3-array/download/@types/d3-array-2.0.0.tgz#a0d63a296a2d8435a9ec59393dcac746c6174a96"
+  integrity sha1-oNY6KWothDWp7Fk5PcrHRsYXSpY=
+
+"@types/d3-cloud@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.npm.taobao.org/@types/d3-cloud/download/@types/d3-cloud-1.2.2.tgz#681d7776c2b8e4e4b00cb425ae890351850a91a5"
+  integrity sha1-aB13dsK45OSwDLQlrokDUYUKkaU=
+  dependencies:
+    "@types/d3" "^3"
+
+"@types/d3-scale-chromatic@^1.3.1":
+  version "1.3.1"
+  resolved "https://registry.npm.taobao.org/@types/d3-scale-chromatic/download/@types/d3-scale-chromatic-1.3.1.tgz#a294ae688634027870f0307bf8802f863aa2ddb3"
+  integrity sha1-opSuaIY0Anhw8DB7+IAvhjqi3bM=
+
+"@types/d3-scale@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.npm.taobao.org/@types/d3-scale/download/@types/d3-scale-2.1.1.tgz#405e58771ec6ae7b8f7b4178ee1887620759e8f7"
+  integrity sha1-QF5Ydx7GrnuPe0F47hiHYgdZ6Pc=
+  dependencies:
+    "@types/d3-time" "*"
+
+"@types/d3-selection@*", "@types/d3-selection@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.npm.taobao.org/@types/d3-selection/download/@types/d3-selection-1.4.1.tgz#fa1f8710a6b5d7cfe5c6caa61d161be7cae4a022"
+  integrity sha1-+h+HEKa118/lxsqmHRYb58rkoCI=
+
+"@types/d3-time@*":
+  version "1.0.10"
+  resolved "https://registry.npm.taobao.org/@types/d3-time/download/@types/d3-time-1.0.10.tgz#d338c7feac93a98a32aac875d1100f92c7b61f4f"
+  integrity sha1-0zjH/qyTqYoyqsh10RAPkse2H08=
+
+"@types/d3-transition@^1.1.4":
+  version "1.1.4"
+  resolved "https://registry.npm.taobao.org/@types/d3-transition/download/@types/d3-transition-1.1.4.tgz#3c7a35ae9acfc59dfef1eb7308ebabf0fc0680de"
+  integrity sha1-PHo1rprPxZ3+8etzCOur8PwGgN4=
+  dependencies:
+    "@types/d3-selection" "*"
+
+"@types/d3@^3":
+  version "3.5.42"
+  resolved "https://registry.npm.taobao.org/@types/d3/download/@types/d3-3.5.42.tgz#6a782b44bb7f5c48165cb166886b5d53cb84455f"
+  integrity sha1-angrRLt/XEgWXLFmiGtdU8uERV8=
+
 "@types/echarts@^4.1.10":
   version "4.1.10"
   resolved "https://registry.npm.taobao.org/@types/echarts/download/@types/echarts-4.1.10.tgz#ee71911eb8b1717c7c12c0bd81fc83db872f4d3b"
@@ -1435,6 +1481,11 @@
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
+
+"@types/seedrandom@^2.4.28":
+  version "2.4.28"
+  resolved "https://registry.npm.taobao.org/@types/seedrandom/download/@types/seedrandom-2.4.28.tgz#9ce8fa048c1e8c85cb71d7fe4d704e000226036f"
+  integrity sha1-nOj6BIwejIXLcdf+TXBOAAImA28=
 
 "@types/stack-utils@^1.0.1":
   version "1.0.1"
@@ -3411,6 +3462,98 @@ cyclist@~0.2.2:
   version "0.2.2"
   resolved "https://registry.npm.taobao.org/cyclist/download/cyclist-0.2.2.tgz#1b33792e11e914a2fd6d6ed6447464444e5fa640"
   integrity sha1-GzN5LhHpFKL9bW7WRHRkRE5fpkA=
+
+"d3-array@1.2.0 - 2", d3-array@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.npm.taobao.org/d3-array/download/d3-array-2.2.0.tgz#a9e966b8f8d78f0888d98db1fb840fc8da8ac5c7"
+  integrity sha1-qelmuPjXjwiI2Y2x+4QPyNqKxcc=
+
+d3-cloud@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.npm.taobao.org/d3-cloud/download/d3-cloud-1.2.5.tgz#3e91564f2d27fba47fcc7d812eb5081ea24c603d"
+  integrity sha1-PpFWTy0n+6R/zH2BLrUIHqJMYD0=
+  dependencies:
+    d3-dispatch "^1.0.3"
+
+d3-color@1:
+  version "1.3.0"
+  resolved "https://registry.npm.taobao.org/d3-color/download/d3-color-1.3.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fd3-color%2Fdownload%2Fd3-color-1.3.0.tgz#675818359074215b020dc1d41d518136dcb18fa9"
+  integrity sha1-Z1gYNZB0IVsCDcHUHVGBNtyxj6k=
+
+d3-dispatch@1, d3-dispatch@^1.0.3:
+  version "1.0.5"
+  resolved "https://registry.npm.taobao.org/d3-dispatch/download/d3-dispatch-1.0.5.tgz#e25c10a186517cd6c82dd19ea018f07e01e39015"
+  integrity sha1-4lwQoYZRfNbILdGeoBjwfgHjkBU=
+
+d3-ease@1:
+  version "1.0.5"
+  resolved "https://registry.npm.taobao.org/d3-ease/download/d3-ease-1.0.5.tgz#8ce59276d81241b1b72042d6af2d40e76d936ffb"
+  integrity sha1-jOWSdtgSQbG3IELWry1A522Tb/s=
+
+d3-format@1:
+  version "1.3.2"
+  resolved "https://registry.npm.taobao.org/d3-format/download/d3-format-1.3.2.tgz#6a96b5e31bcb98122a30863f7d92365c00603562"
+  integrity sha1-apa14xvLmBIqMIY/fZI2XABgNWI=
+
+d3-interpolate@1:
+  version "1.3.2"
+  resolved "https://registry.npm.taobao.org/d3-interpolate/download/d3-interpolate-1.3.2.tgz#417d3ebdeb4bc4efcc8fd4361c55e4040211fd68"
+  integrity sha1-QX0+vetLxO/Mj9Q2HFXkBAIR/Wg=
+  dependencies:
+    d3-color "1"
+
+d3-scale-chromatic@^1.3.3:
+  version "1.3.3"
+  resolved "https://registry.npm.taobao.org/d3-scale-chromatic/download/d3-scale-chromatic-1.3.3.tgz#dad4366f0edcb288f490128979c3c793583ed3c0"
+  integrity sha1-2tQ2bw7csoj0kBKJecPHk1g+08A=
+  dependencies:
+    d3-color "1"
+    d3-interpolate "1"
+
+d3-scale@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.npm.taobao.org/d3-scale/download/d3-scale-3.0.1.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fd3-scale%2Fdownload%2Fd3-scale-3.0.1.tgz#f7b5e7046ad83b35399639455bf5218a3cc1d1bc"
+  integrity sha1-97XnBGrYOzU5ljlFW/UhijzB0bw=
+  dependencies:
+    d3-array "1.2.0 - 2"
+    d3-format "1"
+    d3-interpolate "1"
+    d3-time "1"
+    d3-time-format "2"
+
+d3-selection@^1.1.0, d3-selection@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.npm.taobao.org/d3-selection/download/d3-selection-1.4.0.tgz#ab9ac1e664cf967ebf1b479cc07e28ce9908c474"
+  integrity sha1-q5rB5mTPln6/G0ecwH4ozpkIxHQ=
+
+d3-time-format@2:
+  version "2.1.3"
+  resolved "https://registry.npm.taobao.org/d3-time-format/download/d3-time-format-2.1.3.tgz#ae06f8e0126a9d60d6364eac5b1533ae1bac826b"
+  integrity sha1-rgb44BJqnWDWNk6sWxUzrhusgms=
+  dependencies:
+    d3-time "1"
+
+d3-time@1:
+  version "1.0.11"
+  resolved "https://registry.npm.taobao.org/d3-time/download/d3-time-1.0.11.tgz#1d831a3e25cd189eb256c17770a666368762bbce"
+  integrity sha1-HYMaPiXNGJ6yVsF3cKZmNodiu84=
+
+d3-timer@1:
+  version "1.0.9"
+  resolved "https://registry.npm.taobao.org/d3-timer/download/d3-timer-1.0.9.tgz#f7bb8c0d597d792ff7131e1c24a36dd471a471ba"
+  integrity sha1-97uMDVl9eS/3Ex4cJKNt1HGkcbo=
+
+d3-transition@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.npm.taobao.org/d3-transition/download/d3-transition-1.2.0.tgz#f538c0e21b2aa1f05f3e965f8567e81284b3b2b8"
+  integrity sha1-9TjA4hsqofBfPpZfhWfoEoSzsrg=
+  dependencies:
+    d3-color "1"
+    d3-dispatch "1"
+    d3-ease "1"
+    d3-interpolate "1"
+    d3-selection "^1.1.0"
+    d3-timer "1"
 
 damerau-levenshtein@^1.0.4:
   version "1.0.5"
@@ -7816,6 +7959,11 @@ pnp-webpack-plugin@1.2.1:
   dependencies:
     ts-pnp "^1.0.0"
 
+popper.js@^1.14.7:
+  version "1.15.0"
+  resolved "https://registry.npm.taobao.org/popper.js/download/popper.js-1.15.0.tgz#5560b99bbad7647e9faa475c6b8056621f5a4ff2"
+  integrity sha1-VWC5m7rXZH6fqkdca4BWYh9aT/I=
+
 portfinder@^1.0.9:
   version "1.0.21"
   resolved "https://registry.npm.taobao.org/portfinder/download/portfinder-1.0.21.tgz#60e1397b95ac170749db70034ece306b9a27e324"
@@ -9359,6 +9507,28 @@ react-slick@~0.24.0:
     lodash.debounce "^4.0.8"
     resize-observer-polyfill "^1.5.0"
 
+react-wordcloud@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.npm.taobao.org/react-wordcloud/download/react-wordcloud-1.0.8.tgz#6d950a68991ae8c5b8d87780799b750df962a503"
+  integrity sha1-bZUKaJka6MW42HeAeZt1DflipQM=
+  dependencies:
+    "@types/d3-array" "^2.0.0"
+    "@types/d3-cloud" "^1.2.2"
+    "@types/d3-scale" "^2.1.1"
+    "@types/d3-scale-chromatic" "^1.3.1"
+    "@types/d3-selection" "^1.4.1"
+    "@types/d3-transition" "^1.1.4"
+    "@types/seedrandom" "^2.4.28"
+    d3-array "^2.2.0"
+    d3-cloud "^1.2.5"
+    d3-scale "^3.0.0"
+    d3-scale-chromatic "^1.3.3"
+    d3-selection "^1.4.0"
+    d3-transition "^1.2.0"
+    resize-observer-polyfill "^1.5.1"
+    seedrandom "^3.0.1"
+    tippy.js "^4.3.4"
+
 react@^16.8.6:
   version "16.8.6"
   resolved "https://registry.npm.taobao.org/react/download/react-16.8.6.tgz?cache=0&sync_timestamp=1564510892821&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact%2Fdownload%2Freact-16.8.6.tgz#ad6c3a9614fd3a4e9ef51117f54d888da01f2bbe"
@@ -9890,6 +10060,11 @@ scss-tokenizer@^0.2.3:
   dependencies:
     js-base64 "^2.1.8"
     source-map "^0.4.2"
+
+seedrandom@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.npm.taobao.org/seedrandom/download/seedrandom-3.0.1.tgz#eb3dde015bcf55df05a233514e5df44ef9dce083"
+  integrity sha1-6z3eAVvPVd8FojNRTl30Tvnc4IM=
 
 select-hose@^2.0.0:
   version "2.0.0"
@@ -10702,6 +10877,13 @@ tinycolor2@^1.4.1:
   version "1.4.1"
   resolved "https://registry.npm.taobao.org/tinycolor2/download/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
   integrity sha1-9PrTM0R7wLB9TcjpIJ2POaisd+g=
+
+tippy.js@^4.3.4:
+  version "4.3.5"
+  resolved "https://registry.npm.taobao.org/tippy.js/download/tippy.js-4.3.5.tgz#882bff8d92f09bb0546d2826d5668c0560006f54"
+  integrity sha1-iCv/jZLwm7BUbSgm1WaMBWAAb1Q=
+  dependencies:
+    popper.js "^1.14.7"
 
 tmp@^0.0.33:
   version "0.0.33"

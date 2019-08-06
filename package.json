@@ -71,6 +71,7 @@
     "react-router-config": "^5.0.1",
     "react-router-dom": "^5.0.1",
     "react-scripts": "^3.0.1",
+    "react-wordcloud": "^1.0.8",
     "redux": "^4.0.4",
     "redux-react-hook": "^3.3.2",
     "resolve": "1.10.0",

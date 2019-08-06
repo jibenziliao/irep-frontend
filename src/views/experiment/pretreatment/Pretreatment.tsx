@@ -1,15 +1,11 @@
 import React, { useState } from 'react'
-import { Dispatch } from 'redux'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { Tabs, notification, Button } from 'antd'
+import { Tabs, Button } from 'antd'
 import styles from './Pretreatment.module.less'
 import Steps from '../../../components/steps/Steps'
 import Knowledge from '../../../components/knowledge/Knowledge'
 import Examination from '../../../components/examination/Examination'
 import { pretreatmentCompletionQuestions, pretreatmentChoiceQuestions } from '../../../config/Constant'
-import { requestFn } from '../../../utils/request'
-import { useDispatch } from '../../../store/Store'
-import { Actions } from '../../../store/Actions'
 import { pretreatmentKnowledge } from '../../../config/pretreatmentKnowledge'
 import PretreatmentExperiment from './PretreatmentExperiment'
 
@@ -19,60 +15,11 @@ const { TabPane } = Tabs
  * 预处理实验
  */
 const PretreatmentComponet = (props: RouteComponentProps) => {
-  const [loading, setLoading] = useState(false)
   const [activeTabKey, setActiveTabKey] = useState('1')
   const [tabDisabled, setTabDisabled] = useState(true)
-  const dispatch: Dispatch<Actions> = useDispatch()
 
   const handleClick = () => {
     props.history.replace('/experiment/invertedIndex')
-  }
-
-  /**
-   * 构建预处理器，仅调试用
-   */
-  const preProcess = async () => {
-    setLoading(true)
-    const res = await requestFn(dispatch, {
-      url: '/IRforCN/preProcessing/preProcess',
-      method: 'post',
-      params: {
-        token: '绿茶软件园;资讯茶小编带来了qq群北',
-        analyzerName: 'standard',
-        isRemoveStopWord: false
-      }
-    })
-    if (res && res.status === 200 && res.data) {
-      successTips('构建成功', '')
-      setTimeout(() => {
-        setLoading(false)
-        props.history.replace('/experiment/invertedIndex')
-      }, 1000)
-    } else {
-      setLoading(false)
-      errorTips('构建失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
-    }
-  }
-
-  /**
-   * 成功提示
-   */
-  const successTips = (message = '', description = '') => {
-    notification.success({
-      message,
-      duration: 1,
-      description
-    })
-  }
-
-  /**
-   * 错误提示
-   */
-  const errorTips = (message = '', description = '') => {
-    notification.error({
-      message,
-      description
-    })
   }
 
   /**
@@ -108,7 +55,7 @@ const PretreatmentComponet = (props: RouteComponentProps) => {
               goNextStep={goNextStep}
             />
           </TabPane>
-          <TabPane tab="构建模型页" key="3" disabled={!tabDisabled}>
+          <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>
             <PretreatmentExperiment />
           </TabPane>
         </Tabs>
