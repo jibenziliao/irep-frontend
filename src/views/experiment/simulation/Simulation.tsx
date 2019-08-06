@@ -86,7 +86,8 @@ const SimulationComponent = (props: RouteComponentProps) => {
             {renderResult()}
           </div>
         </div>
-        {/* <button onClick={handleClick}>跳实验报告的下一步</button> */}
+        <div></div>
+        <button onClick={handleClick} className={styles.button}>跳实验报告的下一步</button>
       </div>
     </div>
   )
