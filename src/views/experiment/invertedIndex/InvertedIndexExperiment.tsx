@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { Button, Icon, Row, Col, Spin, notification } from 'antd'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { Dispatch } from 'redux'
-import { useDispatch, useMappedState, State } from '../../../store/Store'
+import { useDispatch, useMappedState, State, ExperimentCard } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
 import styles from './InvertedIndexExperiment.module.less'
 import { requestFn } from '../../../utils/request'
@@ -204,7 +204,8 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
   const [fullIndexLoading, setFullIndexLoading] = useState(false)
   const [invertedIndexLoading, setInvertedIndexLoading] = useState(false)
   const [docLoading, setDocLoading] = useState(false)
-
+  const [saveOrderLoading, setSaveOrderLoading] = useState(false)
+  const [savedOrder, setSavedOrder] = useState(false)
   const [terms, setTerms] = useState<FullIndex[]>([])
   const [docs, setDocs] = useState<InvertedIndex[]>([])
   const [originDoc, setOriginDoc] = useState<OriginDoc>(defaultOriginDoc)
@@ -294,6 +295,17 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
   }
 
   /**
+   * 成功提示
+   */
+  const successTips = (message = '', description = '') => {
+    notification.success({
+      message,
+      duration: 1,
+      description
+    })
+  }
+
+  /**
    * 错误提示
    */
   const errorTips = (message = '', description = '') => {
@@ -365,6 +377,39 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
   const handleDocs = (data: InvertedIndex[]) => {
     const finalDocs = data.filter((_, index) => index < 10)
     setDocs(finalDocs)
+  }
+
+  /**
+   * 获取用户排序的索引
+   */
+  const getStepIndex = (_: { name: string }[], cards: ExperimentCard[]) => {
+    const newCards = cards.map(i => i)
+    newCards.sort((pre, cur) => pre.index - cur.index)
+    return newCards.map(i => i.correctIndex + 1)
+  }
+
+  /**
+   * 保存卡片顺序
+   */
+  const saveOrderRequest = async () => {
+    setSaveOrderLoading(true)
+    const res = await requestFn(dispatch, {
+      url: '/score/updateRankingScore',
+      method: 'post',
+      data: {
+        experimentId: 3,
+        rankingResult: getStepIndex(state.invertedSteps, state.invertedIndexCards)
+      }
+    })
+    if (res && res.status === 200 && res.data && res.data.code === 0) {
+      successTips('保存顺序成功', '')
+      setSavedOrder(true)
+    } else {
+      // 保存顺序失败
+      errorTips('保存顺序失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+      props.history.replace('/experiment/pretreatment')
+    }
+    setSaveOrderLoading(false)
   }
 
   /**
@@ -584,7 +629,7 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
             className={currentTerm && currentTerm.id === i.id ? styles.Active : ''}
             onClick={() => getInvertedIndex(i)}
           >
-            <td>{i.term}</td>
+            <td className={styles.TermTd}>{i.term}</td>
             <td>{i.df}</td>
             <td className={styles.CollipsisTd}>{i.ids}</td>
           </tr>
@@ -667,6 +712,16 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
           {renderCurrentCard()}
         </div>
         <div className={styles.BoxWrapper}>{renderCards()}</div>
+        <div className={styles.SaveOrderBtn}>
+          <Button
+            type="primary"
+            loading={saveOrderLoading}
+            disabled={savedOrder || !state.invertedSteps.every(i => i.name)}
+            onClick={saveOrderRequest}
+          >
+            保存
+          </Button>
+        </div>
       </div>
       <div className={styles.Section}>
         <div className={styles.SectionTitle}>构建倒排索引表Demo:</div>
