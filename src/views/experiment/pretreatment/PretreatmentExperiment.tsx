@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Button, Select, Input, Checkbox, InputNumber, notification, Spin } from 'antd'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { Dispatch } from 'redux'
+import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { useDispatch } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
 import styles from './PretreatmentExperiment.module.less'
@@ -14,14 +15,19 @@ const { Option } = Select
 // 预处理部分
 const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
   const dispatch: Dispatch<Actions> = useDispatch()
-  const [experimentDisabled, setexperimentDisabled] = useState(true)
   const [docId, setDocId] = useState(1)
   const [originalArticle, setOriginalArticle] = useState('')
   const [analyzerName, setAnalyzerName] = useState('standard')
-  const [isRemoveStopWord, setisRemoveStopWord] = useState(false)
+  const [isRemoveStopWord, setIsRemoveStopWord] = useState(false)
   const [segmentResult, setSegmentResult] = useState('分词结果')
   const [analysisText, setAnalysisText] = useState('')
   const [getDocLoading, setGetDocLoading] = useState(true)
+  const [analyticalContentLoading, setAnalyticalContentLoading] = useState(false)
+  const [savedContent, setSavedContent] = useState(false)
+  const [preProcessLoading, setPreProcessLoading] = useState(false)
+  const [preProcessed, setPreProcessed] = useState(false)
+  // 已保存的步骤数，至少发送了预处理请求后，才能下一步，不然后面的实验都走不通
+  const [saveStepIndex, setSaveStepIndex] = useState(0)
 
   useEffect(() => {
     /**
@@ -47,7 +53,9 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
     getDoc(docId)
   }, [dispatch, docId])
 
-  //处理文本选择框的变化
+  /**
+   * 文档id变化监听
+   */
   const DocIdChange = (value: number | undefined) => {
     setDocId(value || 0)
   }
@@ -56,20 +64,23 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
    * 结合词云分析结果简要概述....按钮点击
    */
   const concludeConfirm = async () => {
-    setexperimentDisabled(false)
+    setAnalyticalContentLoading(true)
     const res = await requestFn(dispatch, {
       url: '/score/updateAnalyticalContent',
       method: 'post',
       data: {
-        experimentId: 1,
+        experimentId: 2,
         analyticalContent: analysisText
       }
     })
     if (res && res.status === 200 && res.data && res.data.code === 0) {
-      successTips('提交成功')
+      successTips('提交成功', '简答题分数已更新')
+      setSavedContent(true)
+      setSaveStepIndex(saveStepIndex + 1)
     } else {
       errorTips('提交失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
+    setAnalyticalContentLoading(false)
   }
 
   /**
@@ -93,55 +104,70 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
     })
   }
 
-  //底部实验部分
-  // 选择分词器
-  const handleChoose = value => {
+  /**
+   * 仿真预处理器时
+   *
+   * 更新分词器
+   */
+  const handleChoose = (value: string) => {
     setAnalyzerName(value)
   }
 
-  // 选择是否去停用词
-  const handleChecked = event => {
-    setisRemoveStopWord(event.target.checked)
+  /**
+   * 仿真预处理器时
+   *
+   * 更新是否去停用词选项
+   */
+  const handleChecked = (e: CheckboxChangeEvent) => {
+    setIsRemoveStopWord(e.target.checked)
   }
 
   /**
    * 构建预处理器，点击分析按钮
    */
   const handelAnalyze = async () => {
-    if (originalArticle.length > 0) {
-      const res = await requestFn(dispatch, {
-        url: '/IRforCN/preProcessing/preProcess',
-        method: 'post',
-        params: {
-          token: originalArticle,
-          // token: '绿茶软件园;资讯茶小编带来了qq群北',
-          analyzerName: analyzerName,
-          isRemoveStopWord: isRemoveStopWord
-        }
-      })
-      if (res && res.status === 200 && res.data) {
-        if (res.data.push) {
-          setSegmentResult(res.data.join(' '))
-        }
-      } else {
-        errorTips('分析失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+    setPreProcessLoading(true)
+    const res = await requestFn(dispatch, {
+      url: '/IRforCN/preProcessing/preProcess',
+      method: 'post',
+      data: {
+        token: originalArticle,
+        analyzerName: analyzerName,
+        isRemoveStopWord: isRemoveStopWord
+      }
+    })
+    if (res && res.status === 200 && res.data) {
+      if (res.data.push) {
+        setSegmentResult(res.data.join(' '))
+        updatePreProcessScore()
       }
     } else {
-      errorTips('请选择要预处理的文档')
+      errorTips('分析失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
+    setPreProcessLoading(false)
+  }
 
-    /**
-     * 返回仿真我的搜索引擎这一步操作
-     */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const operate = await requestFn(dispatch, {
+  /**
+   * 保存操作记录--仿真预处理器
+   *
+   * 用于分数判断
+   */
+  const updatePreProcessScore = async () => {
+    const res = await requestFn(dispatch, {
       url: '/score/createOperationRecord',
       method: 'post',
-      params: {
+      data: {
         experimentId: 2,
         operationName: '仿真预处理器'
       }
     })
+    if (res && res.status === 200 && res.data && res.data.code === 0) {
+      successTips('分析成功', '动作-"仿真预处理器"已保存')
+      setSaveStepIndex(saveStepIndex + 1)
+      setPreProcessed(true)
+    } else {
+      errorTips('分析失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+    }
   }
 
   // 最底部下一步
@@ -175,9 +201,15 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
       <div className={styles.concludeSection}>
         <div className={styles.SectionTitle}>请结合词云分析结果简要概述各预处理器处理效果：</div>
         <TextArea rows={6} value={analysisText} onChange={udpateAnalysisText} />
-        <Button className={styles.button} onClick={concludeConfirm}>
-          确定
-        </Button>
+        <div className={styles.ButtonRight}>
+          <Button
+            loading={analyticalContentLoading}
+            disabled={savedContent || analysisText === ''}
+            onClick={concludeConfirm}
+          >
+            确定
+          </Button>
+        </div>
       </div>
       <div className={styles.experimentSection}>
         <div className={styles.SectionTitle}>请确认我的预处理器参数：</div>
@@ -193,14 +225,14 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
             </Select>
           </div>
           <Checkbox onChange={handleChecked}>是否去停用词</Checkbox>
-          <Button className={styles.button} onClick={handelAnalyze}>
+          <Button loading={preProcessLoading} type="primary" disabled={preProcessed} onClick={handelAnalyze}>
             分析
           </Button>
         </div>
         <div className={styles.SectionTitle}>预处理结果：</div>
         <div className={styles.resultBox}>{segmentResult}</div>
         <div className={styles.NextBtn}>
-          <Button onClick={handleClick} disabled={experimentDisabled}>
+          <Button onClick={handleClick} disabled={saveStepIndex < 1 || !preProcessed}>
             下一步
           </Button>
         </div>
