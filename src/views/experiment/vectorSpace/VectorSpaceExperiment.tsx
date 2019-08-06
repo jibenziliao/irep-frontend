@@ -770,14 +770,14 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
    */
   const handleCurrentStep = (index: number) => {
     const requestUrls = [
-      '/IRforCN/Retrieval/vectorSpaceMode/idf',
-      '/IRforCN/Retrieval/vectorSpaceMode/ppq',
-      '/IRforCN/Retrieval/vectorSpaceMode/tfOfQuery',
-      '/IRforCN/Retrieval/vectorSpaceMode/vectorOfQuery',
-      '/IRforCN/Retrieval/vectorSpaceMode/tfsOfDoc',
-      '/IRforCN/Retrieval/vectorSpaceMode/vectorOfDoc',
-      '/IRforCN/Retrieval/vectorSpaceMode/similarity',
-      '/IRforCN/Retrieval/vectorSpaceMode/descendOrderSimilarity'
+      '/IRforCN/Retrieval/vectorSpaceModel/idf',
+      '/IRforCN/Retrieval/vectorSpaceModel/ppq',
+      '/IRforCN/Retrieval/vectorSpaceModel/tfOfQuery',
+      '/IRforCN/Retrieval/vectorSpaceModel/vectorOfQuery',
+      '/IRforCN/Retrieval/vectorSpaceModel/tfsOfDoc',
+      '/IRforCN/Retrieval/vectorSpaceModel/vectorOfDoc',
+      '/IRforCN/Retrieval/vectorSpaceModel/similarity',
+      '/IRforCN/Retrieval/vectorSpaceModel/descendOrderSimilarity'
     ]
     getMonitorResult(requestUrls[index], index)
   }
