@@ -16,7 +16,7 @@ const { TabPane } = Tabs
  * 布尔模型实验
  */
 const BooleanModalComponet = (props: RouteComponentProps) => {
-  const [activeTabKey, setActiveTabKey] = useState('3')
+  const [activeTabKey, setActiveTabKey] = useState('1')
   const [tabDisabled, setTabDisabled] = useState(true)
 
   const handleClick = () => {

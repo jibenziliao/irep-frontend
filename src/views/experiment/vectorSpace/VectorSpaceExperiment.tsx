@@ -265,10 +265,11 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
   const state: State = useMappedState(useCallback((globalState: State) => globalState, []))
   // 保存顺序加载状态
   const [saveOrderLoading, setSaveOrderLoading] = useState(false)
-  // 保存顺序按钮禁用状态
-  const [saveOrderDisabled, setSaveOrderDisabled] = useState(false)
+  // 是否已保存卡片顺序
+  const [savedOrder, setSavedOrder] = useState(false)
   // 仿真我的搜索引擎，输入框中的值
   const [query, setQuery] = useState('')
+  const [selectedQuery, setSelectedQuery] = useState('qq群共享文件下载失败')
   const [searchLoading, setSearchLoading] = useState(false)
   const [calculationLoading, setCalculationLoading] = useState(false)
   const [formulaId, setFormulaId] = useState(1)
@@ -277,6 +278,8 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
   const [stepLoading, setStepLoading] = useState(false)
   // 仿真我的搜索引擎步骤索引
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
+  const [standardData, setStandardData] = useState<StandardResult[]>([])
+  const [testData, setTestData] = useState<StandardResult[]>([])
 
   /**
    * 定义列的对齐方式，居中
@@ -443,17 +446,25 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
       url: '/IRforCN/Retrieval/vectorSpaceModel/testRetriever',
       method: 'post',
       params: {
-        query: 'qq群共享文件下载失败',
+        query: selectedQuery,
         formulaId,
         smoothParam
       }
     })
-    if (res && res.status === 200 && res.data) {
-      console.log('计算相似度成功')
+    if (res && res.status === 200 && res.data && res.data.standardResults && res.data.testResults) {
+      setStandardData(handleTestRetrieverResult(res.data.standardResults))
+      setTestData(handleTestRetrieverResult(res.data.testResults))
     } else {
       errorTips('计算相似度失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
     setCalculationLoading(false)
+  }
+
+  /**
+   * 截取相似度计算结果前5条记录
+   */
+  const handleTestRetrieverResult = (data: StandardResult[]) => {
+    return data.filter((_, index) => index < 5)
   }
 
   /**
@@ -529,7 +540,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
     })
     if (res && res.status === 200 && res.data && res.data.code === 0) {
       successTips('保存顺序成功', '')
-      setSaveOrderDisabled(true)
+      setSavedOrder(true)
     } else {
       // 保存顺序失败
       errorTips('保存顺序失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
@@ -564,6 +575,13 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
    */
   const updateQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value)
+  }
+
+  /**
+   * 更新模型调试时的查询语句
+   */
+  const updateSelectValue = (value: string) => {
+    setSelectedQuery(value)
   }
 
   /**
@@ -658,7 +676,12 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
         </div>
         <div className={styles.BoxContainer}>{renderCards()}</div>
         <div className={styles.SaveOrder}>
-          <Button type="primary" disabled={saveOrderDisabled} loading={saveOrderLoading} onClick={saveOrder}>
+          <Button
+            type="primary"
+            disabled={savedOrder || !state.vectorSteps.every(i => i.name)}
+            loading={saveOrderLoading}
+            onClick={saveOrder}
+          >
             保存
           </Button>
         </div>
@@ -717,7 +740,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
     return (
       <div className={styles.SelectWrapper}>
         <span className={styles.SelectLabel}>请选择标准查询:</span>
-        <Select className={`GlobalSelect ${styles.Select}`} size="large">
+        <Select className={`GlobalSelect ${styles.Select}`} size="large" onChange={updateSelectValue}>
           {renderSelectOptions()}
         </Select>
         <Button type="primary" size="large" onClick={testRetriever}>
@@ -783,7 +806,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
    * 渲染检索步骤
    */
   const renderSearchSteps = () => {
-    if (saveOrderDisabled) {
+    if (savedOrder) {
       return (
         <div>
           <div className={styles.ExamBox}>
@@ -879,7 +902,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
         <Table
           rowKey="docId"
           loading={calculationLoading}
-          dataSource={standardResults}
+          dataSource={standardData}
           columns={standardColumns}
           size="small"
           pagination={false}
@@ -889,7 +912,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
         <Table
           rowKey="docId"
           loading={calculationLoading}
-          dataSource={testResults}
+          dataSource={testData}
           columns={testColumns}
           size="small"
           pagination={false}

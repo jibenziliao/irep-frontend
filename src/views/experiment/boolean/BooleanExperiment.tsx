@@ -11,9 +11,56 @@ import { requestFn } from '../../../utils/request'
 
 const { Option } = Select
 
-type Operator = 'or' | 'and' | 'not'
+type Operator = 'or' | 'and' | 'not' | 'OR' | 'AND' | 'NOT'
 
 interface BooleanExperimentProps extends FormComponentProps, RouteComponentProps {}
+
+/**
+ * 查询预处理结果接口
+ */
+interface PreProcessQuery {
+  query: string
+  result: string
+}
+
+/**
+ * 计算布尔向量结果接口
+ */
+interface BoolVector {
+  docIds: number[]
+  term: string
+}
+
+/**
+ * 运行布尔运算结果接口
+ */
+interface BooleanOperation {
+  leftSet: number[]
+  leftTerm: string
+  operator: Operator
+  resultSet: number[]
+  rightSet: number[]
+  rightTerm: string
+}
+
+/**
+ * 召回目标文档结果接口
+ */
+interface CallBackResult {
+  docId: number
+  similarity: number
+  title: string
+}
+
+/**
+ * 仿真我的搜索引擎的检索结果接口
+ */
+interface SearchResult {
+  content: string
+  docId: number
+  title: string
+  url: string
+}
 
 /**
  * 默认的检索关键词
@@ -24,6 +71,14 @@ const defaultSearchTerms = ['', '', '']
  * 默认的检索条件逻辑关系符
  */
 const defaultOperators: Operator[] = ['or', 'or']
+
+/**
+ * 默认的查询预处理结果
+ */
+const defaultPreProcessQuery: PreProcessQuery = {
+  query: '',
+  result: ''
+}
 
 const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
   const dispatch: Dispatch<Actions> = useDispatch()
@@ -40,6 +95,16 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
   const [stepLoading, setStepLoading] = useState(false)
   const [searchTerms, setSearchTerms] = useState(defaultSearchTerms)
   const [searchOperators, setSearchOperators] = useState<Operator[]>(defaultOperators)
+  // 查询预处理结果
+  const [preProcessQueryResult, setPreProcessQueryResult] = useState<PreProcessQuery>(defaultPreProcessQuery)
+  // 计算布尔向量结果
+  const [boolVectorResult, setBoolVectorResult] = useState<BoolVector[]>([])
+  // 运行布尔运算结果
+  const [booleanOperationResult, setBooleanOperationResult] = useState<BooleanOperation[]>([])
+  // 召回目标文档结果
+  const [callBackResult, setCallBackResult] = useState<CallBackResult[]>([])
+  // 检索结果
+  const [searchResult, setSearchResult] = useState<SearchResult[]>([])
 
   const { getFieldDecorator, validateFields, getFieldsValue } = props.form
 
@@ -270,7 +335,11 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     })
   }
 
+  /**
+   * 仿真我的搜索引擎，点击检索按钮
+   */
   const beforeSearch = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     validateFields((err: any) => {
       if (!err) {
         const fieldValue = getFieldsValue()
@@ -284,6 +353,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
   /**
    * 处理仿真我的搜索引擎表单参数
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSearchQuery = (fieldValue: any) => {
     let str = ''
     for (let i = 0; i < searchTerms.length; i++) {
@@ -308,8 +378,8 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
         query
       }
     })
-    if (res && res.status === 200 && res.data) {
-      console.log('检索成功')
+    if (res && res.status === 200 && res.data && !res.data.msg) {
+      setSearchResult(res.data)
     } else {
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
@@ -428,8 +498,9 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
         query
       }
     })
-    if (res && res.status === 200 && res.data) {
+    if (res && res.status === 200 && res.data && !res.data.msg) {
       setCurrentStepIndex(index + 1)
+      handleStepSearchResult(index, res.data)
       if (index === 3) {
         setLastStepIndex(index + 1)
       }
@@ -438,6 +509,33 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     }
     setStepLoading(false)
   }
+
+  /**
+   * 处理每一步检索的结果
+   */
+  const handleStepSearchResult = (
+    index: number,
+    result: PreProcessQuery | BoolVector[] | BooleanOperation[] | CallBackResult[]
+  ) => {
+    switch (index) {
+      case 0:
+        setPreProcessQueryResult(result as PreProcessQuery)
+        break
+      case 1:
+        setBoolVectorResult(result as BoolVector[])
+        break
+      case 2:
+        setBooleanOperationResult(result as BooleanOperation[])
+        break
+      case 3:
+        setCallBackResult(result as CallBackResult[])
+        break
+      default:
+        setPreProcessQueryResult(result as PreProcessQuery)
+        break
+    }
+  }
+
   /**
    * 处理当前步骤的按钮点击事件
    */
@@ -535,8 +633,156 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
   /**
    * 渲染搜索结果
    */
-  const renderSearchResult = () => {
-    return <div className={styles.SearchResult}></div>
+  const renderSearchResult = (index: number) => {
+    switch (index) {
+      case 0:
+        return renderCommonSearchResult()
+      case 1:
+        return renderPreProcessQueryResult()
+      case 2:
+        return renderBoolVectorResult()
+      case 3:
+        return renderBooleanOperationResult()
+      case 4:
+        return renderCallBackResult()
+      default:
+        return <></>
+    }
+  }
+
+  /**
+   * 渲染点击检索按钮后的结果
+   */
+  const renderCommonSearchResult = () => {
+    return <div className={styles.CommonResult}>{renderSearchResultList()}</div>
+  }
+
+  /**
+   * 渲染检索结果列表
+   *
+   * 仅适用于直接点击检索按钮时
+   */
+  const renderSearchResultList = () => {
+    return searchResult.map((i, index) => {
+      return (
+        <div key={index} className={styles.CommonRow}>
+          <a href={i.url} target="_blank" rel="noopener noreferrer" className={styles.CommonLink}>
+            {i.title}
+          </a>
+          <div className={styles.ItemContent}>{i.content}</div>
+        </div>
+      )
+    })
+  }
+
+  /**
+   * 渲染查询预处理的结果
+   */
+  const renderPreProcessQueryResult = () => {
+    return (
+      <div className={styles.Result}>
+        <p className={styles.PreProcessResultRow}>
+          <span className={styles.Label}>处理前的检索条件:</span>
+          <span>{preProcessQueryResult.query}</span>
+        </p>
+        <p className={styles.PreProcessResultRow}>
+          <span className={styles.Label}>处理后的检索条件:</span>
+          <span>{preProcessQueryResult.result}</span>
+        </p>
+      </div>
+    )
+  }
+
+  /**
+   * 渲染计算布尔向量结果
+   */
+  const renderBoolVectorResult = () => {
+    return (
+      <div className={styles.BoolVectorResult}>
+        {boolVectorResult.map((i, index) => {
+          return (
+            <div key={index} className={styles.BoolVectorRow}>
+              <p>
+                <span className={styles.BoolVectorLabel}>词项:</span>
+                <span>{i.term}</span>
+              </p>
+              <p>
+                <span className={styles.BoolVectorLabel}>存在于文档:</span>
+                <span>{i.docIds.join(', ')}</span>
+              </p>
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
+
+  /**
+   * 渲染运行布尔运算结果
+   */
+  const renderBooleanOperationResult = () => {
+    return (
+      <div className={styles.BooleanOperationResult}>
+        {booleanOperationResult.map((i, index) => {
+          return (
+            <div key={index} className={styles.BooleanOperationRow}>
+              <p>
+                <span className={styles.BooleanOperationLabel}>左侧词项</span>
+                <span>{i.leftTerm}</span>
+              </p>
+              <p>
+                <span className={styles.BooleanOperationLabel}>左侧集合</span>
+                <span>{i.leftSet.join(', ')}</span>
+              </p>
+              <p>
+                <span className={styles.BooleanOperationLabel}>分割符</span>
+                <span>{i.operator}</span>
+              </p>
+              <p>
+                <span className={styles.BooleanOperationLabel}>右侧词项</span>
+                <span>{i.rightTerm}</span>
+              </p>
+              <p>
+                <span className={styles.BooleanOperationLabel}>右侧集合</span>
+                <span>{i.rightSet.join(', ')}</span>
+              </p>
+              <p>
+                <span className={styles.BooleanOperationLabel}>结果集合</span>
+                <span>{i.resultSet}</span>
+              </p>
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
+
+  /**
+   * 渲染召回目标文档结果
+   */
+  const renderCallBackResult = () => {
+    return (
+      <div className={styles.CallBackResult}>
+        {callBackResult.map((i, index) => {
+          return (
+            <div key={index} className={styles.CallBackRow}>
+              <p>
+                <span className={styles.CallBackLabel}>文档Id</span>
+                <span>{i.docId}</span>
+              </p>
+              <p>
+                <span className={styles.CallBackLabel}>文档标题</span>
+                <span>{i.title}</span>
+              </p>
+              <p>
+                <span className={styles.CallBackLabel}>相似度</span>
+                <span>{i.similarity}</span>
+              </p>
+            </div>
+          )
+        })}
+      </div>
+    )
   }
 
   /**
@@ -555,7 +801,9 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
         <div className={styles.SearchWrapper}>{renderSearchFormItem()}</div>
         <Spin spinning={searchLoading}>{renderSearchSteps()}</Spin>
         <p className={styles.SearchResultTitle}>检索结果:</p>
-        <Spin spinning={stepLoading}>{renderSearchResult()}</Spin>
+        <Spin spinning={stepLoading}>
+          <div className={styles.SearchResult}>{renderSearchResult(currentStepIndex)}</div>
+        </Spin>
       </div>
       <Button type="primary" disabled={lastStepIndex !== 4} onClick={goNextExperiment} className={styles.NextBtn}>
         下一步

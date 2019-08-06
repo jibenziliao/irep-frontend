@@ -265,6 +265,102 @@
     border: 1px solid @border-color;
   }
 }
+.Result {
+  .PreProcessResultRow {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .Label {
+    font-weight: bold;
+    color: @second-text-color;
+    font-size: 16px;
+    margin-right: 20px;
+  }
+}
+.CommonRow {
+  .CommonLink {
+    color: @primary-color;
+    font-size: 16px;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 4px;
+    &:hover {
+      text-decoration: @primary-color;
+    }
+  }
+  .ItemContent {
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    // see https://github.com/postcss/autoprefixer/issues/776#issuecomment-392346351
+    /* autoprefixer: ignore next */
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    text-align: left;
+    line-height: 24px;
+  }
+}
+.BoolVectorResult {
+  .BoolVectorRow {
+    margin-bottom: 20px;
+    p {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      .BoolVectorLabel {
+        font-weight: bold;
+        color: @second-text-color;
+        font-size: 16px;
+        margin-right: 20px;
+      }
+    }
+  }
+}
+.BooleanOperationResult {
+  .BooleanOperationRow {
+    margin-bottom: 20px;
+    p {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      .BooleanOperationLabel {
+        font-weight: bold;
+        color: @second-text-color;
+        font-size: 16px;
+        margin-right: 20px;
+      }
+    }
+  }
+}
+.CallBackResult {
+  .CallBackRow {
+    margin-bottom: 20px;
+    p {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      .CallBackLabel {
+        font-weight: bold;
+        color: @second-text-color;
+        font-size: 16px;
+        margin-right: 20px;
+      }
+    }
+  }
+}
 .NextBtn {
   margin: 40px auto 50px auto;
   display: block;
