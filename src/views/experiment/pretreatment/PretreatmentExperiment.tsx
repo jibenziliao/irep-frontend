@@ -146,7 +146,7 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
     const res = await requestFn(dispatch, {
       url: '/score/updateAnalyticalContent',
       method: 'post',
-      params: {
+      data: {
         experimentId: 2,
         analyticalContent: analysisText
       }
