@@ -206,6 +206,7 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
             loading={analyticalContentLoading}
             disabled={savedContent || analysisText === ''}
             onClick={concludeConfirm}
+            type="primary"
           >
             确定
           </Button>
