@@ -1,3 +1,4 @@
+@import '../../../theme/theme.less';
 .Container {
   margin: 0 auto;
   width: 1200px;
@@ -10,5 +11,57 @@
     margin: 20px 0 40px 20px;
     padding: 0 20px;
     box-sizing: border-box;
+    width:0;
+    .MiddleSection{
+      margin-top:200px;
+      text-align: center;
+      .SectionTitle{
+        font-size:24px;
+        letter-spacing: 2px;
+        font-weight: 400;
+        font-family:Arial, Helvetica, sans-serif;
+        color:@primary-color;
+        text-align: center;
+      }
+      .InputSection{
+        width:80%;
+      }
+    }
+    .topSection{
+      margin-top:10px;
+      display: flex;
+      align-items: center;
+      .topTitle{
+        font-size:18px;
+        font-weight: 400;
+        color:@primary-text-color;
+        font-family:Arial, Helvetica, sans-serif;
+      }
+      .InputSection{
+        width:60%;
+        margin-left:10px;
+      }
+    }
+    .ResultSection{
+      margin-top:30px;
+      width:90%;
+      .Result{
+        margin-bottom:20px;
+        .resultTitle{
+          color: @primary-color;
+          font-size: 18px;
+          font-weight: 400;
+          text-decoration-line: underline;
+        }
+        .resultContent{
+          font-size: 15px;
+          color:@second-text-color;
+          text-align: justify;
+          margin-top:5px;
+        }
+        
+      }
+    }
+    
   }
 }
