@@ -11,6 +11,16 @@ import { requestFn } from '../../../utils/request'
 import { vectorSpaceQueryOptions } from '../../../config/Constant'
 import { StandardResult } from '../../../modal/VectorSpace'
 import { getStore } from '../../../utils/util'
+import {
+  SearchResult,
+  IdfResult,
+  VectorSpacePreProcessQuery,
+  QueryTFResult,
+  QueryVectorResult,
+  QueryDocTFResult,
+  QueryDocVectorResult,
+  QuerySimilarityResult
+} from '../../../modal/Search'
 
 /**
  * 列对齐方式类型(与ant-design保持一致)
@@ -166,7 +176,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
   const [saveOrderLoading, setSaveOrderLoading] = useState(false)
   // 仿真我的搜索引擎，输入框中的值
   const [query, setQuery] = useState('')
-  const [selectedQuery, setSelectedQuery] = useState('qq群共享文件下载失败')
+  const [selectedQuery, setSelectedQuery] = useState('')
   const [searchLoading, setSearchLoading] = useState(false)
   const [calculationLoading, setCalculationLoading] = useState(false)
   const [formulaId, setFormulaId] = useState(1)
@@ -175,8 +185,25 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
   const [stepLoading, setStepLoading] = useState(false)
   // 仿真我的搜索引擎步骤索引
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
+  const [lastStepIndex, setLastStepIndex] = useState(0)
   const [standardData, setStandardData] = useState<StandardResult[]>([])
   const [testData, setTestData] = useState<StandardResult[]>([])
+  // 检索结果
+  const [searchResult, setSearchResult] = useState<SearchResult[]>([])
+  // 求文档IDF结果
+  const [searchIDFResult, setSearchIDFResult] = useState<IdfResult[]>([])
+  // 查询预处理结果
+  const [searchPreProcessResult, setSearchPreProcessResult] = useState<VectorSpacePreProcessQuery>()
+  // 查询TF结果
+  const [searchQueryTFResult, setSearchQueryTFResult] = useState<QueryTFResult[]>([])
+  // 查询向量结果
+  const [searchQueryVectorResult, setSearchQueryVectorResult] = useState<QueryVectorResult[]>([])
+  // 求各文档TF结果
+  const [searchQueryDocTFResult, setSearchQueryDocTFResult] = useState<QueryDocTFResult>()
+  // 求文档向量结果
+  const [searchQueryDocVectorResult, setSearchQueryDocVectorResult] = useState<QueryDocVectorResult>()
+  // 求相似度及相似度降序排序的结果
+  const [searchQuerySimilarityResult, setSearchQuerySimilarityResult] = useState<QuerySimilarityResult[]>([])
 
   /**
    * 定义列的对齐方式，居中
@@ -401,8 +428,9 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
         smoothParam
       }
     })
-    if (res && res.status === 200 && res.data) {
-      console.log('检索成功')
+    if (res && res.status === 200 && res.data && !res.data.msg) {
+      setSearchResult(res.data)
+      setCurrentStepIndex(0)
     } else {
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
@@ -483,12 +511,61 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
         smoothParam
       }
     })
-    if (res && res.status === 200 && res.data) {
+    if (res && res.status === 200 && res.data && !res.data.msg) {
       setCurrentStepIndex(index + 1)
+      handleStepSearchResult(index, res.data)
+      if (index === 7) {
+        setLastStepIndex(index + 1)
+      }
     } else {
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
     setStepLoading(false)
+  }
+
+  /**
+   * 处理每一步检索的结果
+   */
+  const handleStepSearchResult = (
+    index: number,
+    result:
+      | IdfResult[]
+      | VectorSpacePreProcessQuery
+      | QueryTFResult[]
+      | QueryVectorResult[]
+      | QueryDocTFResult
+      | QueryDocVectorResult
+      | QuerySimilarityResult[]
+  ) => {
+    switch (index) {
+      case 0:
+        setSearchIDFResult(result as IdfResult[])
+        break
+      case 1:
+        setSearchPreProcessResult(result as VectorSpacePreProcessQuery)
+        break
+      case 2:
+        setSearchQueryTFResult(result as QueryTFResult[])
+        break
+      case 3:
+        setSearchQueryVectorResult(result as QueryVectorResult[])
+        break
+      case 4:
+        setSearchQueryDocTFResult(result as QueryDocTFResult)
+        break
+      case 5:
+        setSearchQueryDocVectorResult(result as QueryDocVectorResult)
+        break
+      case 6:
+        setSearchQuerySimilarityResult(result as QuerySimilarityResult[])
+        break
+      case 7:
+        setSearchQuerySimilarityResult(result as QuerySimilarityResult[])
+        break
+      default:
+        setSearchIDFResult(result as IdfResult[])
+        break
+    }
   }
 
   /**
@@ -699,7 +776,13 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
         <Select className={`GlobalSelect ${styles.Select}`} size="large" onChange={updateSelectValue}>
           {renderSelectOptions()}
         </Select>
-        <Button type="primary" size="large" onClick={testRetriever}>
+        <Button
+          type="primary"
+          size="large"
+          loading={calculationLoading}
+          disabled={selectedQuery === ''}
+          onClick={testRetriever}
+        >
           计算
         </Button>
       </div>
@@ -714,7 +797,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
       <div className={styles.SearchWrapper}>
         <span className={styles.SearchLabel}>请输入查询语句:</span>
         <Input autoComplete="off" size="large" value={query} onChange={updateQuery} />
-        <Button type="primary" size="large" onClick={searchQuery}>
+        <Button type="primary" size="large" disabled={query === ''} loading={searchLoading} onClick={searchQuery}>
           检索
         </Button>
       </div>
@@ -882,8 +965,242 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
   /**
    * 渲染搜索结果
    */
-  const renderSearchResult = () => {
-    return <div className={styles.SearchResult}></div>
+  const renderSearchResult = (index: number) => {
+    switch (index) {
+      case 0:
+        return renderCommonSearchResult()
+      case 1:
+        return renderIDFSearchResult()
+      case 2:
+        return renderPreProecssResult()
+      case 3:
+        return renderSearchQueryTFResult()
+      case 4:
+        return renderQueryVectorResult()
+      case 5:
+        return renderQueryDocTFResult()
+      case 6:
+        return renderQueryDocVecotrResult()
+      case 7:
+        return renderQuerySimilarityResult()
+      case 8:
+        return renderQuerySimilarityResult()
+      default:
+        return renderCommonSearchResult()
+    }
+  }
+
+  /**
+   * 渲染点击检索按钮后的结果
+   */
+  const renderCommonSearchResult = () => {
+    return <div className={styles.CommonResult}>{renderSearchResultList()}</div>
+  }
+
+  /**
+   * 渲染检索结果列表
+   *
+   * 仅适用于直接点击检索按钮时
+   */
+  const renderSearchResultList = () => {
+    return searchResult.map((i, index) => {
+      return (
+        <div key={index} className={styles.CommonRow}>
+          <a href={i.url} target="_blank" rel="noopener noreferrer" className={styles.CommonLink}>
+            {i.title}
+          </a>
+          <div className={styles.ItemContent}>{i.content}</div>
+        </div>
+      )
+    })
+  }
+
+  /**
+   * 渲染文档IDF结果
+   */
+  const renderIDFSearchResult = () => {
+    return searchIDFResult.map((i, index) => {
+      return (
+        <div key={index} className={styles.IDFRow}>
+          <p>
+            <span className={styles.IDFRowLabel}>词项</span>
+            <span>{i.term}</span>
+          </p>
+          <p>
+            <span className={styles.IDFRowLabel}>反文档频率</span>
+            <span>{i.idf}</span>
+          </p>
+          <p>
+            <span className={styles.IDFRowLabel}>出现次数</span>
+            <span>{i.num}</span>
+          </p>
+        </div>
+      )
+    })
+  }
+
+  /**
+   * 渲染查询预处理的结果
+   */
+  const renderPreProecssResult = () => {
+    return (
+      <div className={styles.PreProcessResult}>
+        <p>
+          <span className={styles.PreProcessLabel}>检索字符串</span>
+          <span>{searchPreProcessResult && searchPreProcessResult.query}</span>
+        </p>
+        <p>
+          <span className={styles.PreProcessLabel}>预处理结果</span>
+          <span>{searchPreProcessResult && searchPreProcessResult.result.join(', ')}</span>
+        </p>
+      </div>
+    )
+  }
+
+  /**
+   * 渲染查询TF的结果
+   */
+  const renderSearchQueryTFResult = () => {
+    return searchQueryTFResult.map((i, index) => {
+      return (
+        <div key={index} className={styles.QueryTFRow}>
+          <p>
+            <span className={styles.QueryTFLabel}>词项</span>
+            <span>{i.term}</span>
+          </p>
+          <p>
+            <span className={styles.QueryTFLabel}>词频</span>
+            <span>{i.tf}</span>
+          </p>
+          <p>
+            <span className={styles.QueryTFLabel}>文档Id</span>
+            <span>{i.docId}</span>
+          </p>
+        </div>
+      )
+    })
+  }
+
+  /**
+   * 渲染查询向量结果
+   */
+  const renderQueryVectorResult = () => {
+    return searchQueryVectorResult.map((i, index) => {
+      return (
+        <div key={index} className={styles.VectorResultRow}>
+          <p>
+            <span className={styles.VectorLabel}>词项</span>
+            <span>{i.term}</span>
+          </p>
+          <p>
+            <span className={styles.VectorLabel}>出现次数</span>
+            <span>{i.num}</span>
+          </p>
+          <p>
+            <span className={styles.VectorLabel}>向量值</span>
+            <span>{i.value}</span>
+          </p>
+        </div>
+      )
+    })
+  }
+
+  /**
+   * 渲染求各文档TF结果
+   */
+  const renderQueryDocTFResult = () => {
+    return (
+      <>
+        <div className={styles.DocTFTitle}>
+          <span className={styles.DocTFTitleLabel}>文档名</span>
+          <span>{searchQueryDocTFResult && searchQueryDocTFResult.title}</span>
+        </div>
+        <div className={styles.DocTFTitle}>
+          <span className={styles.DocTFTitleLabel}>文档Id</span>
+          <span>{searchQueryDocTFResult && searchQueryDocTFResult.docId}</span>
+        </div>
+        {searchQueryDocTFResult &&
+          searchQueryDocTFResult.tfs.map((i, index) => {
+            return (
+              <div key={index} className={styles.QueryTFRow}>
+                <p>
+                  <span className={styles.QueryTFLabel}>词项</span>
+                  <span>{i.term}</span>
+                </p>
+                <p>
+                  <span className={styles.QueryTFLabel}>词频</span>
+                  <span>{i.tf}</span>
+                </p>
+                <p>
+                  <span className={styles.QueryTFLabel}>文档Id</span>
+                  <span>{i.docId}</span>
+                </p>
+              </div>
+            )
+          })}
+      </>
+    )
+  }
+
+  /**
+   * 渲染文档向量结果
+   */
+  const renderQueryDocVecotrResult = () => {
+    return (
+      <>
+        <div className={styles.DocTFTitle}>
+          <span className={styles.DocTFTitleLabel}>文档名</span>
+          <span>{searchQueryDocVectorResult && searchQueryDocVectorResult.title}</span>
+        </div>
+        <div className={styles.DocTFTitle}>
+          <span className={styles.DocTFTitleLabel}>文档Id</span>
+          <span>{searchQueryDocVectorResult && searchQueryDocVectorResult.docId}</span>
+        </div>
+        {searchQueryDocVectorResult &&
+          searchQueryDocVectorResult.vector.map((i, index) => {
+            return (
+              <div key={index} className={styles.QueryTFRow}>
+                <p>
+                  <span className={styles.QueryTFLabel}>词项</span>
+                  <span>{i.term}</span>
+                </p>
+                <p>
+                  <span className={styles.QueryTFLabel}>出现次数</span>
+                  <span>{i.num}</span>
+                </p>
+                <p>
+                  <span className={styles.QueryTFLabel}>向量值</span>
+                  <span>{i.value}</span>
+                </p>
+              </div>
+            )
+          })}
+      </>
+    )
+  }
+
+  /**
+   * 渲染文档相似度及相似度降序结果
+   */
+  const renderQuerySimilarityResult = () => {
+    return searchQuerySimilarityResult.map((i, index) => {
+      return (
+        <div key={index} className={styles.QueryTFRow}>
+          <p>
+            <span className={styles.QueryTFLabel}>文档名</span>
+            <span>{i.title}</span>
+          </p>
+          <p>
+            <span className={styles.QueryTFLabel}>相似度</span>
+            <span>{i.similarity}</span>
+          </p>
+          <p>
+            <span className={styles.QueryTFLabel}>文档Id</span>
+            <span>{i.docId}</span>
+          </p>
+        </div>
+      )
+    })
   }
 
   return (
@@ -900,9 +1217,11 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
         {renderSearchForm()}
         <Spin spinning={searchLoading}>{renderSearchSteps()}</Spin>
         <p className={styles.SearchResultTitle}>检索结果:</p>
-        <Spin spinning={stepLoading}>{renderSearchResult()}</Spin>
+        <Spin spinning={stepLoading}>
+          <div className={styles.SearchResult}>{renderSearchResult(currentStepIndex)}</div>
+        </Spin>
       </div>
-      <Button type="primary" onClick={goNextExperiment} className={styles.NextBtn}>
+      <Button type="primary" disabled={lastStepIndex !== 8} onClick={goNextExperiment} className={styles.NextBtn}>
         下一步
       </Button>
     </div>

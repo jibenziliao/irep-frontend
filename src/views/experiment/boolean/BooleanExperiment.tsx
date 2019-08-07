@@ -646,7 +646,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
       case 4:
         return renderCallBackResult()
       default:
-        return <></>
+        return renderCommonSearchResult()
     }
   }
 

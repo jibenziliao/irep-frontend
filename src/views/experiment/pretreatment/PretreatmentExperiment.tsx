@@ -44,6 +44,7 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
       })
       if (res && res.status === 200 && res.data && res.data.content) {
         setOriginalArticle(res.data.content)
+        setStore('docId', id)
       } else {
         errorTips('获取文档失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
       }
@@ -58,7 +59,6 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
    */
   const DocIdChange = (value: number | undefined) => {
     setDocId(value || 0)
-    setStore('docId', value || 0)
   }
 
   /**
@@ -171,9 +171,11 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
     }
   }
 
-  // 最底部下一步
+  /**
+   * 点击底部下一步按钮
+   */
   const handleClick = () => {
-    props.history.replace('/experiment/boolean')
+    props.history.replace('/experiment/invertedIndex')
   }
 
   /**
