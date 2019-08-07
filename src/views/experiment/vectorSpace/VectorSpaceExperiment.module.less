@@ -108,6 +108,13 @@
             cursor: pointer;
           }
         }
+        .BoxItemDisabled {
+          cursor: default;
+          &:hover .IconWrapper,
+          &:hover .Icon {
+            opacity: 0;
+          }
+        }
         .StepItem {
           border: 1px solid #2e7fc1;
         }

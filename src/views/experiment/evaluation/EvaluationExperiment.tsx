@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState } from 'react'
 import { Dispatch } from 'redux'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { Button, Select, notification, Radio, Table, Icon, Spin, Input } from 'antd'
@@ -7,7 +7,7 @@ import ReactEchartsCore from 'echarts-for-react/lib/core'
 import styles from './EvaluationExperiment.module.less'
 import { vectorSpaceQueryOptions, defaultChartColors } from '../../../config/Constant'
 import { requestFn } from '../../../utils/request'
-import { useDispatch, useMappedState, State } from '../../../store/Store'
+import { useDispatch } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
 import { StandardResult } from '../../../modal/VectorSpace'
 
@@ -142,10 +142,6 @@ const { TextArea } = Input
 
 const EvaluationExperimentComponent = (props: RouteComponentProps) => {
   const dispatch: Dispatch<Actions> = useDispatch()
-  const state: State = useMappedState(useCallback((globalState: State) => globalState, []))
-  // 仿真我的搜索引擎，输入框中的值
-  const [query, setQuery] = useState('')
-  const [searchLoading, setSearchLoading] = useState(false)
   const [calculationLoading, setCalculationLoading] = useState(false)
   const [performanceLoading, setPerformanceLoading] = useState(false)
   // 性能对比图配置
@@ -292,6 +288,7 @@ const EvaluationExperimentComponent = (props: RouteComponentProps) => {
         axisPointer: {
           type: 'line'
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         formatter: (param: any) => {
           const arr = [`${xAxisName}: ${param[0].value[1]}`, `${yAxisName}:${param[0].value[0]}`]
           return arr.join('<br>')

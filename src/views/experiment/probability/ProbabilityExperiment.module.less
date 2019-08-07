@@ -107,6 +107,13 @@
             cursor: pointer;
           }
         }
+        .BoxItemDisabled {
+          cursor: default;
+          &:hover .IconWrapper,
+          &:hover .Icon {
+            opacity: 0;
+          }
+        }
         .StepItem {
           border: 1px solid #2e7fc1;
         }
@@ -140,7 +147,7 @@
         height: 22px;
         display: block;
         margin: 0 14px;
-        transform: rotate(180deg)
+        transform: rotate(180deg);
       }
       .Down {
         transform: rotate(270deg);
@@ -199,7 +206,7 @@
       border-radius: 4px;
       padding: 10px;
     }
-    .Param{
+    .Param {
       display: flex;
       justify-content: center;
       margin-top: 10px;
@@ -213,7 +220,7 @@
           margin-right: 10px;
           font-weight: bold;
         }
-      } 
+      }
     }
   }
   .SelectWrapper {

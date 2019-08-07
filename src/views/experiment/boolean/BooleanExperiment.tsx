@@ -114,7 +114,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
   const saveOrder = async () => {
     setSaveOrderLoading(true)
     const res = await requestFn(dispatch, {
-      url: '/score/updateRankingScore', // 接口还没完成，这里是个假的示例
+      url: '/score/updateRankingScore',
       method: 'post',
       data: {
         experimentId: 4,
@@ -125,7 +125,6 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
       successTips('保存顺序成功', '')
       updateSaveOrderBtnStatus()
     } else {
-      // 保存顺序失败
       errorTips('保存顺序失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
     setSaveOrderLoading(false)
@@ -380,6 +379,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     })
     if (res && res.status === 200 && res.data && !res.data.msg) {
       setSearchResult(res.data)
+      setCurrentStepIndex(0)
     } else {
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
@@ -748,7 +748,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
               </p>
               <p>
                 <span className={styles.BooleanOperationLabel}>结果集合</span>
-                <span>{i.resultSet}</span>
+                <span>{i.resultSet.join(', ')}</span>
               </p>
             </div>
           )

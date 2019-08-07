@@ -38,16 +38,6 @@ const defaultNotices = [
   }
 ]
 
-function itemRender(current, type, originalElement) {
-  if (type === 'prev') {
-    return <span>上一页</span>
-  }
-  if (type === 'next') {
-    return <span>下一页</span>
-  }
-  return originalElement
-}
-
 const Notice = () => {
   const [notices, setNotices] = useState<{ title: string; date: string; year: string }[]>([])
   const [currentPageIndex, setCurrentPageIndex] = useState(1)
@@ -65,6 +55,20 @@ const Notice = () => {
 
   const onPageChange = (page: number) => {
     setCurrentPageIndex(page)
+  }
+
+  const itemRender = (
+    page: number,
+    type: 'page' | 'prev' | 'next' | 'jump-prev' | 'jump-next',
+    originalElement: React.ReactElement<HTMLElement>
+  ) => {
+    if (type === 'prev') {
+      return <span>上一页</span>
+    }
+    if (type === 'next') {
+      return <span>下一页</span>
+    }
+    return originalElement
   }
 
   const renderNotices = () => {

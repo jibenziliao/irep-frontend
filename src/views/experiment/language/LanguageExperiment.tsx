@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Dispatch } from 'redux'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { Button, Icon, InputNumber, Select, notification, Input, Spin, Table } from 'antd'
@@ -124,12 +124,10 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
   const state: State = useMappedState(useCallback((globalState: State) => globalState, []))
   // 保存顺序加载状态
   const [saveOrderLoading, setSaveOrderLoading] = useState(false)
-  // 保存顺序按钮禁用状态
-  const [saveOrderDisabled, setSaveOrderDisabled] = useState(false)
   // 仿真我的搜索引擎，输入框中的值
   const [query, setQuery] = useState('')
   const [searchLoading, setSearchLoading] = useState(false)
-  const [ModelName,setModelName]=useState("一元语言模型")
+  const [ModelName, setModelName] = useState('一元语言模型')
   const [smoothParam, setSmoothParam] = useState(0.5)
   const [calculationLoading, setCalculationLoading] = useState(false)
   // 仿真我的搜索引擎，每一步的请求loading状态
@@ -141,6 +139,36 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
    * 定义列的对齐方式，居中
    */
   const columnAlignCenter: columnAlignType = 'center'
+
+  const standardColumns = [
+    {
+      title: '序号',
+      dataIndex: 'docRank',
+      key: 'docRank',
+      width: 50,
+      align: columnAlignCenter
+    },
+    {
+      title: 'ID',
+      dataIndex: 'docId',
+      key: 'docId',
+      width: 50,
+      align: columnAlignCenter
+    },
+    {
+      title: '文档名',
+      dataIndex: 'title',
+      key: 'title',
+      render: (text: string) => <div className="GlobalVectorSpaceTdEllipsis">{text}</div>
+    },
+    {
+      title: '相关度',
+      dataIndex: 'score',
+      key: 'score',
+      width: 60,
+      align: columnAlignCenter
+    }
+  ]
 
   const testColumns = [
     {
@@ -175,6 +203,9 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
     }
   ]
 
+  /**
+   * 渲染相关度图标
+   */
   const renderIsExisting = (isExisting: boolean) => {
     if (isExisting) {
       return <Icon type="check" />
@@ -193,7 +224,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
     dispatch({
       type: 'handle_languageExperiment_card',
       payload: {
-        name:name,
+        name: name,
         type: 'selected',
         index
       }
@@ -218,7 +249,30 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
     })
   }
 
-    /**
+  /**
+   * 更新语言实验，保存顺序按钮的状态
+   */
+  const updateSaveOrderBtnStatus = () => {
+    dispatch({
+      type: 'update_saveOrderBtnStatus',
+      payload: {
+        field: 'language'
+      }
+    })
+  }
+
+  /**
+   * 判断是否能够移除卡片
+   */
+  const shouldRemoveCard = (bool: boolean, name: string, index: number) => {
+    if (!bool) {
+      return false
+    } else {
+      removeCard(name, index)
+    }
+  }
+
+  /**
    * 点击方框移除已放入的卡片
    */
   const removeCard = (name: string, index: number) => {
@@ -283,7 +337,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
     })
     if (res && res.status === 200 && res.data && res.data.code === 0) {
       successTips('保存顺序成功', '')
-      setSaveOrderDisabled(true)
+      updateSaveOrderBtnStatus()
     } else {
       // 保存顺序失败
       errorTips('保存顺序失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
@@ -314,7 +368,10 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
   const renderCard = (name: string, index: number) => {
     if (name) {
       return (
-        <div className={`${styles.Name}`} onClick={() => removeCard(name, index)}>
+        <div
+          className={`${styles.Name}`}
+          onClick={() => shouldRemoveCard(!state.saveOrderBtn.language.saved, name, index)}
+        >
           <span>{`${index + 1}.${name}`}</span>
           <div className={styles.IconWrapper}>
             <Icon type="close-circle" className={styles.Icon} />
@@ -339,7 +396,9 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
         <div className={styles.ExamBox}>
           <div className={styles.BoxWrapper}>
             <div className={styles.BoxGroup}>
-              <div className={styles.BoxItem}>{renderCard(state.languageExperimentSteps[0].name, 0)}</div>
+              <div className={`${styles.BoxItem} ${state.saveOrderBtn.language.saved ? styles.BoxItemDisabled : ''}`}>
+                {renderCard(state.languageExperimentSteps[0].name, 0)}
+              </div>
             </div>
             <div className={styles.ArrowGroup}>
               <div className={styles.ArrowBox}>
@@ -347,7 +406,9 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
               </div>
             </div>
             <div className={styles.BoxGroup}>
-              <div className={styles.BoxItem}>{renderCard(state.languageExperimentSteps[1].name, 1)}</div>
+              <div className={`${styles.BoxItem} ${state.saveOrderBtn.language.saved ? styles.BoxItemDisabled : ''}`}>
+                {renderCard(state.languageExperimentSteps[1].name, 1)}
+              </div>
             </div>
             <div className={styles.ArrowGroup}>
               <div className={styles.ArrowBox}>
@@ -355,7 +416,9 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
               </div>
             </div>
             <div className={styles.BoxGroup}>
-              <div className={styles.BoxItem}>{renderCard(state.languageExperimentSteps[2].name, 2)}</div>
+              <div className={`${styles.BoxItem} ${state.saveOrderBtn.language.saved ? styles.BoxItemDisabled : ''}`}>
+                {renderCard(state.languageExperimentSteps[2].name, 2)}
+              </div>
             </div>
             <div className={styles.ArrowGroup}>
               <div className={styles.ArrowBox}>
@@ -363,13 +426,20 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
               </div>
             </div>
             <div className={styles.BoxGroup}>
-              <div className={styles.BoxItem}>{renderCard(state.languageExperimentSteps[3].name, 3)}</div>
+              <div className={`${styles.BoxItem} ${state.saveOrderBtn.language.saved ? styles.BoxItemDisabled : ''}`}>
+                {renderCard(state.languageExperimentSteps[3].name, 3)}
+              </div>
             </div>
           </div>
         </div>
         <div className={styles.BoxContainer}>{renderCards()}</div>
         <div className={styles.SaveOrder}>
-          <Button type="primary" disabled={saveOrderDisabled} loading={saveOrderLoading} onClick={saveOrder}>
+          <Button
+            type="primary"
+            disabled={!state.saveOrderBtn.language.completed || state.saveOrderBtn.language.saved}
+            loading={saveOrderLoading}
+            onClick={saveOrder}
+          >
             保存
           </Button>
         </div>
@@ -383,7 +453,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
   const renderModelSection = () => {
     return (
       <div>
-        <div className={styles.SelectWrapper }>
+        <div className={styles.SelectWrapper}>
           <span className={styles.SelectLabel}>请选择语言模型类型：</span>
           <Select defaultValue="一元语言模型" style={{ width: 150 }} onChange={handleModelChoose}>
             <Option value="一元语言模型">一元语言模型</Option>
@@ -398,18 +468,23 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
     )
   }
 
-  // 模型选择
-  const handleModelChoose=(value)=>{
-    // console.log(`selected ${value}`)
+  /**
+   * 模型选择
+   */
+  const handleModelChoose = (value: string) => {
     setModelName(value)
   }
-  
-  // 改变平滑系数
+
+  /**
+   * 改变平滑系数
+   */
   const onInputNumberChange = (value: number | undefined) => {
     setSmoothParam(value || 0.5)
   }
 
-  // 更新仿真我的搜索引擎的检索条件
+  /**
+   * 更新仿真我的搜索引擎的检索条件
+   */
   const updateQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value)
   }
@@ -427,35 +502,6 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
     })
   }
 
-  const standardColumns = [
-    {
-      title: '序号',
-      dataIndex: 'docRank',
-      key: 'docRank',
-      width: 50,
-      align: columnAlignCenter
-    },
-    {
-      title: 'ID',
-      dataIndex: 'docId',
-      key: 'docId',
-      width: 50,
-      align: columnAlignCenter
-    },
-    {
-      title: '文档名',
-      dataIndex: 'title',
-      key: 'title',
-      render: (text: string) => <div className="GlobalVectorSpaceTdEllipsis">{text}</div>
-    },
-    {
-      title: '相关度',
-      dataIndex: 'score',
-      key: 'score',
-      width: 60,
-      align: columnAlignCenter
-    }
-  ]
   /**
    * 渲染模型调试表格
    */
@@ -485,9 +531,11 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
       </div>
     )
   }
+
   /**
    * 计算所选公式查询结果与标准查询结果的相似度
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const testRetriever = async () => {
     setCalculationLoading(true)
     const res = await requestFn(dispatch, {
@@ -506,8 +554,6 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
     }
     setCalculationLoading(false)
   }
-  //renderTables end
-
 
   /**
    * 检索请求
@@ -532,8 +578,8 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
   }
 
   /**
-  * 仿真我的搜索引擎
-  */
+   * 仿真我的搜索引擎
+   */
   const getMonitorResult = async (url: string, index: number) => {
     setStepLoading(true)
     const res = await requestFn(dispatch, {
@@ -593,7 +639,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
       '/IRforCN/Retrieval/languageModel/queryProcess',
       '/IRforCN/Retrieval/languageModel/lmOfDocs',
       '/IRforCN/Retrieval/languageModel/getResult',
-      '/IRforCN/Retrieval/languageModel/getResultAfterSort',
+      '/IRforCN/Retrieval/languageModel/getResultAfterSort'
     ]
     getMonitorResult(requestUrls[index], index)
   }
@@ -622,7 +668,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
    * 渲染检索步骤
    */
   const renderSearchSteps = () => {
-    if (saveOrderDisabled) {
+    if (state.saveOrderBtn.language.saved) {
       return (
         <div>
           <div className={styles.ExamBox}>
@@ -687,8 +733,8 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
   }
 
   /**
-  * 页面底部，点击前往下一步
-  */
+   * 页面底部，点击前往下一步
+   */
   const goNextExperiment = () => {
     props.history.replace('/experiment/probability')
   }
@@ -696,7 +742,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
   return (
     <div>
       <div className={styles.Section}>
-        <div className={styles.SectionTitle}>请按正确顺序构建向量空间模型:</div>
+        <div className={styles.SectionTitle}>请按正确顺序构建语言模型:</div>
         {renderCardSection()}
         <div className={styles.SectionTitle}>请选择语言模型参数:</div>
         {renderModelSection()}

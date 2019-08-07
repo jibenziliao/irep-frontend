@@ -279,6 +279,7 @@
   }
 }
 .CommonRow {
+  margin-bottom: 20px;
   .CommonLink {
     color: @primary-color;
     font-size: 16px;
@@ -289,7 +290,7 @@
     white-space: nowrap;
     margin-bottom: 4px;
     &:hover {
-      text-decoration: @primary-color;
+      text-decoration: underline;
     }
   }
   .ItemContent {
@@ -306,38 +307,58 @@
 }
 .BoolVectorResult {
   .BoolVectorRow {
-    margin-bottom: 20px;
+    margin-bottom: 40px;
     p {
       display: flex;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 0;
+      border: 1px solid @border-color;
+      border-bottom: none;
+      padding: 10px;
       &:last-child {
-        margin-bottom: 0;
+        border-bottom: 1px solid @border-color;
       }
       .BoolVectorLabel {
         font-weight: bold;
         color: @second-text-color;
         font-size: 16px;
         margin-right: 20px;
+        display: block;
+        width: 100px;
+      }
+      span {
+        &:last-child {
+          flex: 1;
+        }
       }
     }
   }
 }
 .BooleanOperationResult {
   .BooleanOperationRow {
-    margin-bottom: 20px;
+    margin-bottom: 40px;
     p {
       display: flex;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 0;
+      border: 1px solid @border-color;
+      border-bottom: none;
+      padding: 10px;
       &:last-child {
-        margin-bottom: 0;
+        border-bottom: 1px solid @border-color;
       }
       .BooleanOperationLabel {
         font-weight: bold;
         color: @second-text-color;
         font-size: 16px;
         margin-right: 20px;
+        display: block;
+        width: 100px;
+      }
+      span {
+        &:last-child {
+          flex: 1;
+        }
       }
     }
   }
@@ -348,15 +369,25 @@
     p {
       display: flex;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 0;
+      border: 1px solid @border-color;
+      border-bottom: none;
+      padding: 10px;
       &:last-child {
-        margin-bottom: 0;
+        border-bottom: 1px solid @border-color;
       }
       .CallBackLabel {
         font-weight: bold;
         color: @second-text-color;
         font-size: 16px;
         margin-right: 20px;
+        display: block;
+        width: 100px;
+        span {
+          &:last-child {
+            flex: 1;
+          }
+        }
       }
     }
   }

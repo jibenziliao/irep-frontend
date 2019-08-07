@@ -164,8 +164,6 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
   const state: State = useMappedState(useCallback((globalState: State) => globalState, []))
   // 保存顺序加载状态
   const [saveOrderLoading, setSaveOrderLoading] = useState(false)
-  // 是否已保存卡片顺序
-  const [savedOrder, setSavedOrder] = useState(false)
   // 仿真我的搜索引擎，输入框中的值
   const [query, setQuery] = useState('')
   const [selectedQuery, setSelectedQuery] = useState('qq群共享文件下载失败')
@@ -267,6 +265,17 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
   }, [])
 
   /**
+   * 判断是否能够移除卡片
+   */
+  const shouldRemoveCard = (bool: boolean, name: string, index: number) => {
+    if (!bool) {
+      return false
+    } else {
+      removeCard(name, index)
+    }
+  }
+
+  /**
    * 点击方框移除已放入的卡片
    */
   const removeCard = (name: string, index: number) => {
@@ -294,6 +303,18 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
         name: '',
         type: 'add',
         index
+      }
+    })
+  }
+
+  /**
+   * 更新向量空间实验，保存顺序按钮的状态
+   */
+  const updateSaveOrderBtnStatus = () => {
+    dispatch({
+      type: 'update_saveOrderBtnStatus',
+      payload: {
+        field: 'vectorSpace'
       }
     })
   }
@@ -439,7 +460,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
     })
     if (res && res.status === 200 && res.data && res.data.code === 0) {
       successTips('保存顺序成功', '')
-      setSavedOrder(true)
+      updateSaveOrderBtnStatus()
     } else {
       // 保存顺序失败
       errorTips('保存顺序失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
@@ -507,7 +528,10 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
   const renderCard = (name: string, index: number) => {
     if (name) {
       return (
-        <div className={`${styles.Name}`} onClick={() => removeCard(name, index)}>
+        <div
+          className={`${styles.Name}`}
+          onClick={() => shouldRemoveCard(!state.saveOrderBtn.vectorSpace.saved, name, index)}
+        >
           <span>{`${index + 1}.${name}`}</span>
           <div className={styles.IconWrapper}>
             <Icon type="close-circle" className={styles.Icon} />
@@ -532,9 +556,17 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
         <div className={styles.ExamBox}>
           <div className={styles.BoxWrapper}>
             <div className={styles.BoxGroup}>
-              <div className={styles.BoxItem}>{renderCard(state.vectorSteps[3].name, 3)}</div>
+              <div
+                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}
+              >
+                {renderCard(state.vectorSteps[3].name, 3)}
+              </div>
               <img className={`${styles.Arrow} ${styles.Down}`} src={Arrow} alt="箭头" />
-              <div className={styles.BoxItem}>{renderCard(state.vectorSteps[4].name, 4)}</div>
+              <div
+                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}
+              >
+                {renderCard(state.vectorSteps[4].name, 4)}
+              </div>
             </div>
             <div className={styles.ArrowGroup}>
               <div className={styles.ArrowBox}>
@@ -545,8 +577,16 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
               </div>
             </div>
             <div className={styles.BoxGroup}>
-              <div className={styles.BoxItem}>{renderCard(state.vectorSteps[2].name, 2)}</div>
-              <div className={styles.BoxItem}>{renderCard(state.vectorSteps[5].name, 5)}</div>
+              <div
+                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}
+              >
+                {renderCard(state.vectorSteps[2].name, 2)}
+              </div>
+              <div
+                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}
+              >
+                {renderCard(state.vectorSteps[5].name, 5)}
+              </div>
             </div>
             <div className={styles.ArrowGroup}>
               <div className={styles.ArrowBox}>
@@ -557,8 +597,16 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
               </div>
             </div>
             <div className={styles.BoxGroup}>
-              <div className={styles.BoxItem}>{renderCard(state.vectorSteps[1].name, 1)}</div>
-              <div className={styles.BoxItem}>{renderCard(state.vectorSteps[6].name, 6)}</div>
+              <div
+                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}
+              >
+                {renderCard(state.vectorSteps[1].name, 1)}
+              </div>
+              <div
+                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}
+              >
+                {renderCard(state.vectorSteps[6].name, 6)}
+              </div>
             </div>
             <div className={styles.ArrowGroup}>
               <div className={styles.ArrowBox}>
@@ -569,8 +617,16 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
               </div>
             </div>
             <div className={styles.BoxGroup}>
-              <div className={styles.BoxItem}>{renderCard(state.vectorSteps[0].name, 0)}</div>
-              <div className={styles.BoxItem}>{renderCard(state.vectorSteps[7].name, 7)}</div>
+              <div
+                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}
+              >
+                {renderCard(state.vectorSteps[0].name, 0)}
+              </div>
+              <div
+                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}
+              >
+                {renderCard(state.vectorSteps[7].name, 7)}
+              </div>
             </div>
           </div>
         </div>
@@ -578,7 +634,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
         <div className={styles.SaveOrder}>
           <Button
             type="primary"
-            disabled={savedOrder || !state.vectorSteps.every(i => i.name)}
+            disabled={!state.saveOrderBtn.vectorSpace.completed || state.saveOrderBtn.vectorSpace.saved}
             loading={saveOrderLoading}
             onClick={saveOrder}
           >
@@ -706,7 +762,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
    * 渲染检索步骤
    */
   const renderSearchSteps = () => {
-    if (savedOrder) {
+    if (state.saveOrderBtn.vectorSpace.saved) {
       return (
         <div>
           <div className={styles.ExamBox}>
