@@ -150,6 +150,13 @@
         cursor: pointer;
       }
     }
+    .BoxItemDisabled {
+      cursor: default;
+      &:hover .IconWrapper,
+      &:hover .Icon {
+        opacity: 0;
+      }
+    }
   }
   .BoxTips {
     height: 60px;

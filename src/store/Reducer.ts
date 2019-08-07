@@ -181,7 +181,14 @@ export default function reducer(state: State = INITIAL_STATE, action: Actions) {
       return {
         ...state,
         invertedIndexCards: finalInvertedIndexExperimentCards,
-        invertedSteps: newSteps
+        invertedSteps: newSteps,
+        saveOrderBtn: {
+          ...state.saveOrderBtn,
+          invertedIndex: {
+            ...state.saveOrderBtn.invertedIndex,
+            completed: finalInvertedIndexExperimentCards.every(i => i.disabled)
+          }
+        }
       }
     }
 

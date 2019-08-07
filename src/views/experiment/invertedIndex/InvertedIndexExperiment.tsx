@@ -214,6 +214,14 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
     props.history.replace('/experiment/boolean')
   }
 
+  const shouldRemoveCard = (bool: boolean, name: string, index: number) => {
+    if (!bool) {
+      return false
+    } else {
+      removeCard(name, index)
+    }
+  }
+
   /**
    * 点击方框移除已放入的卡片
    */
@@ -242,6 +250,18 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
         name: '',
         type: 'add',
         index
+      }
+    })
+  }
+
+  /**
+   * 更新倒排索引实验，保存顺序按钮的状态
+   */
+  const updateSaveOrderBtnStatus = () => {
+    dispatch({
+      type: 'update_saveOrderBtnStatus',
+      payload: {
+        field: 'invertedIndex'
       }
     })
   }
@@ -403,11 +423,9 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
     })
     if (res && res.status === 200 && res.data && res.data.code === 0) {
       successTips('保存顺序成功', '')
-      setSavedOrder(true)
+      updateSaveOrderBtnStatus()
     } else {
-      // 保存顺序失败
       errorTips('保存顺序失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
-      props.history.replace('/experiment/pretreatment')
     }
     setSaveOrderLoading(false)
   }
@@ -435,7 +453,10 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
   const renderCard = (name: string, index: number) => {
     if (name) {
       return (
-        <div className={`${styles.Name}`} onClick={() => removeCard(name, index)}>
+        <div
+          className={`${styles.Name}`}
+          onClick={() => shouldRemoveCard(!state.saveOrderBtn.invertedIndex.saved, name, index)}
+        >
           <span>{`${index + 1}.${name}`}</span>
           <div className={styles.IconWrapper}>
             <Icon type="close-circle" className={styles.Icon} />
@@ -686,23 +707,67 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
         <div className={styles.TopBoxWrapper}>
           <div className={styles.TopBox}>
             <div className={styles.BoxLeft}>
-              <div className={`${styles.BoxLeftTop} ${styles.BoxItem}`}>
+              <div
+                className={`${styles.BoxLeftTop} ${styles.BoxItem} ${
+                  state.saveOrderBtn.invertedIndex.saved ? styles.BoxItemDisabled : ''
+                }`}
+              >
                 {renderCard(state.invertedSteps[0].name, 0)}
               </div>
               <div className={styles.BoxLeftBottom}>
-                <div className={styles.BoxItem}>{renderCard(state.invertedSteps[3].name, 3)}</div>
-                <div className={styles.BoxItem}>{renderCard(state.invertedSteps[4].name, 4)}</div>
+                <div
+                  className={`${styles.BoxItem} ${
+                    state.saveOrderBtn.invertedIndex.saved ? styles.BoxItemDisabled : ''
+                  }`}
+                >
+                  {renderCard(state.invertedSteps[3].name, 3)}
+                </div>
+                <div
+                  className={`${styles.BoxItem} ${
+                    state.saveOrderBtn.invertedIndex.saved ? styles.BoxItemDisabled : ''
+                  }`}
+                >
+                  {renderCard(state.invertedSteps[4].name, 4)}
+                </div>
               </div>
             </div>
-            <div className={`${styles.BoxMiddle} ${styles.BoxItem}`}>{renderCard(state.invertedSteps[1].name, 1)}</div>
+            <div
+              className={`${styles.BoxMiddle} ${styles.BoxItem} ${
+                state.saveOrderBtn.invertedIndex.saved ? styles.BoxItemDisabled : ''
+              }`}
+            >
+              {renderCard(state.invertedSteps[1].name, 1)}
+            </div>
             <div className={styles.BoxRight}>
-              <div className={`${styles.BoxRightTop} ${styles.BoxItem}`}>
+              <div
+                className={`${styles.BoxRightTop} ${styles.BoxItem} ${
+                  state.saveOrderBtn.invertedIndex.saved ? styles.BoxItemDisabled : ''
+                }`}
+              >
                 {renderCard(state.invertedSteps[2].name, 2)}
               </div>
               <div className={styles.BoxRightBottom}>
-                <div className={styles.BoxItem}>{renderCard(state.invertedSteps[5].name, 5)}</div>
-                <div className={styles.BoxItem}>{renderCard(state.invertedSteps[6].name, 6)}</div>
-                <div className={styles.BoxItem}>{renderCard(state.invertedSteps[7].name, 7)}</div>
+                <div
+                  className={`${styles.BoxItem} ${
+                    state.saveOrderBtn.invertedIndex.saved ? styles.BoxItemDisabled : ''
+                  }`}
+                >
+                  {renderCard(state.invertedSteps[5].name, 5)}
+                </div>
+                <div
+                  className={`${styles.BoxItem} ${
+                    state.saveOrderBtn.invertedIndex.saved ? styles.BoxItemDisabled : ''
+                  }`}
+                >
+                  {renderCard(state.invertedSteps[6].name, 6)}
+                </div>
+                <div
+                  className={`${styles.BoxItem} ${
+                    state.saveOrderBtn.invertedIndex.saved ? styles.BoxItemDisabled : ''
+                  }`}
+                >
+                  {renderCard(state.invertedSteps[7].name, 7)}
+                </div>
               </div>
             </div>
           </div>
@@ -716,7 +781,7 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
           <Button
             type="primary"
             loading={saveOrderLoading}
-            disabled={savedOrder || !state.invertedSteps.every(i => i.name)}
+            disabled={!state.saveOrderBtn.invertedIndex.completed || state.saveOrderBtn.invertedIndex.saved}
             onClick={saveOrderRequest}
           >
             保存
