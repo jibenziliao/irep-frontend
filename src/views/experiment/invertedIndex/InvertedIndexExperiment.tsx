@@ -205,7 +205,6 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
   const [invertedIndexLoading, setInvertedIndexLoading] = useState(false)
   const [docLoading, setDocLoading] = useState(false)
   const [saveOrderLoading, setSaveOrderLoading] = useState(false)
-  const [savedOrder, setSavedOrder] = useState(false)
   const [terms, setTerms] = useState<FullIndex[]>([])
   const [docs, setDocs] = useState<InvertedIndex[]>([])
   const [originDoc, setOriginDoc] = useState<OriginDoc>(defaultOriginDoc)
