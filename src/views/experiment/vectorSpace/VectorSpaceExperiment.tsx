@@ -10,113 +10,12 @@ import { Actions } from '../../../store/Actions'
 import { requestFn } from '../../../utils/request'
 import { vectorSpaceQueryOptions } from '../../../config/Constant'
 import { StandardResult } from '../../../modal/VectorSpace'
+import { getStore } from '../../../utils/util'
 
 /**
  * 列对齐方式类型(与ant-design保持一致)
  */
 type columnAlignType = 'center' | 'left' | 'right' | undefined
-
-/**
- * 标准检索结果
- */
-const standardResults: StandardResult[] = [
-  {
-    queryId: 1,
-    docId: 1,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: '电脑版qq群共享里的文件老是下载失败,求解_解疑答难区_软件区 卡饭论坛 - 互助分享 - 大气谦和!'
-  },
-  {
-    queryId: 1,
-    docId: 2,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'qq群共享文件下载不了怎么办?qq群共享文件下载失败解决方法_评论页-绿茶软件下载'
-  },
-  {
-    queryId: 1,
-    docId: 3,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'qq群共享文j件下载下载失败_百度知道'
-  },
-  {
-    queryId: 1,
-    docId: 4,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: '为什么QQ群共享文件下载失败呢???_百度知道'
-  },
-  {
-    queryId: 1,
-    docId: 5,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'QQ群共享文件下载失败怎么办-学网-中国IT综合门户网站-提供健康,养生,留学,移民,创业,汽车等信息'
-  }
-]
-
-/**
- * 用户检索结构
- */
-const testResults: StandardResult[] = [
-  {
-    queryId: 1,
-    docId: 1,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: true,
-    title: 'qq群文件下载工具|QQ群文件下载工具(稳定下载QQ群文件) 5.0绿色版-绿色下载吧'
-  },
-  {
-    queryId: 1,
-    docId: 2,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'qq群共享的文件一直下载失败_百度知道'
-  },
-  {
-    queryId: 1,
-    docId: 3,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: true,
-    title: 'qq群共享文件下载不了怎么办?qq群共享文件下载失败解决方法 - 绿茶文章中心'
-  },
-  {
-    queryId: 1,
-    docId: 4,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: true,
-    title: '为什么下载qq群共享的文件总是失败?_QQ_下载_天涯问答_天涯社区'
-  },
-  {
-    queryId: 1,
-    docId: 5,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'qq群共享下载失败怎么办? - 软件教程 - 格子啦'
-  }
-]
 
 /**
  * 向量空间模型--公式代码
@@ -557,6 +456,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
       url,
       method: 'post',
       params: {
+        ...(url.includes('tfsOfDoc') || url.includes('vectorOfDoc') ? { docId: parseInt(getStore('docId')) } : {}),
         query,
         formulaId,
         smoothParam

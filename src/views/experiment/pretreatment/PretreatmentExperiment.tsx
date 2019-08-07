@@ -8,11 +8,11 @@ import { Actions } from '../../../store/Actions'
 import styles from './PretreatmentExperiment.module.less'
 import { requestFn } from '../../../utils/request'
 import WordCloud from '../../../components/wordCloud/WordCloud'
+import { setStore } from '../../../utils/util'
 
 const { TextArea } = Input
 const { Option } = Select
 
-// 预处理部分
 const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
   const dispatch: Dispatch<Actions> = useDispatch()
   const [docId, setDocId] = useState(1)
@@ -58,6 +58,7 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
    */
   const DocIdChange = (value: number | undefined) => {
     setDocId(value || 0)
+    setStore('docId', value || 0)
   }
 
   /**
@@ -242,6 +243,9 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
   )
 }
 
+/**
+ * 预处理实验-构建模型页
+ */
 const PretreatmentExperiment = withRouter(PretreatmentExperimentComponent)
 
 export default PretreatmentExperiment
