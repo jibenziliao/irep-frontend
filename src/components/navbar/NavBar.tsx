@@ -33,10 +33,6 @@ const navs = [
   {
     name: '交流讨论',
     path: '/discussion'
-  },
-  {
-    name: '联系我们',
-    path: '/contactus'
   }
 ]
 
@@ -95,7 +91,9 @@ const NavBarComponet = (props: RouteComponentProps) => {
   return (
     <div className={styles.Container}>
       <div className={styles.Logo} onClick={() => goRoute('/')}></div>
-      <ul className={styles.NavItems}>{renderNavs()}</ul>
+      <div className={styles.Nav}>
+        <ul className={styles.NavItems}>{renderNavs()}</ul>
+      </div>
       <Dropdown overlay={menu} className={styles.Dropdown}>
         <div>
           <img src={userAvatar} alt="用户图标" />
