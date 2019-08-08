@@ -57,7 +57,7 @@ const App: React.FC = () => {
     <Router history={history}>
       <Switch>
         <Route path={'/login'} key={'/login'} render={renderLogin} />
-        <Route path="/" exact={true} render={() => <Redirect to="/introduction/background" />} />
+        <Route path="/" exact={true} render={() => <Redirect to="/login" />} />
         <Route path="/introduction" exact={true} render={() => <Redirect to="/introduction/background" />} />
         <Route path="/experiment" exact={true} render={() => <Redirect to="/experiment/index" />} />
         {routerMatch()}
