@@ -204,6 +204,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
   const [searchQueryDocVectorResult, setSearchQueryDocVectorResult] = useState<QueryDocVectorResult>()
   // 求相似度及相似度降序排序的结果
   const [searchQuerySimilarityResult, setSearchQuerySimilarityResult] = useState<QuerySimilarityResult[]>([])
+  const [nextLoading, setNextLoading] = useState(false)
 
   /**
    * 定义列的对齐方式，居中
@@ -366,8 +367,23 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
   /**
    * 页面底部，点击前往下一步
    */
-  const goNextExperiment = () => {
-    props.history.replace('/experiment/probability')
+  const goNextExperiment = async () => {
+    setNextLoading(true)
+    const res = await requestFn(dispatch, {
+      url: '/IRforCN/Retrieval/vectorSpaceModel/quit',
+      method: 'post',
+      params: {
+        query: selectedQuery,
+        formulaId,
+        smoothParam
+      }
+    })
+    setNextLoading(false)
+    if (res && res.status === 200 && res.data && res.data.code === 0) {
+      props.history.replace('/experiment/probability')
+    } else {
+      errorTips('保存实验操作失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+    }
   }
 
   /**
@@ -1221,7 +1237,13 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
           <div className={styles.SearchResult}>{renderSearchResult(currentStepIndex)}</div>
         </Spin>
       </div>
-      <Button type="primary" disabled={lastStepIndex !== 8} onClick={goNextExperiment} className={styles.NextBtn}>
+      <Button
+        type="primary"
+        loading={nextLoading}
+        disabled={lastStepIndex !== 8}
+        onClick={goNextExperiment}
+        className={styles.NextBtn}
+      >
         下一步
       </Button>
     </div>

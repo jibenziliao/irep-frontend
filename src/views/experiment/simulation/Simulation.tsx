@@ -55,12 +55,14 @@ const SimulationComponent = (props: RouteComponentProps) => {
     }
   ]
 
-  // 渲染结果
+  /**
+   * 渲染搜索结果
+   */
   const renderResult = () => {
     if (ResultList.length > 0) {
-      return ResultList.map(i => {
+      return ResultList.map((i, index) => {
         return (
-          <div className={styles.Result}>
+          <div key={index} className={styles.Result}>
             <a className={styles.resultTitle} href={i.url}>
               {i.title}
             </a>

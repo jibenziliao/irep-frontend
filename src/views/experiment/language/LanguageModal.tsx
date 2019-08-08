@@ -7,7 +7,7 @@ import Knowledge from '../../../components/knowledge/Knowledge'
 import Examination from '../../../components/examination/Examination'
 import { languageCompletionQuestions, languageChoiceQuestions } from '../../../config/Constant'
 import { languageKnowledge } from '../../../config/languageKnowledge'
-import LanguageExperiment from "./LanguageExperiment"
+import LanguageExperiment from './LanguageExperiment'
 
 const { TabPane } = Tabs
 
@@ -55,8 +55,8 @@ const LanguageModalComponet = (props: RouteComponentProps) => {
               goNextStep={goNextStep}
             />
           </TabPane>
-          <TabPane tab="构建模型页" key="3" disabled={!tabDisabled}>
-            <LanguageExperiment/>
+          <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>
+            <LanguageExperiment />
           </TabPane>
         </Tabs>
       </div>
