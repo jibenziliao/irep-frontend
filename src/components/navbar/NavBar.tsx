@@ -90,7 +90,7 @@ const NavBarComponet = (props: RouteComponentProps) => {
 
   return (
     <div className={styles.Container}>
-      <div className={styles.Logo} onClick={() => goRoute('/')}></div>
+      <div className={styles.Logo}></div>
       <div className={styles.Nav}>
         <ul className={styles.NavItems}>{renderNavs()}</ul>
       </div>

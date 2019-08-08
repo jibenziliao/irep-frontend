@@ -53,7 +53,7 @@ const LoginForm = (props: LoginProp) => {
       successTips('登录成功', '')
       setTimeout(() => {
         // 使用原生跳转，以更新权限
-        window.location.href = window.location.origin
+        window.location.href = '/introduction/background'
       }, 1000)
     } else {
       errorTips('登录失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
