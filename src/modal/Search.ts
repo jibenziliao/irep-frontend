@@ -18,9 +18,9 @@ export interface IdfResult {
 }
 
 /**
- * 查询预处理检索结果接口
+ * 查询预处理检索结果接口/求索引项接口
  *
- * 向量空间模型
+ * 向量空间模型/概率模型
  */
 export interface VectorSpacePreProcessQuery {
   query: string
@@ -72,4 +72,13 @@ export interface QuerySimilarityResult {
   docId: number
   similarity: number
   title: string
+}
+
+/**
+ * 概率检测模型求系数bij接口
+ */
+export interface QueryBIJResult {
+  bij: number
+  docId: number
+  term: string
 }

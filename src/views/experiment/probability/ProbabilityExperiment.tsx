@@ -9,6 +9,7 @@ import { requestFn } from '../../../utils/request'
 import Arrow from '../../../assets/experiment/vectorSpace/arrow.png'
 import { vectorSpaceQueryOptions } from '../../../config/Constant'
 import { StandardResult } from '../../../modal/VectorSpace'
+import { SearchResult, VectorSpacePreProcessQuery, QueryBIJResult, QuerySimilarityResult } from '../../../modal/Search'
 
 /**
  * 列对齐方式类型(与ant-design保持一致)
@@ -157,108 +158,6 @@ const formulas = [
 `
 ]
 
-/**
- * 标准检索结果
- */
-const standardResults: StandardResult[] = [
-  {
-    queryId: 1,
-    docId: 1,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: '电脑版qq群共享里的文件老是下载失败,求解_解疑答难区_软件区 卡饭论坛 - 互助分享 - 大气谦和!'
-  },
-  {
-    queryId: 1,
-    docId: 2,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'qq群共享文件下载不了怎么办?qq群共享文件下载失败解决方法_评论页-绿茶软件下载'
-  },
-  {
-    queryId: 1,
-    docId: 3,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'qq群共享文j件下载下载失败_百度知道'
-  },
-  {
-    queryId: 1,
-    docId: 4,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: '为什么QQ群共享文件下载失败呢???_百度知道'
-  },
-  {
-    queryId: 1,
-    docId: 5,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'QQ群共享文件下载失败怎么办-学网-中国IT综合门户网站-提供健康,养生,留学,移民,创业,汽车等信息'
-  }
-]
-
-/**
- * 用户检索结果
- */
-const testResults: StandardResult[] = [
-  {
-    queryId: 1,
-    docId: 1,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: true,
-    title: 'qq群文件下载工具|QQ群文件下载工具(稳定下载QQ群文件) 5.0绿色版-绿色下载吧'
-  },
-  {
-    queryId: 1,
-    docId: 2,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'qq群共享的文件一直下载失败_百度知道'
-  },
-  {
-    queryId: 1,
-    docId: 3,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: true,
-    title: 'qq群共享文件下载不了怎么办?qq群共享文件下载失败解决方法 - 绿茶文章中心'
-  },
-  {
-    queryId: 1,
-    docId: 4,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: true,
-    title: '为什么下载qq群共享的文件总是失败?_QQ_下载_天涯问答_天涯社区'
-  },
-  {
-    queryId: 1,
-    docId: 5,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'qq群共享下载失败怎么办? - 软件教程 - 格子啦'
-  }
-]
-
 const { Option } = Select
 
 const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
@@ -276,7 +175,18 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
   const [stepLoading, setStepLoading] = useState(false)
   // 仿真我的搜索引擎步骤索引
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
+  const [lastStepIndex, setLastStepIndex] = useState(0)
   const [selectedQuery, setSelectedQuery] = useState('')
+  const [standardData, setStandardData] = useState<StandardResult[]>([])
+  const [testData, setTestData] = useState<StandardResult[]>([])
+  // 检索结果
+  const [searchResult, setSearchResult] = useState<SearchResult[]>([])
+  // 求索引项结果
+  const [searchPreProcessResult, setSearchPreProcessResult] = useState<VectorSpacePreProcessQuery>()
+  // 求系数bij结果
+  const [searchBIJResult, setSearchBIJResult] = useState<QueryBIJResult[]>([])
+  // 求相似度及相似度降序排序的结果
+  const [searchSimilarityResult, setSearchSimilarityResult] = useState<QuerySimilarityResult[]>([])
 
   /**
    * 定义列的对齐方式，居中
@@ -655,7 +565,13 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
         <Select className={`GlobalSelect ${styles.Select}`} size="large" onChange={updateSelectValue}>
           {renderSelectOptions()}
         </Select>
-        <Button type="primary" size="large" onClick={testRetriever}>
+        <Button
+          type="primary"
+          size="large"
+          loading={calculationLoading}
+          disabled={selectedQuery === ''}
+          onClick={testRetriever}
+        >
           计算
         </Button>
       </div>
@@ -684,7 +600,7 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
         <Table
           rowKey="docId"
           loading={calculationLoading}
-          dataSource={standardResults}
+          dataSource={standardData}
           columns={standardColumns}
           size="small"
           pagination={false}
@@ -694,7 +610,7 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
         <Table
           rowKey="docId"
           loading={calculationLoading}
-          dataSource={testResults}
+          dataSource={testData}
           columns={testColumns}
           size="small"
           pagination={false}
@@ -719,12 +635,20 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
         b
       }
     })
-    if (res && res.status === 200 && res.data) {
-      console.log('计算相似度成功')
+    if (res && res.status === 200 && res.data && res.data.standardResults && res.data.testResults) {
+      setStandardData(handleTestRetrieverResult(res.data.standardResults))
+      setTestData(handleTestRetrieverResult(res.data.testResults))
     } else {
       errorTips('计算相似度失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
     setCalculationLoading(false)
+  }
+
+  /**
+   * 截取相似度计算结果前5条记录
+   */
+  const handleTestRetrieverResult = (data: StandardResult[]) => {
+    return data.filter((_, index) => index < 5)
   }
 
   /**
@@ -741,8 +665,9 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
         b
       }
     })
-    if (res && res.status === 200 && res.data) {
-      console.log('检索成功')
+    if (res && res.status === 200 && res.data && !res.data.msg) {
+      setSearchResult(res.data)
+      setCurrentStepIndex(0)
     } else {
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
@@ -764,7 +689,7 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
       <div className={styles.SearchWrapper}>
         <span className={styles.SearchLabel}>请输入查询语句:</span>
         <Input autoComplete="off" size="large" value={query} onChange={updateQuery} />
-        <Button type="primary" size="large" onClick={searchQuery}>
+        <Button type="primary" size="large" disabled={query === ''} loading={searchLoading} onClick={searchQuery}>
           检索
         </Button>
       </div>
@@ -785,12 +710,42 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
         b
       }
     })
-    if (res && res.status === 200 && res.data) {
+    if (res && res.status === 200 && res.data && !res.data.msg) {
       setCurrentStepIndex(index + 1)
+      handleStepSearchResult(index, res.data)
+      if (index === 3) {
+        setLastStepIndex(index + 1)
+      }
     } else {
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
     setStepLoading(false)
+  }
+
+  /**
+   * 处理每一步检索的结果
+   */
+  const handleStepSearchResult = (
+    index: number,
+    result: VectorSpacePreProcessQuery | QueryBIJResult[] | QuerySimilarityResult[]
+  ) => {
+    switch (index) {
+      case 0:
+        setSearchPreProcessResult(result as VectorSpacePreProcessQuery)
+        break
+      case 1:
+        setSearchBIJResult(result as QueryBIJResult[])
+        break
+      case 2:
+        setSearchSimilarityResult(result as QuerySimilarityResult[])
+        break
+      case 3:
+        setSearchSimilarityResult(result as QuerySimilarityResult[])
+        break
+      default:
+        setSearchPreProcessResult(result as VectorSpacePreProcessQuery)
+        break
+    }
   }
 
   /**
@@ -875,7 +830,7 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
                 <div
                   className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 3 ? styles.DisabledBox : ''}`}
                 >
-                  {renderStepButton('求相似度降序排序', stepLoading, 4)}
+                  {renderStepButton('求相似度降序排序', stepLoading, 3)}
                 </div>
               </div>
             </div>
@@ -890,8 +845,112 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
   /**
    * 渲染搜索结果
    */
-  const renderSearchResult = () => {
-    return <div className={styles.SearchResult}></div>
+  const renderSearchResult = (index: number) => {
+    switch (index) {
+      case 0:
+        return renderCommonSearchResult()
+      case 1:
+        return renderPreProecssResult()
+      case 2:
+        return renderSearchBIJResult()
+      case 3:
+        return renderQuerySimilarityResult()
+      case 4:
+        return renderQuerySimilarityResult()
+      default:
+        return renderCommonSearchResult()
+    }
+  }
+
+  /**
+   * 渲染点击检索按钮后的结果
+   */
+  const renderCommonSearchResult = () => {
+    return <div className={styles.CommonResult}>{renderSearchResultList()}</div>
+  }
+
+  /**
+   * 渲染检索结果列表
+   *
+   * 仅适用于直接点击检索按钮时
+   */
+  const renderSearchResultList = () => {
+    return searchResult.map((i, index) => {
+      return (
+        <div key={index} className={styles.CommonRow}>
+          <a href={i.url} target="_blank" rel="noopener noreferrer" className={styles.CommonLink}>
+            {i.title}
+          </a>
+          <div className={styles.ItemContent}>{i.content}</div>
+        </div>
+      )
+    })
+  }
+
+  /**
+   * 渲染查询预处理的结果
+   */
+  const renderPreProecssResult = () => {
+    return (
+      <div className={styles.PreProcessResult}>
+        <p>
+          <span className={styles.PreProcessLabel}>检索字符串</span>
+          <span>{searchPreProcessResult && searchPreProcessResult.query}</span>
+        </p>
+        <p>
+          <span className={styles.PreProcessLabel}>预处理结果</span>
+          <span>{searchPreProcessResult && searchPreProcessResult.result.join(', ')}</span>
+        </p>
+      </div>
+    )
+  }
+
+  /**
+   * 渲染求系数bij的结果
+   */
+  const renderSearchBIJResult = () => {
+    return searchBIJResult.map((i, index) => {
+      return (
+        <div key={index} className={styles.QueryTFRow}>
+          <p>
+            <span className={styles.QueryTFLabel}>词项</span>
+            <span>{i.term}</span>
+          </p>
+          <p>
+            <span className={styles.QueryTFLabel}>系数bij</span>
+            <span>{i.bij}</span>
+          </p>
+          <p>
+            <span className={styles.QueryTFLabel}>文档Id</span>
+            <span>{i.docId}</span>
+          </p>
+        </div>
+      )
+    })
+  }
+
+  /**
+   * 渲染文档相似度及相似度降序结果
+   */
+  const renderQuerySimilarityResult = () => {
+    return searchSimilarityResult.map((i, index) => {
+      return (
+        <div key={index} className={styles.QueryTFRow}>
+          <p>
+            <span className={styles.QueryTFLabel}>文档名</span>
+            <span>{i.title}</span>
+          </p>
+          <p>
+            <span className={styles.QueryTFLabel}>相似度</span>
+            <span>{i.similarity}</span>
+          </p>
+          <p>
+            <span className={styles.QueryTFLabel}>文档Id</span>
+            <span>{i.docId}</span>
+          </p>
+        </div>
+      )
+    })
   }
 
   /**
@@ -915,8 +974,10 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
         {renderSearchForm()}
         <Spin spinning={searchLoading}>{renderSearchSteps()}</Spin>
         <p className={styles.SearchResultTitle}>检索结果:</p>
-        <Spin spinning={stepLoading}>{renderSearchResult()}</Spin>
-        <Button type="primary" onClick={goNextExperiment} className={styles.NextBtn}>
+        <Spin spinning={stepLoading}>
+          <div className={styles.SearchResult}>{renderSearchResult(currentStepIndex)}</div>
+        </Spin>
+        <Button type="primary" disabled={lastStepIndex !== 4} onClick={goNextExperiment} className={styles.NextBtn}>
           下一步
         </Button>
       </div>
