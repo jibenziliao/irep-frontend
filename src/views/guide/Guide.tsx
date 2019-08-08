@@ -12,7 +12,6 @@ const Guide = () => {
       <div className={styles.videoContainer}>
         <video controls>
           <source src={videoSource} type="video/mp4" />
-          {/* <source src="http://www.acef-apc.com/upload/1/editor/1554891927237.mp4" type="video/mp4" /> */}
         </video>
       </div>
     </div>
