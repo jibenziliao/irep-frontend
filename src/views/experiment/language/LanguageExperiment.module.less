@@ -264,6 +264,108 @@
     border: 1px solid @border-color;
   }
 }
+.CommonRow {
+  margin-bottom: 20px;
+  .CommonLink {
+    color: @primary-color;
+    font-size: 16px;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 4px;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  .ItemContent {
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    // see https://github.com/postcss/autoprefixer/issues/776#issuecomment-392346351
+    /* autoprefixer: ignore next */
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    text-align: left;
+    line-height: 24px;
+  }
+}
+.PreProcessResult {
+  p {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    border: 1px solid @border-color;
+    border-bottom: none;
+    padding: 10px;
+    &:last-child {
+      border-bottom: 1px solid @border-color;
+    }
+    .PreProcessLabel {
+      font-weight: bold;
+      color: @second-text-color;
+      font-size: 16px;
+      margin-right: 20px;
+      display: block;
+      width: 100px;
+    }
+    span {
+      &:last-child {
+        flex: 1;
+      }
+    }
+  }
+}
+.QueryTFRow {
+  margin-bottom: 40px;
+  p {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    border: 1px solid @border-color;
+    border-bottom: none;
+    padding: 10px;
+    &:last-child {
+      border-bottom: 1px solid @border-color;
+    }
+    .QueryTFLabel {
+      font-weight: bold;
+      color: @second-text-color;
+      font-size: 16px;
+      margin-right: 20px;
+      display: block;
+      width: 100px;
+    }
+    span {
+      &:last-child {
+        flex: 1;
+      }
+    }
+  }
+}
+.DocTFTitle {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  &:last-child {
+    border-bottom: 1px solid @border-color;
+  }
+  .DocTFTitleLabel {
+    font-weight: bold;
+    color: @second-text-color;
+    font-size: 16px;
+    margin-right: 20px;
+    display: block;
+    width: 100px;
+  }
+  span {
+    &:last-child {
+      flex: 1;
+    }
+  }
+}
 .NextBtn {
   margin: 40px auto 50px auto;
   display: block;

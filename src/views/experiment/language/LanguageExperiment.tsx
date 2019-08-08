@@ -9,6 +9,13 @@ import { Actions } from '../../../store/Actions'
 import { requestFn } from '../../../utils/request'
 import { vectorSpaceQueryOptions } from '../../../config/Constant'
 import { StandardResult } from '../../../modal/VectorSpace'
+import {
+  SearchResult,
+  QueryDocTFResult,
+  VectorSpacePreProcessQuery,
+  QuerySimilarityResult
+} from '../../../modal/Search'
+import { getStore } from '../../../utils/util'
 
 /**
  * 列对齐方式类型(与ant-design保持一致)
@@ -17,108 +24,6 @@ type columnAlignType = 'center' | 'left' | 'right' | undefined
 
 const { Option } = Select
 
-/**
- * 标准检索结果
- */
-const standardResults: StandardResult[] = [
-  {
-    queryId: 1,
-    docId: 1,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: '电脑版qq群共享里的文件老是下载失败,求解_解疑答难区_软件区 卡饭论坛 - 互助分享 - 大气谦和!'
-  },
-  {
-    queryId: 1,
-    docId: 2,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'qq群共享文件下载不了怎么办?qq群共享文件下载失败解决方法_评论页-绿茶软件下载'
-  },
-  {
-    queryId: 1,
-    docId: 3,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'qq群共享文j件下载下载失败_百度知道'
-  },
-  {
-    queryId: 1,
-    docId: 4,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: '为什么QQ群共享文件下载失败呢???_百度知道'
-  },
-  {
-    queryId: 1,
-    docId: 5,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'QQ群共享文件下载失败怎么办-学网-中国IT综合门户网站-提供健康,养生,留学,移民,创业,汽车等信息'
-  }
-]
-
-/**
- * 用户检索结果
- */
-const testResults: StandardResult[] = [
-  {
-    queryId: 1,
-    docId: 1,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: true,
-    title: 'qq群文件下载工具|QQ群文件下载工具(稳定下载QQ群文件) 5.0绿色版-绿色下载吧'
-  },
-  {
-    queryId: 1,
-    docId: 2,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'qq群共享的文件一直下载失败_百度知道'
-  },
-  {
-    queryId: 1,
-    docId: 3,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: true,
-    title: 'qq群共享文件下载不了怎么办?qq群共享文件下载失败解决方法 - 绿茶文章中心'
-  },
-  {
-    queryId: 1,
-    docId: 4,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: true,
-    title: '为什么下载qq群共享的文件总是失败?_QQ_下载_天涯问答_天涯社区'
-  },
-  {
-    queryId: 1,
-    docId: 5,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'qq群共享下载失败怎么办? - 软件教程 - 格子啦'
-  }
-]
-
 const LanguageExperimentComponent = (props: RouteComponentProps) => {
   const dispatch: Dispatch<Actions> = useDispatch()
   const state: State = useMappedState(useCallback((globalState: State) => globalState, []))
@@ -126,14 +31,26 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
   const [saveOrderLoading, setSaveOrderLoading] = useState(false)
   // 仿真我的搜索引擎，输入框中的值
   const [query, setQuery] = useState('')
+  const [selectedQuery, setSelectedQuery] = useState('')
   const [searchLoading, setSearchLoading] = useState(false)
-  const [ModelName, setModelName] = useState('一元语言模型')
+  const [modelName, setModelName] = useState('一元语言模型')
   const [smoothParam, setSmoothParam] = useState(0.5)
   const [calculationLoading, setCalculationLoading] = useState(false)
   // 仿真我的搜索引擎，每一步的请求loading状态
   const [stepLoading, setStepLoading] = useState(false)
   // 仿真我的搜索引擎步骤索引
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
+  const [lastStepIndex, setLastStepIndex] = useState(0)
+  const [standardData, setStandardData] = useState<StandardResult[]>([])
+  const [testData, setTestData] = useState<StandardResult[]>([])
+  // 检索结果
+  const [searchResult, setSearchResult] = useState<SearchResult[]>([])
+  // 求索引项结果
+  const [searchPreProcessResult, setSearchPreProcessResult] = useState<VectorSpacePreProcessQuery>()
+  // 求系数bij结果
+  const [searchLMResult, setSearchLMResult] = useState<QueryDocTFResult>()
+  // 求相似度及相似度降序排序的结果
+  const [searchSimilarityResult, setSearchSimilarityResult] = useState<QuerySimilarityResult[]>([])
 
   /**
    * 定义列的对齐方式，居中
@@ -455,7 +372,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
       <div>
         <div className={styles.SelectWrapper}>
           <span className={styles.SelectLabel}>请选择语言模型类型：</span>
-          <Select defaultValue="一元语言模型" style={{ width: 150 }} onChange={handleModelChoose}>
+          <Select defaultValue={modelName} style={{ width: 150 }} onChange={handleModelChoose}>
             <Option value="一元语言模型">一元语言模型</Option>
             <Option value="二元语言模型y">二元语言模型</Option>
           </Select>
@@ -490,6 +407,13 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
   }
 
   /**
+   * 更新模型调试时的查询语句
+   */
+  const updateSelectValue = (value: string) => {
+    setSelectedQuery(value)
+  }
+
+  /**
    * 渲染语言模型下拉列表备选项
    */
   const renderSelectOptions = () => {
@@ -511,7 +435,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
         <Table
           rowKey="docId"
           loading={calculationLoading}
-          dataSource={standardResults}
+          dataSource={standardData}
           columns={standardColumns}
           size="small"
           pagination={false}
@@ -521,7 +445,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
         <Table
           rowKey="docId"
           loading={calculationLoading}
-          dataSource={testResults}
+          dataSource={testData}
           columns={testColumns}
           size="small"
           pagination={false}
@@ -535,24 +459,30 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
   /**
    * 计算所选公式查询结果与标准查询结果的相似度
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const testRetriever = async () => {
     setCalculationLoading(true)
     const res = await requestFn(dispatch, {
-      url: '/IRforCN/Retrieval/languageModel/lmSearch',
+      url: '/IRforCN/Retrieval/languageModel/testRetriever',
       method: 'post',
       params: {
-        query,
-        ModelName,
+        query: selectedQuery,
         smoothParam
       }
     })
-    if (res && res.status === 200 && res.data) {
-      console.log('计算相似度成功')
+    if (res && res.status === 200 && res.data && res.data.standardResults && res.data.testResults) {
+      setStandardData(handleTestRetrieverResult(res.data.standardResults))
+      setTestData(handleTestRetrieverResult(res.data.testResults))
     } else {
       errorTips('计算相似度失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
     setCalculationLoading(false)
+  }
+
+  /**
+   * 截取相似度计算结果前5条记录
+   */
+  const handleTestRetrieverResult = (data: StandardResult[]) => {
+    return data.filter((_, index) => index < 5)
   }
 
   /**
@@ -561,16 +491,16 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
   const searchQuery = async () => {
     setSearchLoading(true)
     const res = await requestFn(dispatch, {
-      url: '/IRforCN/Retrieval/languageModel/lmSearch',
+      url: '/IRforCN/Retrieval/languageModel/search',
       method: 'post',
       params: {
         query,
-        ModelName,
         smoothParam
       }
     })
     if (res && res.status === 200 && res.data) {
-      console.log('检索成功')
+      setSearchResult(res.data)
+      setCurrentStepIndex(0)
     } else {
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
@@ -586,17 +516,47 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
       url,
       method: 'post',
       params: {
+        ...(url.includes('tfsOfDoc') ? { docId: parseInt(getStore('docId')) } : {}),
         query,
-        ModelName,
         smoothParam
       }
     })
-    if (res && res.status === 200 && res.data) {
+    if (res && res.status === 200 && res.data && !res.data.msg) {
       setCurrentStepIndex(index + 1)
+      handleStepSearchResult(index, res.data)
+      if (index === 3) {
+        setLastStepIndex(index + 1)
+      }
     } else {
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
     setStepLoading(false)
+  }
+
+  /**
+   * 处理每一步检索的结果
+   */
+  const handleStepSearchResult = (
+    index: number,
+    result: VectorSpacePreProcessQuery | QueryDocTFResult | QuerySimilarityResult[]
+  ) => {
+    switch (index) {
+      case 0:
+        setSearchPreProcessResult(result as VectorSpacePreProcessQuery)
+        break
+      case 1:
+        setSearchLMResult(result as QueryDocTFResult)
+        break
+      case 2:
+        setSearchSimilarityResult(result as QuerySimilarityResult[])
+        break
+      case 3:
+        setSearchSimilarityResult(result as QuerySimilarityResult[])
+        break
+      default:
+        setSearchPreProcessResult(result as VectorSpacePreProcessQuery)
+        break
+    }
   }
 
   /**
@@ -606,10 +566,16 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
     return (
       <div className={styles.SelectWrapper}>
         <span className={styles.SelectLabel}>请选择标准查询:</span>
-        <Select className={`GlobalSelect ${styles.Select}`} size="large">
+        <Select className={`GlobalSelect ${styles.Select}`} size="large" onChange={updateSelectValue}>
           {renderSelectOptions()}
         </Select>
-        <Button type="primary" size="large">
+        <Button
+          type="primary"
+          size="large"
+          loading={calculationLoading}
+          disabled={selectedQuery === ''}
+          onClick={testRetriever}
+        >
           计算
         </Button>
       </div>
@@ -624,7 +590,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
       <div className={styles.SearchWrapper}>
         <span className={styles.SearchLabel}>请输入查询语句:</span>
         <Input autoComplete="off" size="large" value={query} onChange={updateQuery} />
-        <Button type="primary" size="large" onClick={searchQuery}>
+        <Button type="primary" size="large" disabled={query === ''} loading={searchLoading} onClick={searchQuery}>
           检索
         </Button>
       </div>
@@ -636,10 +602,10 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
    */
   const handleCurrentStep = (index: number) => {
     const requestUrls = [
-      '/IRforCN/Retrieval/languageModel/queryProcess',
-      '/IRforCN/Retrieval/languageModel/lmOfDocs',
-      '/IRforCN/Retrieval/languageModel/getResult',
-      '/IRforCN/Retrieval/languageModel/getResultAfterSort'
+      '/IRforCN/Retrieval/languageModel/ppq',
+      '/IRforCN/Retrieval/languageModel/tfsOfDoc',
+      '/IRforCN/Retrieval/languageModel/similarity',
+      '/IRforCN/Retrieval/languageModel/descendOrderSimilarity'
     ]
     getMonitorResult(requestUrls[index], index)
   }
@@ -728,15 +694,132 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
   /**
    * 渲染搜索结果
    */
-  const renderSearchResult = () => {
-    return <div className={styles.SearchResult}></div>
+  const renderSearchResult = (index: number) => {
+    switch (index) {
+      case 0:
+        return renderCommonSearchResult()
+      case 1:
+        return renderPreProecssResult()
+      case 2:
+        return renderLMResult()
+      case 3:
+        return renderQuerySimilarityResult()
+      case 4:
+        return renderQuerySimilarityResult()
+      default:
+        return renderCommonSearchResult()
+    }
+  }
+
+  /**
+   * 渲染点击检索按钮后的结果
+   */
+  const renderCommonSearchResult = () => {
+    return <div className={styles.CommonResult}>{renderSearchResultList()}</div>
+  }
+
+  /**
+   * 渲染检索结果列表
+   *
+   * 仅适用于直接点击检索按钮时
+   */
+  const renderSearchResultList = () => {
+    return searchResult.map((i, index) => {
+      return (
+        <div key={index} className={styles.CommonRow}>
+          <a href={i.url} target="_blank" rel="noopener noreferrer" className={styles.CommonLink}>
+            {i.title}
+          </a>
+          <div className={styles.ItemContent}>{i.content}</div>
+        </div>
+      )
+    })
+  }
+
+  /**
+   * 渲染查询预处理的结果
+   */
+  const renderPreProecssResult = () => {
+    return (
+      <div className={styles.PreProcessResult}>
+        <p>
+          <span className={styles.PreProcessLabel}>检索字符串</span>
+          <span>{searchPreProcessResult && searchPreProcessResult.query}</span>
+        </p>
+        <p>
+          <span className={styles.PreProcessLabel}>预处理结果</span>
+          <span>{searchPreProcessResult && searchPreProcessResult.result.join(', ')}</span>
+        </p>
+      </div>
+    )
+  }
+
+  /**
+   * 渲染计算LM结果
+   */
+  const renderLMResult = () => {
+    return (
+      <>
+        <div className={styles.DocTFTitle}>
+          <span className={styles.DocTFTitleLabel}>文档名</span>
+          <span>{searchLMResult && searchLMResult.title}</span>
+        </div>
+        <div className={styles.DocTFTitle}>
+          <span className={styles.DocTFTitleLabel}>文档Id</span>
+          <span>{searchLMResult && searchLMResult.docId}</span>
+        </div>
+        {searchLMResult &&
+          searchLMResult.tfs.map((i, index) => {
+            return (
+              <div key={index} className={styles.QueryTFRow}>
+                <p>
+                  <span className={styles.QueryTFLabel}>词项</span>
+                  <span>{i.term}</span>
+                </p>
+                <p>
+                  <span className={styles.QueryTFLabel}>词频</span>
+                  <span>{i.tf}</span>
+                </p>
+                <p>
+                  <span className={styles.QueryTFLabel}>文档Id</span>
+                  <span>{i.docId}</span>
+                </p>
+              </div>
+            )
+          })}
+      </>
+    )
+  }
+
+  /**
+   * 渲染文档相似度及相似度降序结果
+   */
+  const renderQuerySimilarityResult = () => {
+    return searchSimilarityResult.map((i, index) => {
+      return (
+        <div key={index} className={styles.QueryTFRow}>
+          <p>
+            <span className={styles.QueryTFLabel}>文档名</span>
+            <span>{i.title}</span>
+          </p>
+          <p>
+            <span className={styles.QueryTFLabel}>相似度</span>
+            <span>{i.similarity}</span>
+          </p>
+          <p>
+            <span className={styles.QueryTFLabel}>文档Id</span>
+            <span>{i.docId}</span>
+          </p>
+        </div>
+      )
+    })
   }
 
   /**
    * 页面底部，点击前往下一步
    */
   const goNextExperiment = () => {
-    props.history.replace('/experiment/probability')
+    props.history.replace('/experiment/evaluation')
   }
 
   return (
@@ -753,9 +836,11 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
         {renderSearchForm()}
         <Spin spinning={searchLoading}>{renderSearchSteps()}</Spin>
         <p className={styles.SearchResultTitle}>检索结果:</p>
-        <Spin spinning={stepLoading}>{renderSearchResult()}</Spin>
+        <Spin spinning={stepLoading}>
+          <div className={styles.SearchResult}>{renderSearchResult(currentStepIndex)}</div>
+        </Spin>
       </div>
-      <Button type="primary" onClick={goNextExperiment} className={styles.NextBtn}>
+      <Button type="primary" disabled={lastStepIndex !== 4} onClick={goNextExperiment} className={styles.NextBtn}>
         下一步
       </Button>
     </div>
