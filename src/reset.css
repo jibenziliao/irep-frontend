@@ -36,7 +36,7 @@ select,
 textarea {
   /* for ie */
   /*font: 16px/1 Tahoma, Helvetica, Arial, "宋体", sans-serif;*/
-  font: 16px/1 Tahoma, Helvetica, Arial, '\5b8b\4f53', sans-serif; /* 用 ascii 字符表示，使得在任何编码下都无问题 */
+  font: 14px/1.5 Tahoma, Helvetica, Arial, '\5b8b\4f53', sans-serif; /* 用 ascii 字符表示，使得在任何编码下都无问题 */
 }
 
 h1 {
