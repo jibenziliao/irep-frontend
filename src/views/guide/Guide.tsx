@@ -1,5 +1,6 @@
 import React from 'react'
-import styles from "./Guide.module.less"
+import styles from './Guide.module.less'
+import videoSource from '../../assets/videos/irep.mp4'
 
 const Guide = () => {
   return (
@@ -9,7 +10,10 @@ const Guide = () => {
         <div className={styles.subTitle}>Experimental Instruction</div>
       </div>
       <div className={styles.videoContainer}>
-          放引导视频
+        <video controls>
+          <source src={videoSource} type="video/mp4" />
+          {/* <source src="http://www.acef-apc.com/upload/1/editor/1554891927237.mp4" type="video/mp4" /> */}
+        </video>
       </div>
     </div>
   )
