@@ -10,6 +10,7 @@ import { Actions } from '../../store/Actions'
 import { setStore } from '../../utils/util'
 import Announcement from './Announcement'
 import LoginStatus from './LoginStatus'
+import videoSource from '../../assets/videos/irep.mp4'
 
 interface Params {
   userName: string
@@ -86,7 +87,11 @@ const LoginForm = (props: LoginProp) => {
     <div>
       <div className={styles.LoginContainer}>
         <div className={styles.FormWrapper}>
-          <div className={styles.VideoWrapper}></div>
+          <div className={styles.VideoWrapper}>
+            <video controls>
+              <source src={videoSource} type="video/mp4" />
+            </video>
+          </div>
           <div className={styles.LoginForm}>
             <label className={styles.Title}>用户登录</label>
             <Form onSubmit={handleSubmit} className={styles.Form}>

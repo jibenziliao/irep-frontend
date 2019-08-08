@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Dispatch } from 'redux'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { Button, Select, notification, Radio, Table, Icon, Spin, Input } from 'antd'
+import { Button, Select, notification, Radio, Table, Icon, Spin, Input, Form } from 'antd'
 import echarts from 'echarts'
+import { FormComponentProps } from 'antd/lib/form'
+import { RadioChangeEvent } from 'antd/lib/radio'
 import ReactEchartsCore from 'echarts-for-react/lib/core'
 import styles from './EvaluationExperiment.module.less'
 import { vectorSpaceQueryOptions, defaultChartColors } from '../../../config/Constant'
@@ -10,137 +12,218 @@ import { requestFn } from '../../../utils/request'
 import { useDispatch } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
 import { StandardResult } from '../../../modal/VectorSpace'
+import {
+  IndividualPerformanceOrigin,
+  RadarSelected,
+  AveragePerformance,
+  IndividualPerformance,
+  PerformaceKeys
+} from '../../../modal/Performance'
 
 /**
  * 列对齐方式类型(与ant-design保持一致)
  */
 type columnAlignType = 'center' | 'left' | 'right' | undefined
 
-/**
- * 标准检索结果
- */
-const standardResults: StandardResult[] = [
-  {
-    queryId: 1,
-    docId: 1,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: '电脑版qq群共享里的文件老是下载失败,求解_解疑答难区_软件区 卡饭论坛 - 互助分享 - 大气谦和!'
-  },
-  {
-    queryId: 1,
-    docId: 2,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'qq群共享文件下载不了怎么办?qq群共享文件下载失败解决方法_评论页-绿茶软件下载'
-  },
-  {
-    queryId: 1,
-    docId: 3,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'qq群共享文j件下载下载失败_百度知道'
-  },
-  {
-    queryId: 1,
-    docId: 4,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: '为什么QQ群共享文件下载失败呢???_百度知道'
-  },
-  {
-    queryId: 1,
-    docId: 5,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'QQ群共享文件下载失败怎么办-学网-中国IT综合门户网站-提供健康,养生,留学,移民,创业,汽车等信息'
-  }
-]
-
-/**
- * 用户检索结构
- */
-const testResults: StandardResult[] = [
-  {
-    queryId: 1,
-    docId: 1,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: true,
-    title: 'qq群文件下载工具|QQ群文件下载工具(稳定下载QQ群文件) 5.0绿色版-绿色下载吧'
-  },
-  {
-    queryId: 1,
-    docId: 2,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'qq群共享的文件一直下载失败_百度知道'
-  },
-  {
-    queryId: 1,
-    docId: 3,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: true,
-    title: 'qq群共享文件下载不了怎么办?qq群共享文件下载失败解决方法 - 绿茶文章中心'
-  },
-  {
-    queryId: 1,
-    docId: 4,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: true,
-    title: '为什么下载qq群共享的文件总是失败?_QQ_下载_天涯问答_天涯社区'
-  },
-  {
-    queryId: 1,
-    docId: 5,
-    docRank: 1,
-    retrieverId: 1,
-    score: 4,
-    isExisting: false,
-    title: 'qq群共享下载失败怎么办? - 软件教程 - 格子啦'
-  }
-]
-
-const defaultModals = [
+const defaultModels = [
   {
     name: '布尔模型',
-    value: 0
+    value: 'boolModel'
   },
   {
     name: '向量空间模型',
-    value: 1
+    value: 'vsm'
   },
   {
     name: '概率模型',
-    value: 2
+    value: 'probabilityModel'
   },
   {
     name: '语言模型',
-    value: 3
+    value: 'languageModel'
   }
 ]
 
 const { Option } = Select
 const { TextArea } = Input
 
-const EvaluationExperimentComponent = (props: RouteComponentProps) => {
+/**
+ * 模型对比纵轴假数据
+ */
+const yAxisData = [
+  'f1',
+  'map',
+  'ndcg20',
+  'ndcg10',
+  'ndcg5',
+  'ndcg',
+  'r20',
+  'r10',
+  'r5',
+  'recall',
+  'p20',
+  'p10',
+  'p5',
+  'precision'
+]
+
+/**
+ * 模型对比假数据
+ */
+const seriesData = [18.9, 22.2, 24.6, 32.45, 38.67, 41.35, 43.96, 49.92, 52, 58.56, 64.32, 75.54, 84.23, 93.76]
+
+/**
+ * roc曲线假数据
+ */
+const rocSeriesData = [
+  [0.005, 0.1806],
+  [0.01, 0.2464],
+  [0.02, 0.3309],
+  [0.03, 0.3898],
+  [0.04, 0.436],
+  [0.05, 0.4742],
+  [0.06, 0.507],
+  [0.06, 0.507],
+  [0.08, 0.5612],
+  [0.09, 0.5842],
+  [0.1, 0.6051],
+  [0.11, 0.6243],
+  [0.12, 0.642],
+  [0.13, 0.6584],
+  [0.14, 0.6737],
+  [0.15, 0.688],
+  [0.2, 0.7479],
+  [0.25, 0.794],
+  [0.3, 0.8308],
+  [0.4, 0.8858],
+  [0.5, 0.9243],
+  [0.6, 0.9521],
+  [0.7, 0.9721],
+  [0.8, 0.9862],
+  [0.9, 0.9954],
+  [0.95, 0.9983]
+]
+
+/**
+ * 正确率-召回曲线假数据
+ */
+const prSeriesData = [[0, 1], [0.2, 0.95], [0.4, 0.93], [0.57, 0.9], [0.8, 0.8], [0.9, 0.6], [1, 0]]
+
+/**
+ * 综合性能雷达图提示框配置
+ */
+const radarIndicator = [
+  { name: '布尔模型', max: 1 },
+  { name: '向量空间模型', max: 1 },
+  { name: '概率检索模型', max: 1 },
+  { name: '语言模型', max: 1 }
+]
+
+/**
+ * 综合性能雷达图，每个维度数据项
+ */
+const radarLegend = [
+  'f1',
+  'map',
+  'ndcg20',
+  'ndcg10',
+  'ndcg5',
+  'ndcg',
+  'r20',
+  'r10',
+  'r5',
+  'recall',
+  'p20',
+  'p10',
+  'p5',
+  'precision'
+]
+
+/**
+ * 综合性能雷达图假数据
+ */
+const radarSeriesData: { name: PerformaceKeys; value: number[] }[] = [
+  {
+    value: [18.9, 22.2, 24.6, 32.45],
+    name: 'f1'
+  },
+  {
+    value: [28.9, 24.6, 34.6, 12.45],
+    name: 'map'
+  },
+  {
+    value: [38.9, 28.9, 44.6, 28.45],
+    name: 'ndcg20'
+  },
+  {
+    value: [48.9, 18, 41.6, 17.45],
+    name: 'ndcg10'
+  },
+  {
+    value: [58.9, 28.2, 37.6, 25.45],
+    name: 'ndcg5'
+  },
+  {
+    value: [68.9, 12.2, 54.6, 37.45],
+    name: 'ndcg'
+  },
+  {
+    value: [78.9, 32.2, 64.6, 42.45],
+    name: 'r20'
+  },
+  {
+    value: [88.9, 42.2, 57.6, 51.45],
+    name: 'r10'
+  },
+  {
+    value: [22.2, 52.2, 49.6, 46.45],
+    name: 'r5'
+  },
+  {
+    value: [32.45, 44.2, 14.6, 58.45],
+    name: 'recall'
+  },
+  {
+    value: [24.6, 62.2, 61.6, 62.45],
+    name: 'p20'
+  },
+  {
+    value: [42, 39.2, 45.6, 51.45],
+    name: 'p10'
+  },
+  {
+    value: [51, 47.2, 29.6, 43.45],
+    name: 'p5'
+  },
+  {
+    value: [18.9, 68.2, 23.6, 37.45],
+    name: 'precision'
+  }
+]
+
+/**
+ * 综合性能雷达图默认要展示的列
+ */
+const radarSelected: RadarSelected = {
+  f1: true,
+  map: false,
+  ndcg20: false,
+  ndcg10: false,
+  ndcg5: false,
+  ndcg: false,
+  r20: false,
+  r10: false,
+  r5: false,
+  recall: false,
+  p20: false,
+  p10: false,
+  p5: false,
+  precision: false
+}
+
+interface EvaluationExperimentProps extends RouteComponentProps, FormComponentProps {}
+
+const EvaluationExperimentForm = (props: EvaluationExperimentProps) => {
   const dispatch: Dispatch<Actions> = useDispatch()
   const [calculationLoading, setCalculationLoading] = useState(false)
   const [performanceLoading, setPerformanceLoading] = useState(false)
@@ -153,10 +236,17 @@ const EvaluationExperimentComponent = (props: RouteComponentProps) => {
   // 性能对比雷达图对比
   const [radarOption, setRadarOption] = useState()
   // 综合分析
-  const [analysisText, setAnalysisText] = useState()
+  const [analysisText, setAnalysisText] = useState('')
   const [saveAnalysLoading, setSaveAnalysLoading] = useState(false)
   // 需要仿真的模型
-  const [modalType, setModalType] = useState(0)
+  const [modelType, setModelType] = useState('boolModel')
+  const [selectedQuery, setSelectedQuery] = useState('')
+  const [modelName, setModelName] = useState('boolModel')
+  const [standardData, setStandardData] = useState<StandardResult[]>([])
+  const [testData, setTestData] = useState<StandardResult[]>([])
+  const [calculationDisabled, setCalculationDisabled] = useState(true)
+  const [selectModelLoading, setSelecteModelLoading] = useState(false)
+  const { getFieldDecorator, getFieldsValue } = props.form
 
   /**
    * 定义列的对齐方式，居中
@@ -232,6 +322,34 @@ const EvaluationExperimentComponent = (props: RouteComponentProps) => {
     }
   ]
 
+  useEffect(() => {
+    /**
+     * 计算所选公式查询结果与标准查询结果的相似度
+     */
+    const testRetriever = async () => {
+      setCalculationLoading(true)
+      const res = await requestFn(dispatch, {
+        url: '/IRforCN/performance/testRetriever',
+        method: 'post',
+        params: {
+          query: selectedQuery,
+          modelName
+        }
+      })
+      if (res && res.status === 200 && res.data && res.data.standardResults && res.data.testResults) {
+        setStandardData(handleTestRetrieverResult(res.data.standardResults))
+        setTestData(handleTestRetrieverResult(res.data.testResults))
+      } else {
+        errorTips('计算相似度失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+      }
+      setCalculationLoading(false)
+    }
+
+    if (selectedQuery) {
+      testRetriever()
+    }
+  }, [dispatch, selectedQuery, modelName])
+
   /**
    * 渲染相关度列
    */
@@ -290,7 +408,7 @@ const EvaluationExperimentComponent = (props: RouteComponentProps) => {
         },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         formatter: (param: any) => {
-          const arr = [`${xAxisName}: ${param[0].value[1]}`, `${yAxisName}:${param[0].value[0]}`]
+          const arr = [`${xAxisName}: ${param[0].value[1]}`, `${yAxisName}: ${param[0].value[0]}`]
           return arr.join('<br>')
         }
       },
@@ -320,7 +438,12 @@ const EvaluationExperimentComponent = (props: RouteComponentProps) => {
   /**
    * 获取综合性能雷达图
    */
-  const getRadarOption = (indicator: { name: string; max: number }[], seriesData: number[]) => {
+  const getRadarOption = (
+    indicator: { name: string; max: number }[],
+    seriesData: { name: string; value: number[] }[],
+    legend: string[],
+    selected: RadarSelected
+  ) => {
     const option = {
       tooltip: {},
       radar: {
@@ -332,17 +455,22 @@ const EvaluationExperimentComponent = (props: RouteComponentProps) => {
             padding: [3, 5]
           }
         },
+        center: ['60%', '50%'],
         indicator: indicator
+      },
+      legend: {
+        type: 'scroll',
+        orient: 'vertical',
+        top: 'middle',
+        left: 10,
+        data: legend,
+        selected
       },
       series: [
         {
           type: 'radar',
           name: '综合性能雷达图',
-          data: [
-            {
-              value: seriesData
-            }
-          ]
+          data: seriesData
         }
       ]
     }
@@ -351,9 +479,24 @@ const EvaluationExperimentComponent = (props: RouteComponentProps) => {
 
   /**
    * 点击下一步
+   *
+   * 先选择仿真模型
    */
-  const goNextStep = () => {
-    props.history.replace('/experiment/simulation')
+  const goNextStep = async () => {
+    setSelecteModelLoading(true)
+    const res = await requestFn(dispatch, {
+      url: '/IRforCN/Simulation/selectModel',
+      method: 'post',
+      params: {
+        modelName: modelType
+      }
+    })
+    setSelecteModelLoading(false)
+    if (res && res.status === 200 && res.data && res.data.code === '1') {
+      props.history.replace('/experiment/simulation')
+    } else {
+      errorTips('选择仿真模型失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+    }
   }
 
   /**
@@ -362,102 +505,121 @@ const EvaluationExperimentComponent = (props: RouteComponentProps) => {
   const getPerformance = async () => {
     setPerformanceLoading(true)
     const res = await requestFn(dispatch, {
-      url: '',
+      url: '/IRforCN/performance/individualPerformance',
       method: 'post',
-      data: {}
+      params: {
+        query: selectedQuery,
+        modelName
+      }
     })
     if (res && res.status === 200 && res.data) {
-      // TODO: renderChart
-    } else {
-      errorTips('获取模型性能对比失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
-      const yAxisData = [
-        'F1',
-        'ap',
-        'ndcg@20',
-        'ndcg@10',
-        'ndcg@5',
-        'ndcg',
-        'r@20',
-        'r@10',
-        'r@5',
-        'recall',
-        'p@20',
-        'p@10',
-        'p@5',
-        'precision'
-      ]
-      const seriesData = [18.9, 22.2, 24.6, 32.45, 38.67, 41.35, 43.96, 49.92, 52, 58.56, 64.32, 75.54, 84.23, 93.76]
+      const { yAxisData, seriesData } = handlePerformanceResult(res.data)
       const option = getChartBarOption(yAxisData, seriesData)
       setPerformanceOption(option)
-      const rocSeriesData = [
-        [0.005, 0.1806],
-        [0.01, 0.2464],
-        [0.02, 0.3309],
-        [0.03, 0.3898],
-        [0.04, 0.436],
-        [0.05, 0.4742],
-        [0.06, 0.507],
-        [0.06, 0.507],
-        [0.08, 0.5612],
-        [0.09, 0.5842],
-        [0.1, 0.6051],
-        [0.11, 0.6243],
-        [0.12, 0.642],
-        [0.13, 0.6584],
-        [0.14, 0.6737],
-        [0.15, 0.688],
-        [0.2, 0.7479],
-        [0.25, 0.794],
-        [0.3, 0.8308],
-        [0.4, 0.8858],
-        [0.5, 0.9243],
-        [0.6, 0.9521],
-        [0.7, 0.9721],
-        [0.8, 0.9862],
-        [0.9, 0.9954],
-        [0.95, 0.9983]
-      ]
-      const prSeriesData = [[0, 1], [0.2, 0.95], [0.4, 0.93], [0.57, 0.9], [0.8, 0.8], [0.9, 0.6], [1, 0]]
-      const radarIndicator = [
-        { name: 'F1', max: 100 },
-        { name: 'ap', max: 100 },
-        { name: 'ndcg@20', max: 100 },
-        { name: 'ndcg@10', max: 100 },
-        { name: 'ndcg@5', max: 100 },
-        { name: 'ndcg', max: 100 },
-        { name: 'r@20', max: 100 },
-        { name: 'r@10', max: 100 },
-        { name: 'r@5', max: 100 },
-        { name: 'recall', max: 100 },
-        { name: 'p@20', max: 100 },
-        { name: 'p@10', max: 100 },
-        { name: 'p@5', max: 100 },
-        { name: 'precision', max: 100 }
-      ]
-      const radarSeriesData = [
-        18.9,
-        22.2,
-        24.6,
-        32.45,
-        38.67,
-        41.35,
-        43.96,
-        49.92,
-        52,
-        58.56,
-        64.32,
-        75.54,
-        84.23,
-        93.76
-      ]
       const tmpPrOption = getCurveOption(prSeriesData, '正确率', '召回率')
       const tmpRocOption = getCurveOption(rocSeriesData, '正样本比例', '负样本比例')
-      const tmpRadarOption = getRadarOption(radarIndicator, radarSeriesData)
+      setRocOption(tmpRocOption)
+      setPrOption(tmpPrOption)
+      getRadarPerformance()
+    } else {
+      errorTips('获取模型性能对比失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+      const option = getChartBarOption(yAxisData, seriesData)
+      setPerformanceOption(option)
+      const tmpPrOption = getCurveOption(prSeriesData, '正确率', '召回率')
+      const tmpRocOption = getCurveOption(rocSeriesData, '正样本比例', '负样本比例')
+      const tmpRadarOption = getRadarOption(radarIndicator, radarSeriesData, radarLegend, radarSelected)
       setRocOption(tmpRocOption)
       setPrOption(tmpPrOption)
       setRadarOption(tmpRadarOption)
+      setPerformanceLoading(false)
+    }
+  }
+
+  /**
+   * 处理检索模型性能对比接口返回的数据
+   *
+   * 各项性能对比图
+   */
+  const handlePerformanceResult = (res: IndividualPerformanceOrigin) => {
+    const { query, retrieverId, id, ...data } = res
+    const yAxisData = Object.keys(data)
+    const seriesData: number[] = Object.values(data)
+    return { yAxisData, seriesData }
+  }
+
+  /**
+   * 获取综合性能雷达图数据
+   */
+  const getRadarPerformance = async () => {
+    const res = await requestFn(dispatch, {
+      url: '/IRforCN/performance/averagePerformance',
+      method: 'post'
+    })
+    if (res && res.status === 200 && res.data) {
+      const series = handleAveragePerformanceResult(res.data)
+      const selected = handleRadarSelected(series)
+      const tmpRadarOption = getRadarOption(radarIndicator, series, radarLegend, selected)
+      setRadarOption(tmpRadarOption)
+    } else {
+      errorTips('获取综合性能数据失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
     setPerformanceLoading(false)
+  }
+
+  /**
+   * 处理legend需要显示的标签
+   *
+   * 若四个维度的值都为0，则默认不显示
+   */
+  const handleRadarSelected = (series: { name: PerformaceKeys; value: number[] }[]) => {
+    let selected: RadarSelected = {
+      f1: true,
+      map: false,
+      ndcg20: false,
+      ndcg10: false,
+      ndcg5: false,
+      ndcg: false,
+      r20: false,
+      r10: false,
+      r5: false,
+      recall: false,
+      p20: false,
+      p10: false,
+      p5: false,
+      precision: false
+    }
+    for (let i of series) {
+      const key = i.name as PerformaceKeys
+      selected[key] = !i.value.every(j => j === 0)
+    }
+    return selected
+  }
+
+  /**
+   * 处理综合性能雷达图数据
+   */
+  const handleAveragePerformanceResult = (res: AveragePerformance) => {
+    const series = []
+    const bool = handleSinglePerformanceResult(res.boolModelPerformance)
+    const language = handleSinglePerformanceResult(res.languageModelPerformance)
+    const probability = handleSinglePerformanceResult(res.probabilityModelPerformance)
+    const vectorSpace = handleSinglePerformanceResult(res.vsmPerformance)
+    const keys = Object.keys(bool) as PerformaceKeys[]
+    for (let i of keys) {
+      series.push({
+        name: i,
+        value: [bool[i], vectorSpace[i], probability[i], language[i]]
+      })
+    }
+    return series
+  }
+
+  /**
+   * 取出综合性能数据中的单个模型数据
+   */
+  const handleSinglePerformanceResult = (res: IndividualPerformanceOrigin): IndividualPerformance => {
+    const { query, retrieverId, id, ...data } = res
+    return data
   }
 
   /**
@@ -474,25 +636,10 @@ const EvaluationExperimentComponent = (props: RouteComponentProps) => {
   }
 
   /**
-   * 计算所选公式查询结果与标准查询结果的相似度
+   * 截取相似度计算结果前5条记录
    */
-  const testRetriever = async () => {
-    setCalculationLoading(true)
-    const res = await requestFn(dispatch, {
-      url: '/IRforCN/Retrieval/vectorSpaceModel/testRetriever',
-      method: 'post',
-      params: {
-        query: 'qq群共享文件下载失败',
-        formulaId: 5,
-        smoothParam: 0.5
-      }
-    })
-    if (res && res.status === 200 && res.data) {
-      console.log('计算相似度成功')
-    } else {
-      errorTips('计算相似度失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
-    }
-    setCalculationLoading(false)
+  const handleTestRetrieverResult = (data: StandardResult[]) => {
+    return data.filter((_, index) => index < 5)
   }
 
   /**
@@ -524,10 +671,34 @@ const EvaluationExperimentComponent = (props: RouteComponentProps) => {
   }
 
   /**
+   * 更新模型调试时的查询语句
+   */
+  const updateSelectValue = (value: string) => {
+    if (value) {
+      setCalculationDisabled(false)
+    }
+  }
+
+  /**
+   * 更新计算相关度时的所选模型名称
+   */
+  const updateModelName = (e: RadioChangeEvent) => {
+    setModelName(e.target.value)
+  }
+
+  /**
+   * 计算相似度
+   */
+  const calculate = () => {
+    const fieldValue = getFieldsValue(['selectedQuery'])
+    setSelectedQuery(fieldValue.selectedQuery)
+  }
+
+  /**
    * 选中需要仿真的模型
    */
-  const updateModalType = (type: number) => {
-    setModalType(type)
+  const updateModelType = (type: string) => {
+    setModelType(type)
   }
 
   /**
@@ -644,7 +815,7 @@ const EvaluationExperimentComponent = (props: RouteComponentProps) => {
         <Table
           rowKey="docId"
           loading={calculationLoading}
-          dataSource={standardResults}
+          dataSource={standardData}
           columns={standardColumns}
           size="small"
           pagination={false}
@@ -654,7 +825,7 @@ const EvaluationExperimentComponent = (props: RouteComponentProps) => {
         <Table
           rowKey="docId"
           loading={calculationLoading}
-          dataSource={testResults}
+          dataSource={testData}
           columns={testColumns}
           size="small"
           pagination={false}
@@ -669,12 +840,12 @@ const EvaluationExperimentComponent = (props: RouteComponentProps) => {
    * 渲染需要仿真的模型
    */
   const renderModals = () => {
-    return defaultModals.map(i => {
+    return defaultModels.map(i => {
       return (
         <div
           key={i.name}
-          className={`${styles.Modal} ${modalType === i.value ? styles.Active : ''}`}
-          onClick={() => updateModalType(i.value)}
+          className={`${styles.Modal} ${modelType === i.value ? styles.Active : ''}`}
+          onClick={() => updateModelType(i.value)}
         >
           {i.name}
         </div>
@@ -686,19 +857,37 @@ const EvaluationExperimentComponent = (props: RouteComponentProps) => {
     <div>
       <div className={styles.SearchWrapper}>
         <span className={styles.SearchLabel}>请选择标准查询</span>
-        <Select className={`GlobalSelect ${styles.Select}`} size="large">
-          {renderSelectOptions()}
-        </Select>
-        <Button type="primary" size="large" loading={calculationLoading} onClick={testRetriever}>
+        <Form.Item className={styles.Select}>
+          {getFieldDecorator('selectedQuery', {
+            initialValue: selectedQuery
+          })(
+            <Select style={{ width: '100%' }} size="large" onChange={updateSelectValue}>
+              {renderSelectOptions()}
+            </Select>
+          )}
+        </Form.Item>
+
+        <Button
+          type="primary"
+          size="large"
+          loading={calculationLoading}
+          disabled={calculationDisabled}
+          onClick={calculate}
+        >
           计算
         </Button>
       </div>
       <div className={styles.ModalWrapper}>
-        <Radio.Group defaultValue="a" buttonStyle="solid" className={`GlobalEvaluationRadioGroup ${styles.RadioGroup}`}>
-          <Radio.Button value="a">布尔模型</Radio.Button>
-          <Radio.Button value="b">向量空间模型</Radio.Button>
-          <Radio.Button value="c">概率模型</Radio.Button>
-          <Radio.Button value="d">语言模型</Radio.Button>
+        <Radio.Group
+          defaultValue="boolModel"
+          buttonStyle="solid"
+          className={`GlobalEvaluationRadioGroup ${styles.RadioGroup}`}
+          onChange={updateModelName}
+        >
+          <Radio.Button value="boolModel">布尔模型</Radio.Button>
+          <Radio.Button value="vsm">向量空间模型</Radio.Button>
+          <Radio.Button value="probabilityModel">概率模型</Radio.Button>
+          <Radio.Button value="languageModel">语言模型</Radio.Button>
         </Radio.Group>
       </div>
       <div className={styles.TableNames}>
@@ -706,7 +895,13 @@ const EvaluationExperimentComponent = (props: RouteComponentProps) => {
         <p>我的检索器排序</p>
       </div>
       {renderTables()}
-      <Button type="primary" className={styles.PerformanceBtn} onClick={getPerformance} loading={performanceLoading}>
+      <Button
+        type="primary"
+        disabled={selectedQuery === ''}
+        className={styles.PerformanceBtn}
+        onClick={getPerformance}
+        loading={performanceLoading}
+      >
         检索模型性能对比
       </Button>
       <Spin spinning={performanceLoading}>{renderPerformanceChart()}</Spin>
@@ -725,14 +920,14 @@ const EvaluationExperimentComponent = (props: RouteComponentProps) => {
       <div className={styles.TextAreaTite}>请结合试验效果对以上四个模型进行综合分析:</div>
       <TextArea rows={14} className={styles.TextArea} value={analysisText} onChange={udpateAnalysisText} />
       <div className={styles.SaveBtn}>
-        <Button type="primary" loading={saveAnalysLoading} onClick={saveText}>
+        <Button type="primary" disabled={analysisText === ''} loading={saveAnalysLoading} onClick={saveText}>
           确认
         </Button>
       </div>
       <div className={styles.TextAreaTite}>请选择需要仿真的模型:</div>
       <div className={styles.ModalWrapper}>{renderModals()}</div>
       <div className={styles.NextStepBtn}>
-        <Button type="primary" onClick={goNextStep}>
+        <Button type="primary" disabled={selectedQuery === ''} loading={selectModelLoading} onClick={goNextStep}>
           确认
         </Button>
       </div>
@@ -740,6 +935,13 @@ const EvaluationExperimentComponent = (props: RouteComponentProps) => {
   )
 }
 
-const EvaluationExperiment = withRouter(EvaluationExperimentComponent)
+const EvaluationExperimentWithoutRouter = Form.create<EvaluationExperimentProps>({ name: 'EvaluationExperimentForm' })(
+  EvaluationExperimentForm
+)
+
+/**
+ * 分析检索模型性能组件
+ */
+const EvaluationExperiment = withRouter(EvaluationExperimentWithoutRouter)
 
 export default EvaluationExperiment

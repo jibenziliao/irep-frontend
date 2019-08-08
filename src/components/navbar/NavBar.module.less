@@ -22,36 +22,41 @@
     transform: translateY(-50%);
     cursor: pointer;
   }
-  .NavItems {
+  .Nav{
     display: flex;
-    align-items: center;
     justify-content: center;
-    height: inherit;
-    .Item {
+    .NavItems {
+      display: flex;
+      align-items: center;
       height: inherit;
-      @media screen and (max-width: 1440px) {
-        margin-right: 0;
-      }
-      @media screen and (min-width: 1441px) and (max-width: 1919px) {
-        margin-right: 30px;
-      }
-      @media screen and (min-width: 1920px) {
-        margin-right: 54px;
-      }
-      .NavText {
-        font-size: 16px;
-        color: #fff;
-        display: inline-block;
+      position: relative;
+      left: 50px;
+      .Item {
         height: inherit;
-        padding: 0 10px;
-        position: relative;
-        line-height: 70px;
-        cursor: pointer;
+        @media screen and (max-width: 1440px) {
+          margin-right: 0;
+        }
+        @media screen and (min-width: 1441px) and (max-width: 1919px) {
+          margin-right: 30px;
+        }
+        @media screen and (min-width: 1920px) {
+          margin-right: 54px;
+        }
+        .NavText {
+          font-size: 16px;
+          color: #fff;
+          display: inline-block;
+          height: inherit;
+          padding: 0 10px;
+          position: relative;
+          line-height: 70px;
+          cursor: pointer;
+        }
+        .Active {
+          background-color: rgba(255, 255, 255, 0.1);
+        }
       }
-      .Active {
-        background-color: rgba(255, 255, 255, 0.1);
-      }
-    }
+    } 
   }
   .Dropdown {
     position: absolute;

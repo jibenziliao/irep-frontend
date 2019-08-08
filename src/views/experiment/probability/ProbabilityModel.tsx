@@ -15,7 +15,7 @@ const { TabPane } = Tabs
  * 概率检索模型实验
  */
 const ProbabilityModalComponet = (props: RouteComponentProps) => {
-  const [activeTabKey, setActiveTabKey] = useState('3')
+  const [activeTabKey, setActiveTabKey] = useState('1')
   const [tabDisabled, setTabDisabled] = useState(true)
 
   const handleClick = () => {
