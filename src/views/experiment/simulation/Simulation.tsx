@@ -8,6 +8,7 @@ import { requestFn } from '../../../utils/request'
 import { useDispatch } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
 import { SearchResult } from '../../../modal/Search'
+import { setStore } from '../../../utils/util'
 
 const ResultList: SearchResult[] = [
   {
@@ -61,6 +62,7 @@ const SimulationComponent = (props: RouteComponentProps) => {
    * 点击完成按钮，前往试验报告页面
    */
   const handleClick = () => {
+    setStore('finishedAllExperiments', 'yes')
     props.history.replace('/report')
   }
 

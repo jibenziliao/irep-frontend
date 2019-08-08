@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dropdown, Button, Icon, Menu, notification } from 'antd'
+import { Dropdown, Button, Icon, Menu, message } from 'antd'
 import { Dispatch } from 'redux'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import styles from './NavBar.module.less'
@@ -48,19 +48,10 @@ const NavBarComponet = (props: RouteComponentProps) => {
       url: '/user/out',
       method: 'post'
     })
-    if (res && res.status === 200 && res.data && res.data.code === 0) {
+    if (res && res.status === 200 && res.data) {
       removeAllStore()
       window.location.href = window.location.origin
-    } else {
-      errorTips('注销失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
-  }
-
-  const errorTips = (message = '', description = '') => {
-    notification.error({
-      message,
-      description
-    })
   }
 
   const menu = (
@@ -68,12 +59,27 @@ const NavBarComponet = (props: RouteComponentProps) => {
       <Menu.Item key="1">注销</Menu.Item>
     </Menu>
   )
+
   const handleActive = (path: string) => {
     return window.location.pathname.includes(path)
   }
 
+  /**
+   * 点击导航栏菜单项
+   */
   const goRoute = (path: string) => {
-    props.history.replace(path)
+    const currentPath = window.location.pathname
+    if (currentPath.includes('experiment') && path === '/experiment') {
+      return false
+    } else if (
+      currentPath !== '/experiment/index' &&
+      currentPath.includes('experiment') &&
+      !getStore('finishedAllExperiments')
+    ) {
+      message.warning('你还有实验没有完成,请先完成实验', 1.5)
+    } else {
+      props.history.replace(path)
+    }
   }
 
   const renderNavs = () => {
