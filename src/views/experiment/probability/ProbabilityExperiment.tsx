@@ -17,6 +17,14 @@ import { SearchResult, VectorSpacePreProcessQuery, QueryBIJResult, QuerySimilari
 type columnAlignType = 'center' | 'left' | 'right' | undefined
 
 /**
+ * 保存操作步骤结果提示接口
+ */
+interface Tips {
+  success: { title: string; description: string }
+  error: { title: string; description: string }
+}
+
+/**
  * 概率检索模型--公式代码
  */
 const formulas = [
@@ -284,7 +292,7 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
   const successTips = (message = '', description = '') => {
     notification.success({
       message,
-      duration: 1,
+      duration: 1.5,
       description
     })
   }
@@ -667,12 +675,65 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
       }
     })
     if (res && res.status === 200 && res.data && !res.data.msg) {
-      setSearchResult(res.data)
-      setCurrentStepIndex(0)
+      const tips: Tips = {
+        success: {
+          title: '检索成功',
+          description: '操作-"仿真概率检索模型"已保存'
+        },
+        error: {
+          title: '检索失败',
+          description: '操作-"仿真概率检索模型"保存失败'
+        }
+      }
+      saveOperationStep('仿真概率检索模型', tips, res.data)
     } else {
+      setSearchLoading(false)
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
-    setSearchLoading(false)
+  }
+
+  /**
+   * 保存操作步骤
+   */
+  const saveOperationStep = async (operationName: string, tips: Tips, data: SearchResult[], index = 0) => {
+    const res = await requestFn(dispatch, {
+      url: '/score/createOperationRecord',
+      method: 'post',
+      data: {
+        experimentId: 6,
+        operationName
+      }
+    })
+    if (res && res.status === 200 && res.data) {
+      handleAfterSaveOperationStep(operationName, data, index)
+      successTips(tips.success.title, tips.success.description)
+    } else {
+      setSearchLoading(false)
+      setStepLoading(false)
+      errorTips(tips.error.title, res && res.data && res.data.msg ? res.data.msg : tips.error.description)
+    }
+  }
+
+  /**
+   * 保存操作步骤与之后需要做的操作
+   */
+  const handleAfterSaveOperationStep = (
+    operationName: string,
+    data: SearchResult[] | VectorSpacePreProcessQuery | QueryBIJResult[] | QuerySimilarityResult[],
+    index = 0
+  ) => {
+    if (operationName === '仿真概率检索模型') {
+      setSearchResult(data as SearchResult[])
+      setCurrentStepIndex(0)
+      setSearchLoading(false)
+    } else {
+      setCurrentStepIndex(index + 1)
+      handleStepSearchResult(index, data as VectorSpacePreProcessQuery | QueryBIJResult[] | QuerySimilarityResult[])
+      if (index === 3) {
+        setLastStepIndex(index + 1)
+      }
+      setStepLoading(false)
+    }
   }
 
   /**
@@ -700,10 +761,10 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
   /**
    * 仿真我的搜索引擎
    */
-  const getMonitorResult = async (url: string, index: number) => {
+  const getMonitorResult = async (param: { url: string; operationName: string }, index: number) => {
     setStepLoading(true)
     const res = await requestFn(dispatch, {
-      url,
+      url: param.url,
       method: 'post',
       params: {
         query,
@@ -712,15 +773,21 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
       }
     })
     if (res && res.status === 200 && res.data && !res.data.msg) {
-      setCurrentStepIndex(index + 1)
-      handleStepSearchResult(index, res.data)
-      if (index === 3) {
-        setLastStepIndex(index + 1)
+      const tips: Tips = {
+        success: {
+          title: '检索成功',
+          description: `操作-"${param.operationName}"已保存`
+        },
+        error: {
+          title: '检索失败',
+          description: `操作-"${param.operationName}"保存失败`
+        }
       }
+      saveOperationStep(param.operationName, tips, res.data, index)
     } else {
+      setStepLoading(false)
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
-    setStepLoading(false)
   }
 
   /**
@@ -753,13 +820,25 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
    * 处理当前步骤的按钮点击事件
    */
   const handleCurrentStep = (index: number) => {
-    const requestUrls = [
-      '/IRforCN/Retrieval/probabilityModel/ppq',
-      '/IRforCN/Retrieval/probabilityModel/bij',
-      '/IRforCN/Retrieval/probabilityModel/similarity',
-      '/IRforCN/Retrieval/probabilityModel/descendOrderSimilarity'
+    const requestParams = [
+      {
+        url: '/IRforCN/Retrieval/probabilityModel/ppq',
+        operationName: '求索引项'
+      },
+      {
+        url: '/IRforCN/Retrieval/probabilityModel/bij',
+        operationName: '求系数Bij'
+      },
+      {
+        url: '/IRforCN/Retrieval/probabilityModel/similarity',
+        operationName: '计算相似度'
+      },
+      {
+        url: '/IRforCN/Retrieval/probabilityModel/descendOrderSimilarity',
+        operationName: '按相似度降序排序'
+      }
     ]
-    getMonitorResult(requestUrls[index], index)
+    getMonitorResult(requestParams[index], index)
   }
 
   /**

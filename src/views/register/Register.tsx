@@ -95,7 +95,7 @@ const RegisterForm = (props: RegisterProp) => {
   const successTips = (message = '', description = '') => {
     notification.success({
       message,
-      duration: 1,
+      duration: 1.5,
       description
     })
   }

@@ -90,7 +90,7 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
   const successTips = (message = '', description = '') => {
     notification.success({
       message,
-      duration: 1,
+      duration: 1.5,
       description
     })
   }
@@ -163,7 +163,7 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
       }
     })
     if (res && res.status === 200 && res.data && res.data.code === 0) {
-      successTips('分析成功', '动作-"仿真预处理器"已保存')
+      successTips('分析成功', '操作-"仿真预处理器"已保存')
       setSaveStepIndex(saveStepIndex + 1)
       setPreProcessed(true)
     } else {
@@ -235,11 +235,14 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
         </div>
         <div className={styles.SectionTitle}>预处理结果：</div>
         <div className={styles.resultBox}>{segmentResult}</div>
-        <div className={styles.NextBtn}>
-          <Button onClick={handleClick} disabled={saveStepIndex < 1 || !preProcessed}>
-            下一步
-          </Button>
-        </div>
+        <Button
+          className={styles.NextBtn}
+          type="primary"
+          onClick={handleClick}
+          disabled={saveStepIndex < 1 || !preProcessed}
+        >
+          下一步
+        </Button>
       </div>
     </div>
   )

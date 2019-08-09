@@ -337,12 +337,43 @@ const EvaluationExperimentForm = (props: EvaluationExperimentProps) => {
         }
       })
       if (res && res.status === 200 && res.data && res.data.standardResults && res.data.testResults) {
-        setStandardData(handleTestRetrieverResult(res.data.standardResults))
-        setTestData(handleTestRetrieverResult(res.data.testResults))
+        const operationObj = defaultModels.find(i => i.value === modelName)
+        if (operationObj) {
+          saveOperationStep(operationObj.name, res.data.standardResults, res.data.testResults)
+        }
       } else {
+        setCalculationLoading(false)
         errorTips('计算相似度失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
       }
+    }
+
+    /**
+     * 保存操作步骤
+     */
+    const saveOperationStep = async (
+      operationName: string,
+      standardResults: StandardResult[],
+      testResults: StandardResult[]
+    ) => {
+      const res = await requestFn(dispatch, {
+        url: '/score/createOperationRecord',
+        method: 'post',
+        data: {
+          experimentId: 8,
+          operationName
+        }
+      })
       setCalculationLoading(false)
+      if (res && res.status === 200 && res.data) {
+        setStandardData(handleTestRetrieverResult(standardResults))
+        setTestData(handleTestRetrieverResult(testResults))
+        successTips('计算相似度成功', `操作-"分析${operationName}"已保存`)
+      } else {
+        errorTips(
+          '计算相似度失败',
+          res && res.data && res.data.msg ? res.data.msg : `操作-"分析${operationName}"保存失败`
+        )
+      }
     }
 
     if (selectedQuery) {
@@ -707,7 +738,7 @@ const EvaluationExperimentForm = (props: EvaluationExperimentProps) => {
   const successTips = (message = '', description = '') => {
     notification.success({
       message,
-      duration: 1,
+      duration: 1.5,
       description
     })
   }

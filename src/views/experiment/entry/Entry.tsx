@@ -31,7 +31,7 @@ const EntryComponent = (props: RouteComponentProps) => {
   const successTips = (message = '', description = '') => {
     notification.success({
       message,
-      duration: 1,
+      duration: 1.5,
       description
     })
   }
@@ -108,9 +108,7 @@ const EntryComponent = (props: RouteComponentProps) => {
       }, 1000)
     } else {
       setLoading(false)
-      // 保存顺序失败
       errorTips('保存顺序失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
-      props.history.replace('/experiment/pretreatment')
     }
   }
 
