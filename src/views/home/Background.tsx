@@ -1,6 +1,7 @@
 import React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import styles from './Background.module.less'
+import VisitorChart from '../../components/visitorChart/VisitorChart'
 
 const BackgroundComponet = (props: RouteComponentProps) => {
   const switchRoute = (path: string) => {
@@ -27,7 +28,7 @@ const BackgroundComponet = (props: RouteComponentProps) => {
       <div className={styles.Content}>
         <div className={styles.leftDiv}>
           <div className={styles.visitors}>
-            <img src={require('../../assets/introduction/visitor.png')} alt=""></img>
+            <VisitorChart />
           </div>
           <div className={styles.courseIntro}>
             <div>
