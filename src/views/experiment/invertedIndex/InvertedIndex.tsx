@@ -12,15 +12,18 @@ import { useDispatch, useMappedState, State } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
 import { invertedIndexKnowledge } from '../../../config/invertedIndexKnowledge'
 import InvertedIndexExperiment from './InvertedIndexExperiment'
+import { getUrlParam } from '../../../utils/util'
 
 const { TabPane } = Tabs
+
+const defaultTab = getUrlParam('tab')
 
 /**
  * 倒排索引
  */
 const InvertedIndexComponent = (props: RouteComponentProps) => {
-  const [activeTabKey, setActiveTabKey] = useState('1')
-  const [tabDisabled, setTabDisabled] = useState(true)
+  const [activeTabKey, setActiveTabKey] = useState(defaultTab || '1')
+  const [tabDisabled, setTabDisabled] = useState(defaultTab !== '3')
   const dispatch: Dispatch<Actions> = useDispatch()
   const state: State = useMappedState(useCallback((globalState: State) => globalState, []))
 
@@ -88,13 +91,24 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
    */
   const goNextStep = () => {
     setActiveTabKey('3')
+    updateHistory('/experiment/invertedIndex?tab=3')
     setTabDisabled(false)
+  }
+
+  /**
+   * 更新浏览器历史记录
+   *
+   * 方便刷新页面时保持tab状态
+   */
+  const updateHistory = (url: string, name = '') => {
+    window.history.replaceState(null, name, url)
   }
 
   /**
    * 点击tab
    */
   const tabClick = (tabIndex: string) => {
+    updateHistory(`/experiment/invertedIndex?tab=${tabIndex}`)
     setActiveTabKey(tabIndex)
   }
 

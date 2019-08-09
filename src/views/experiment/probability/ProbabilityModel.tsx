@@ -8,15 +8,18 @@ import Examination from '../../../components/examination/Examination'
 import { probabilityCompletionQuestions, probabilityChoiceQuestions } from '../../../config/Constant'
 import { probabilityKnowledge } from '../../../config/probabilityKnowledge'
 import ProbabilityExperiment from './ProbabilityExperiment'
+import { getUrlParam } from '../../../utils/util'
 
 const { TabPane } = Tabs
+
+const defaultTab = getUrlParam('tab')
 
 /**
  * 概率检索模型实验
  */
 const ProbabilityModalComponet = (props: RouteComponentProps) => {
-  const [activeTabKey, setActiveTabKey] = useState('1')
-  const [tabDisabled, setTabDisabled] = useState(true)
+  const [activeTabKey, setActiveTabKey] = useState(defaultTab || '1')
+  const [tabDisabled, setTabDisabled] = useState(defaultTab !== '3')
 
   const handleClick = () => {
     props.history.replace('/experiment/language')
@@ -27,13 +30,24 @@ const ProbabilityModalComponet = (props: RouteComponentProps) => {
    */
   const goNextStep = () => {
     setActiveTabKey('3')
+    updateHistory('/experiment/probability?tab=3')
     setTabDisabled(false)
+  }
+
+  /**
+   * 更新浏览器历史记录
+   *
+   * 方便刷新页面时保持tab状态
+   */
+  const updateHistory = (url: string, name = '') => {
+    window.history.replaceState(null, name, url)
   }
 
   /**
    * 点击tab
    */
   const tabClick = (tabIndex: string) => {
+    updateHistory(`/experiment/probability?tab=${tabIndex}`)
     setActiveTabKey(tabIndex)
   }
 

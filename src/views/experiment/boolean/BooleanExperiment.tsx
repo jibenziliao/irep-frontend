@@ -105,6 +105,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
   const [callBackResult, setCallBackResult] = useState<CallBackResult[]>([])
   // 检索结果
   const [searchResult, setSearchResult] = useState<SearchResult[]>([])
+  const [nextLoading, setNextLoading] = useState(false)
 
   const { getFieldDecorator, validateFields, getFieldsValue } = props.form
 
@@ -788,8 +789,21 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
   /**
    * 页面底部，点击前往下一步
    */
-  const goNextExperiment = () => {
-    props.history.replace('/experiment/vectorSpace')
+  const goNextExperiment = async () => {
+    setNextLoading(true)
+    const res = await requestFn(dispatch, {
+      url: '/IRforCN/Retrieval/boolModel/quit',
+      method: 'post',
+      data: {
+        query
+      }
+    })
+    setNextLoading(false)
+    if (res && res.status === 200 && res.data && res.data.code === 0) {
+      props.history.replace('/experiment/vectorSpace')
+    } else {
+      errorTips('保存实验操作失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+    }
   }
 
   return (
@@ -805,7 +819,13 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
           <div className={styles.SearchResult}>{renderSearchResult(currentStepIndex)}</div>
         </Spin>
       </div>
-      <Button type="primary" disabled={lastStepIndex !== 4} onClick={goNextExperiment} className={styles.NextBtn}>
+      <Button
+        type="primary"
+        loading={nextLoading}
+        disabled={lastStepIndex !== 4}
+        onClick={goNextExperiment}
+        className={styles.NextBtn}
+      >
         下一步
       </Button>
     </div>

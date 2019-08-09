@@ -8,15 +8,18 @@ import Examination from '../../../components/examination/Examination'
 import { pretreatmentCompletionQuestions, pretreatmentChoiceQuestions } from '../../../config/Constant'
 import { pretreatmentKnowledge } from '../../../config/pretreatmentKnowledge'
 import PretreatmentExperiment from './PretreatmentExperiment'
+import { getUrlParam } from '../../../utils/util'
 
 const { TabPane } = Tabs
+
+const defaultTab = getUrlParam('tab')
 
 /**
  * 预处理实验
  */
 const PretreatmentComponet = (props: RouteComponentProps) => {
-  const [activeTabKey, setActiveTabKey] = useState('1')
-  const [tabDisabled, setTabDisabled] = useState(true)
+  const [activeTabKey, setActiveTabKey] = useState(defaultTab || '1')
+  const [tabDisabled, setTabDisabled] = useState(defaultTab !== '3')
 
   const handleClick = () => {
     props.history.replace('/experiment/invertedIndex')
@@ -27,13 +30,24 @@ const PretreatmentComponet = (props: RouteComponentProps) => {
    */
   const goNextStep = () => {
     setActiveTabKey('3')
+    updateHistory('/experiment/pretreatment?tab=3')
     setTabDisabled(false)
+  }
+
+  /**
+   * 更新浏览器历史记录
+   *
+   * 方便刷新页面时保持tab状态
+   */
+  const updateHistory = (url: string, name = '') => {
+    window.history.replaceState(null, name, url)
   }
 
   /**
    * 点击tab
    */
   const tabClick = (tabIndex: string) => {
+    updateHistory(`/experiment/pretreatment?tab=${tabIndex}`)
     setActiveTabKey(tabIndex)
   }
 
