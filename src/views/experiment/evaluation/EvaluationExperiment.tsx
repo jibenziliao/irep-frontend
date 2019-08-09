@@ -489,6 +489,7 @@ const EvaluationExperimentForm = (props: EvaluationExperimentProps) => {
         center: ['60%', '50%'],
         indicator: indicator
       },
+      color: defaultChartColors,
       legend: {
         type: 'scroll',
         orient: 'vertical',
