@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Button, Icon, InputNumber, Select, notification, Input, Spin, Table } from 'antd'
 import { Dispatch } from 'redux'
+import { debounce } from 'lodash'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { useDispatch, useMappedState, State, ExperimentCard } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
@@ -196,6 +197,10 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
   // 求相似度及相似度降序排序的结果
   const [searchSimilarityResult, setSearchSimilarityResult] = useState<QuerySimilarityResult[]>([])
   const [nextLoading, setNextLoading] = useState(false)
+  const [savedK, setSavedK] = useState(false)
+  const [saveKLoading, setSaveKLoading] = useState(false)
+  const [savedB, setSavedB] = useState(false)
+  const [saveBLoading, setSaveBLoading] = useState(false)
 
   /**
    * 定义列的对齐方式，居中
@@ -274,6 +279,69 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
       window.MathJax.Hub.Queue(['Typeset', MathJax.Hub, document.getElementById('vectorSpaceMathJaxContent')])
     }
   }, [])
+
+  useEffect(() => {
+    /**
+     * 保存操作步骤
+     */
+    const saveOperationStepK = async (operationName: string) => {
+      setSaveKLoading(true)
+      const res = await requestFn(dispatch, {
+        url: '/score/createOperationRecord',
+        method: 'post',
+        data: {
+          experimentId: 6,
+          operationName
+        }
+      })
+      if (res && res.status === 200 && res.data && res.data.code === 0) {
+        successTips('更新成功', `操作-"${operationName}"保存成功`)
+      } else {
+        errorTips(
+          `更新操作-${operationName}`,
+          res && res.data && res.data.msg ? res.data.msg : `操作-"${operationName}"保存失败`
+        )
+      }
+      // 不论成功与失败，只有一次保存的机会。除非单独增加一个保存操作的按钮
+      setSavedK(true)
+      setSaveKLoading(false)
+    }
+
+    if (!savedK && !saveKLoading) {
+      saveOperationStepK('调整参数k')
+    }
+  }, [dispatch, savedK, k, saveKLoading])
+
+  useEffect(() => {
+    /**
+     * 保存操作步骤
+     */
+    const saveOperationStepB = async (operationName: string) => {
+      setSaveBLoading(true)
+      const res = await requestFn(dispatch, {
+        url: '/score/createOperationRecord',
+        method: 'post',
+        data: {
+          experimentId: 6,
+          operationName
+        }
+      })
+      if (res && res.status === 200 && res.data && res.data.code === 0) {
+        successTips('更新成功', `操作-"${operationName}"保存成功`)
+      } else {
+        errorTips(
+          `更新操作-${operationName}`,
+          res && res.data && res.data.msg ? res.data.msg : `操作-"${operationName}"保存失败`
+        )
+      }
+      setSavedB(true)
+      setSaveBLoading(false)
+    }
+
+    if (!savedB && !saveBLoading) {
+      saveOperationStepB('调整参数b')
+    }
+  }, [dispatch, savedB, b, saveBLoading])
 
   /**
    * 渲染相关度icon图标
@@ -546,16 +614,16 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
   /**
    * 改变系数k
    */
-  const onParamKChange = (value: number | undefined) => {
+  const onParamKChange = debounce((value: number | undefined) => {
     setK(value || 1)
-  }
+  }, 500)
 
   /**
    * 改变系数k
    */
-  const onParamBChange = (value: number | undefined) => {
+  const onParamBChange = debounce((value: number | undefined) => {
     setB(value || 0.5)
-  }
+  }, 500)
 
   /**
    * 更新模型调试时的查询语句
