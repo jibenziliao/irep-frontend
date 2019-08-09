@@ -8,15 +8,18 @@ import Examination from '../../../components/examination/Examination'
 import { vectorSpaceCompletionQuestions, vectorSpaceChoiceQuestions } from '../../../config/Constant'
 import { vectorSpaceKnowledge } from '../../../config/vectorSpaceKnowledge'
 import VectorSpaceExperiment from './VectorSpaceExperiment'
+import { getUrlParam } from '../../../utils/util'
 
 const { TabPane } = Tabs
+
+const defaultTab = getUrlParam('tab')
 
 /**
  * 向量空间模型实验
  */
 const VectorSpaceModalComponet = (props: RouteComponentProps) => {
-  const [activeTabKey, setActiveTabKey] = useState('1')
-  const [tabDisabled, setTabDisabled] = useState(true)
+  const [activeTabKey, setActiveTabKey] = useState(defaultTab || '1')
+  const [tabDisabled, setTabDisabled] = useState(defaultTab !== '3')
 
   const handleClick = () => {
     props.history.replace('/experiment/probability')
@@ -27,13 +30,24 @@ const VectorSpaceModalComponet = (props: RouteComponentProps) => {
    */
   const goNextStep = () => {
     setActiveTabKey('3')
+    updateHistory('/experiment/vectorSpace?tab=3')
     setTabDisabled(false)
+  }
+
+  /**
+   * 更新浏览器历史记录
+   *
+   * 方便刷新页面时保持tab状态
+   */
+  const updateHistory = (url: string, name = '') => {
+    window.history.replaceState(null, name, url)
   }
 
   /**
    * 点击tab
    */
   const tabClick = (tabIndex: string) => {
+    updateHistory(`/experiment/vectorSpace?tab=${tabIndex}`)
     setActiveTabKey(tabIndex)
   }
 

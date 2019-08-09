@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Button, Icon, InputNumber, Select, notification, Input, Spin, Table } from 'antd'
 import { Dispatch } from 'redux'
+import { debounce } from 'lodash'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { useDispatch, useMappedState, State, ExperimentCard } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
@@ -15,6 +16,14 @@ import { SearchResult, VectorSpacePreProcessQuery, QueryBIJResult, QuerySimilari
  * 列对齐方式类型(与ant-design保持一致)
  */
 type columnAlignType = 'center' | 'left' | 'right' | undefined
+
+/**
+ * 保存操作步骤结果提示接口
+ */
+interface Tips {
+  success: { title: string; description: string }
+  error: { title: string; description: string }
+}
 
 /**
  * 概率检索模型--公式代码
@@ -188,6 +197,10 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
   // 求相似度及相似度降序排序的结果
   const [searchSimilarityResult, setSearchSimilarityResult] = useState<QuerySimilarityResult[]>([])
   const [nextLoading, setNextLoading] = useState(false)
+  const [savedK, setSavedK] = useState(false)
+  const [saveKLoading, setSaveKLoading] = useState(false)
+  const [savedB, setSavedB] = useState(false)
+  const [saveBLoading, setSaveBLoading] = useState(false)
 
   /**
    * 定义列的对齐方式，居中
@@ -267,6 +280,69 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
     }
   }, [])
 
+  useEffect(() => {
+    /**
+     * 保存操作步骤
+     */
+    const saveOperationStepK = async (operationName: string) => {
+      setSaveKLoading(true)
+      const res = await requestFn(dispatch, {
+        url: '/score/createOperationRecord',
+        method: 'post',
+        data: {
+          experimentId: 6,
+          operationName
+        }
+      })
+      if (res && res.status === 200 && res.data && res.data.code === 0) {
+        successTips('更新成功', `操作-"${operationName}"保存成功`)
+      } else {
+        errorTips(
+          `更新操作-${operationName}`,
+          res && res.data && res.data.msg ? res.data.msg : `操作-"${operationName}"保存失败`
+        )
+      }
+      // 不论成功与失败，只有一次保存的机会。除非单独增加一个保存操作的按钮
+      setSavedK(true)
+      setSaveKLoading(false)
+    }
+
+    if (!savedK && !saveKLoading) {
+      saveOperationStepK('调整参数k')
+    }
+  }, [dispatch, savedK, k, saveKLoading])
+
+  useEffect(() => {
+    /**
+     * 保存操作步骤
+     */
+    const saveOperationStepB = async (operationName: string) => {
+      setSaveBLoading(true)
+      const res = await requestFn(dispatch, {
+        url: '/score/createOperationRecord',
+        method: 'post',
+        data: {
+          experimentId: 6,
+          operationName
+        }
+      })
+      if (res && res.status === 200 && res.data && res.data.code === 0) {
+        successTips('更新成功', `操作-"${operationName}"保存成功`)
+      } else {
+        errorTips(
+          `更新操作-${operationName}`,
+          res && res.data && res.data.msg ? res.data.msg : `操作-"${operationName}"保存失败`
+        )
+      }
+      setSavedB(true)
+      setSaveBLoading(false)
+    }
+
+    if (!savedB && !saveBLoading) {
+      saveOperationStepB('调整参数b')
+    }
+  }, [dispatch, savedB, b, saveBLoading])
+
   /**
    * 渲染相关度icon图标
    */
@@ -284,7 +360,7 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
   const successTips = (message = '', description = '') => {
     notification.success({
       message,
-      duration: 1,
+      duration: 1.5,
       description
     })
   }
@@ -538,16 +614,16 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
   /**
    * 改变系数k
    */
-  const onParamKChange = (value: number | undefined) => {
+  const onParamKChange = debounce((value: number | undefined) => {
     setK(value || 1)
-  }
+  }, 500)
 
   /**
    * 改变系数k
    */
-  const onParamBChange = (value: number | undefined) => {
+  const onParamBChange = debounce((value: number | undefined) => {
     setB(value || 0.5)
-  }
+  }, 500)
 
   /**
    * 更新模型调试时的查询语句
@@ -667,12 +743,65 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
       }
     })
     if (res && res.status === 200 && res.data && !res.data.msg) {
-      setSearchResult(res.data)
-      setCurrentStepIndex(0)
+      const tips: Tips = {
+        success: {
+          title: '检索成功',
+          description: '操作-"仿真概率检索模型"已保存'
+        },
+        error: {
+          title: '检索失败',
+          description: '操作-"仿真概率检索模型"保存失败'
+        }
+      }
+      saveOperationStep('仿真概率检索模型', tips, res.data)
     } else {
+      setSearchLoading(false)
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
-    setSearchLoading(false)
+  }
+
+  /**
+   * 保存操作步骤
+   */
+  const saveOperationStep = async (operationName: string, tips: Tips, data: SearchResult[], index = 0) => {
+    const res = await requestFn(dispatch, {
+      url: '/score/createOperationRecord',
+      method: 'post',
+      data: {
+        experimentId: 6,
+        operationName
+      }
+    })
+    if (res && res.status === 200 && res.data) {
+      handleAfterSaveOperationStep(operationName, data, index)
+      successTips(tips.success.title, tips.success.description)
+    } else {
+      setSearchLoading(false)
+      setStepLoading(false)
+      errorTips(tips.error.title, res && res.data && res.data.msg ? res.data.msg : tips.error.description)
+    }
+  }
+
+  /**
+   * 保存操作步骤与之后需要做的操作
+   */
+  const handleAfterSaveOperationStep = (
+    operationName: string,
+    data: SearchResult[] | VectorSpacePreProcessQuery | QueryBIJResult[] | QuerySimilarityResult[],
+    index = 0
+  ) => {
+    if (operationName === '仿真概率检索模型') {
+      setSearchResult(data as SearchResult[])
+      setCurrentStepIndex(0)
+      setSearchLoading(false)
+    } else {
+      setCurrentStepIndex(index + 1)
+      handleStepSearchResult(index, data as VectorSpacePreProcessQuery | QueryBIJResult[] | QuerySimilarityResult[])
+      if (index === 3) {
+        setLastStepIndex(index + 1)
+      }
+      setStepLoading(false)
+    }
   }
 
   /**
@@ -700,10 +829,10 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
   /**
    * 仿真我的搜索引擎
    */
-  const getMonitorResult = async (url: string, index: number) => {
+  const getMonitorResult = async (param: { url: string; operationName: string }, index: number) => {
     setStepLoading(true)
     const res = await requestFn(dispatch, {
-      url,
+      url: param.url,
       method: 'post',
       params: {
         query,
@@ -712,15 +841,21 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
       }
     })
     if (res && res.status === 200 && res.data && !res.data.msg) {
-      setCurrentStepIndex(index + 1)
-      handleStepSearchResult(index, res.data)
-      if (index === 3) {
-        setLastStepIndex(index + 1)
+      const tips: Tips = {
+        success: {
+          title: '检索成功',
+          description: `操作-"${param.operationName}"已保存`
+        },
+        error: {
+          title: '检索失败',
+          description: `操作-"${param.operationName}"保存失败`
+        }
       }
+      saveOperationStep(param.operationName, tips, res.data, index)
     } else {
+      setStepLoading(false)
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
-    setStepLoading(false)
   }
 
   /**
@@ -753,13 +888,25 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
    * 处理当前步骤的按钮点击事件
    */
   const handleCurrentStep = (index: number) => {
-    const requestUrls = [
-      '/IRforCN/Retrieval/probabilityModel/ppq',
-      '/IRforCN/Retrieval/probabilityModel/bij',
-      '/IRforCN/Retrieval/probabilityModel/similarity',
-      '/IRforCN/Retrieval/probabilityModel/descendOrderSimilarity'
+    const requestParams = [
+      {
+        url: '/IRforCN/Retrieval/probabilityModel/ppq',
+        operationName: '求索引项'
+      },
+      {
+        url: '/IRforCN/Retrieval/probabilityModel/bij',
+        operationName: '求系数Bij'
+      },
+      {
+        url: '/IRforCN/Retrieval/probabilityModel/similarity',
+        operationName: '计算相似度'
+      },
+      {
+        url: '/IRforCN/Retrieval/probabilityModel/descendOrderSimilarity',
+        operationName: '按相似度降序排序'
+      }
     ]
-    getMonitorResult(requestUrls[index], index)
+    getMonitorResult(requestParams[index], index)
   }
 
   /**

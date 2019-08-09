@@ -111,7 +111,7 @@ const ExamForm = (props: ExamFormProps) => {
   const successTips = (message = '', description = '') => {
     notification.success({
       message,
-      duration: 1,
+      duration: 1.5,
       description
     })
   }

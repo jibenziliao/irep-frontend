@@ -12,13 +12,16 @@ import { useDispatch, useMappedState, State, ExperimentCard } from '../../../sto
 import { Actions } from '../../../store/Actions'
 import Knowledge from '../../../components/knowledge/Knowledge'
 import { entryKnowledge } from '../../../config/entryKnowledge'
+import { getUrlParam } from '../../../utils/util'
 
 const { TabPane } = Tabs
 
+const defaultTab = getUrlParam('tab')
+
 const EntryComponent = (props: RouteComponentProps) => {
   const [loading, setLoading] = useState(false)
-  const [activeTabKey, setActiveTabKey] = useState('1')
-  const [tabDisabled, setTabDisabled] = useState(true)
+  const [activeTabKey, setActiveTabKey] = useState(defaultTab || '1')
+  const [tabDisabled, setTabDisabled] = useState(defaultTab !== '3')
   const dispatch: Dispatch<Actions> = useDispatch()
   const state: State = useMappedState(useCallback((globalState: State) => globalState, []))
 
@@ -28,7 +31,7 @@ const EntryComponent = (props: RouteComponentProps) => {
   const successTips = (message = '', description = '') => {
     notification.success({
       message,
-      duration: 1,
+      duration: 1.5,
       description
     })
   }
@@ -44,9 +47,19 @@ const EntryComponent = (props: RouteComponentProps) => {
   }
 
   /**
+   * 更新浏览器历史记录
+   *
+   * 方便刷新页面时保持tab状态
+   */
+  const updateHistory = (url: string, name = '') => {
+    window.history.replaceState(null, name, url)
+  }
+
+  /**
    * 点击tab
    */
   const tabClick = (tabIndex: string) => {
+    updateHistory(`/experiment/entry?tab=${tabIndex}`)
     setActiveTabKey(tabIndex)
   }
 
@@ -70,6 +83,7 @@ const EntryComponent = (props: RouteComponentProps) => {
    */
   const goNextStep = () => {
     setActiveTabKey('3')
+    updateHistory('/experiment/entry?tab=3')
     setTabDisabled(false)
   }
 
@@ -94,9 +108,7 @@ const EntryComponent = (props: RouteComponentProps) => {
       }, 1000)
     } else {
       setLoading(false)
-      // 保存顺序失败
       errorTips('保存顺序失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
-      props.history.replace('/experiment/pretreatment')
     }
   }
 

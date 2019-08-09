@@ -62,6 +62,7 @@ export const requestFn = (dispatch: Dispatch<Actions>, params: Params): AxiosPro
           return reject(error)
         } else {
           if (error.message.includes('timeout')) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const result: AxiosResponse<any> = {
               data: { msg: '请求超时' },
               status: 408,
@@ -71,12 +72,13 @@ export const requestFn = (dispatch: Dispatch<Actions>, params: Params): AxiosPro
             }
             return resolve(result)
           } else {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const result: AxiosResponse<any> = {
               data: error.response && error.response.data ? error.response.data : null,
-              status: error.response.status,
-              statusText: error.response.data.msg,
-              headers: error.response.config.headers,
-              config: error.response.config
+              status: error.response && error.response.status ? error.response.status : 500,
+              statusText: error.message,
+              headers: error.config.headers,
+              config: error.config
             }
             return resolve(result)
           }

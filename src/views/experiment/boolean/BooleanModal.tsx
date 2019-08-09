@@ -7,17 +7,19 @@ import Knowledge from '../../../components/knowledge/Knowledge'
 import Examination from '../../../components/examination/Examination'
 import { booleanCompletionQuestions, booleanChoiceQuestions } from '../../../config/Constant'
 import BooleanExperiment from './BooleanExperiment'
-
 import { booleanKnowledge } from '../../../config/booleanKnowledge'
+import { getUrlParam } from '../../../utils/util'
 
 const { TabPane } = Tabs
+
+const defaultTab = getUrlParam('tab')
 
 /**
  * 布尔模型实验
  */
 const BooleanModalComponet = (props: RouteComponentProps) => {
-  const [activeTabKey, setActiveTabKey] = useState('1')
-  const [tabDisabled, setTabDisabled] = useState(true)
+  const [activeTabKey, setActiveTabKey] = useState(defaultTab || '1')
+  const [tabDisabled, setTabDisabled] = useState(defaultTab !== '3')
 
   const handleClick = () => {
     props.history.replace('/experiment/vectorSpace')
@@ -28,13 +30,24 @@ const BooleanModalComponet = (props: RouteComponentProps) => {
    */
   const goNextStep = () => {
     setActiveTabKey('3')
+    updateHistory('/experiment/boolean?tab=3')
     setTabDisabled(false)
+  }
+
+  /**
+   * 更新浏览器历史记录
+   *
+   * 方便刷新页面时保持tab状态
+   */
+  const updateHistory = (url: string, name = '') => {
+    window.history.replaceState(null, name, url)
   }
 
   /**
    * 点击tab
    */
   const tabClick = (tabIndex: string) => {
+    updateHistory(`/experiment/boolean?tab=${tabIndex}`)
     setActiveTabKey(tabIndex)
   }
 

@@ -63,6 +63,14 @@ interface SearchResult {
 }
 
 /**
+ * 保存操作步骤结果提示接口
+ */
+interface Tips {
+  success: { title: string; description: string }
+  error: { title: string; description: string }
+}
+
+/**
  * 默认的检索关键词
  */
 const defaultSearchTerms = ['', '', '']
@@ -105,6 +113,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
   const [callBackResult, setCallBackResult] = useState<CallBackResult[]>([])
   // 检索结果
   const [searchResult, setSearchResult] = useState<SearchResult[]>([])
+  const [nextLoading, setNextLoading] = useState(false)
 
   const { getFieldDecorator, validateFields, getFieldsValue } = props.form
 
@@ -136,7 +145,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
   const successTips = (message = '', description = '') => {
     notification.success({
       message,
-      duration: 1,
+      duration: 1.5,
       description
     })
   }
@@ -378,12 +387,70 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
       }
     })
     if (res && res.status === 200 && res.data && !res.data.msg) {
-      setSearchResult(res.data)
-      setCurrentStepIndex(0)
+      const tips: Tips = {
+        success: {
+          title: '检索成功',
+          description: '操作-"仿真布尔模型"已保存'
+        },
+        error: {
+          title: '检索失败',
+          description: '操作-"仿真布尔模型"保存失败'
+        }
+      }
+      saveOperationStep('仿真倒排索引表', tips, res.data)
     } else {
+      setSearchLoading(false)
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
-    setSearchLoading(false)
+  }
+
+  /**
+   * 保存操作步骤
+   */
+  const saveOperationStep = async (
+    operationName: string,
+    tips: Tips,
+    data: SearchResult[] | PreProcessQuery | BoolVector[] | BooleanOperation[] | CallBackResult[],
+    index = 0
+  ) => {
+    const res = await requestFn(dispatch, {
+      url: '/score/createOperationRecord',
+      method: 'post',
+      data: {
+        experimentId: 4,
+        operationName
+      }
+    })
+    if (res && res.status === 200 && res.data) {
+      handleAfterSaveOperationStep(operationName, data, index)
+      successTips(tips.success.title, tips.success.description)
+    } else {
+      setSearchLoading(false)
+      setStepLoading(false)
+      errorTips(tips.error.title, res && res.data && res.data.msg ? res.data.msg : tips.error.description)
+    }
+  }
+
+  /**
+   * 保存操作步骤与之后需要做的操作
+   */
+  const handleAfterSaveOperationStep = (
+    operationName: string,
+    data: SearchResult[] | PreProcessQuery | BoolVector[] | BooleanOperation[] | CallBackResult[],
+    index = 0
+  ) => {
+    if (operationName === '仿真倒排索引表') {
+      setSearchResult(data as SearchResult[])
+      setCurrentStepIndex(0)
+      setSearchLoading(false)
+    } else {
+      setCurrentStepIndex(index + 1)
+      handleStepSearchResult(index, data as PreProcessQuery | BoolVector[] | BooleanOperation[] | CallBackResult[])
+      if (index === 3) {
+        setLastStepIndex(index + 1)
+      }
+      setStepLoading(false)
+    }
   }
 
   /**
@@ -489,25 +556,31 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
   /**
    * 仿真我的搜索引擎
    */
-  const getMonitorResult = async (url: string, index: number) => {
+  const getMonitorResult = async (param: { url: string; operationName: string }, index: number) => {
     setStepLoading(true)
     const res = await requestFn(dispatch, {
-      url,
+      url: param.url,
       method: 'post',
       data: {
         query
       }
     })
     if (res && res.status === 200 && res.data && !res.data.msg) {
-      setCurrentStepIndex(index + 1)
-      handleStepSearchResult(index, res.data)
-      if (index === 3) {
-        setLastStepIndex(index + 1)
+      const tips: Tips = {
+        success: {
+          title: '检索成功',
+          description: `操作-"${param.operationName}"已保存`
+        },
+        error: {
+          title: '检索失败',
+          description: `操作-"${param.operationName}"保存失败`
+        }
       }
+      saveOperationStep(param.operationName, tips, res.data, index)
     } else {
+      setStepLoading(false)
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
-    setStepLoading(false)
   }
 
   /**
@@ -540,13 +613,25 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
    * 处理当前步骤的按钮点击事件
    */
   const handleCurrentStep = (index: number) => {
-    const requestUrls = [
-      '/IRforCN/Retrieval/boolModel/ppq',
-      '/IRforCN/Retrieval/boolModel/boolVector',
-      '/IRforCN/Retrieval/boolModel/booleanOperation',
-      '/IRforCN/Retrieval/boolModel/callbackResult'
+    const requestParams = [
+      {
+        url: '/IRforCN/Retrieval/boolModel/ppq',
+        operationName: '布尔模型查询预处理'
+      },
+      {
+        url: '/IRforCN/Retrieval/boolModel/boolVector',
+        operationName: '计算布尔向量'
+      },
+      {
+        url: '/IRforCN/Retrieval/boolModel/booleanOperation',
+        operationName: '运行布尔运算'
+      },
+      {
+        url: '/IRforCN/Retrieval/boolModel/callbackResult',
+        operationName: '召回目标文档'
+      }
     ]
-    getMonitorResult(requestUrls[index], index)
+    getMonitorResult(requestParams[index], index)
   }
 
   /**
@@ -788,8 +873,21 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
   /**
    * 页面底部，点击前往下一步
    */
-  const goNextExperiment = () => {
-    props.history.replace('/experiment/vectorSpace')
+  const goNextExperiment = async () => {
+    setNextLoading(true)
+    const res = await requestFn(dispatch, {
+      url: '/IRforCN/Retrieval/boolModel/quit',
+      method: 'post',
+      data: {
+        query
+      }
+    })
+    setNextLoading(false)
+    if (res && res.status === 200 && res.data && res.data.code === 0) {
+      props.history.replace('/experiment/vectorSpace')
+    } else {
+      errorTips('保存实验操作失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+    }
   }
 
   return (
@@ -805,7 +903,13 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
           <div className={styles.SearchResult}>{renderSearchResult(currentStepIndex)}</div>
         </Spin>
       </div>
-      <Button type="primary" disabled={lastStepIndex !== 4} onClick={goNextExperiment} className={styles.NextBtn}>
+      <Button
+        type="primary"
+        loading={nextLoading}
+        disabled={lastStepIndex !== 4}
+        onClick={goNextExperiment}
+        className={styles.NextBtn}
+      >
         下一步
       </Button>
     </div>

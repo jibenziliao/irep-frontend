@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Dispatch } from 'redux'
-import { Input, notification, Button } from 'antd'
+import { Input, notification, Button, Spin } from 'antd'
 import { withRouter, RouteComponentProps } from 'react-router'
 import styles from './Simulation.module.less'
 import Steps from '../../../components/steps/Steps'
@@ -10,44 +10,6 @@ import { Actions } from '../../../store/Actions'
 import { SearchResult } from '../../../modal/Search'
 import { setStore } from '../../../utils/util'
 
-const ResultList: SearchResult[] = [
-  {
-    title: '我的世界Minecraft中国版官方网站——你想玩的,这里都有',
-    url: 'http://mc.163.com/',
-    content:
-      '网易游戏代理的《我的世界》(Minecraft)手游,你想玩的,这里都有!作为中国顶尖UGC游戏平台,《我的世界》汇聚全球优秀创造者提供海量玩法内容。赶紧和你的小伙伴一...',
-    docId: 1
-  },
-  {
-    title: "Ant Design - The world's second most popular React UI framework",
-    url: 'https://ant.design/',
-    content:
-      'An enterprise-class UI design language and React implementation with a set of high-quality React components, one of best React UI library for enterprises',
-    docId: 2
-  },
-  {
-    title: "Ant Design - The world's second most popular React UI framework",
-    url: 'https://ant.design/',
-    content:
-      'An enterprise-class UI design language and React implementation with a set of high-quality React components, one of best React UI library for enterprises',
-    docId: 3
-  },
-  {
-    title: '我的世界Minecraft中国版官方网站——你想玩的,这里都有',
-    url: 'http://mc.163.com/',
-    content:
-      '网易游戏代理的《我的世界》(Minecraft)手游,你想玩的,这里都有!作为中国顶尖UGC游戏平台,《我的世界》汇聚全球优秀创造者提供海量玩法内容。赶紧和你的小伙伴一...',
-    docId: 4
-  },
-  {
-    title: '我的世界Minecraft中国版官方网站——你想玩的,这里都有',
-    url: 'http://mc.163.com/',
-    content:
-      '网易游戏代理的《我的世界》(Minecraft)手游,你想玩的,这里都有!作为中国顶尖UGC游戏平台,《我的世界》汇聚全球优秀创造者提供海量玩法内容。赶紧和你的小伙伴一...',
-    docId: 5
-  }
-]
-
 const { Search } = Input
 
 /**
@@ -56,7 +18,9 @@ const { Search } = Input
 const SimulationComponent = (props: RouteComponentProps) => {
   const dispatch: Dispatch<Actions> = useDispatch()
   const [showResult, setShowResult] = useState(true)
-  const [results, setResults] = useState<SearchResult[]>(ResultList)
+  const [results, setResults] = useState<SearchResult[]>([])
+  const [loading, setLoading] = useState(false)
+  const [query, setQuery] = useState('')
 
   /**
    * 点击完成按钮，前往试验报告页面
@@ -70,14 +34,16 @@ const SimulationComponent = (props: RouteComponentProps) => {
    * 搜索
    */
   const search = async (value: string) => {
+    setLoading(true)
     const res = await requestFn(dispatch, {
-      url: '/IRforCN/Simulation/selectModel',
+      url: '/IRforCN/Simulation/search',
       method: 'post',
       params: {
         query: value
       }
     })
     if (res && res.status === 200 && res.data && !res.data.msg) {
+      setQuery(value)
       if (res.data.push) {
         const newResults = res.data.filter((_: SearchResult, index: number) => index < 5)
         setResults(newResults)
@@ -85,6 +51,7 @@ const SimulationComponent = (props: RouteComponentProps) => {
     } else {
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
+    setLoading(false)
   }
 
   /**
@@ -109,7 +76,7 @@ const SimulationComponent = (props: RouteComponentProps) => {
    * 渲染搜索结果
    */
   const renderResult = () => {
-    if (results.length > 0) {
+    if (results.length > 0 || loading) {
       return results.map((i, index) => {
         return (
           <div key={index} className={styles.Result}>
@@ -147,10 +114,13 @@ const SimulationComponent = (props: RouteComponentProps) => {
               placeholder="输入检索式"
               enterButton="搜索"
               size="large"
+              defaultValue={query}
               onSearch={handleSearch}
             />
           </div>
-          <div className={styles.ResultSection}>{renderResult()}</div>
+          <div className={styles.ResultSection}>
+            <Spin spinning={loading}>{renderResult()}</Spin>
+          </div>
         </div>
         <Button type="primary" hidden={showResult} onClick={handleClick} className={styles.NextBtn}>
           完成

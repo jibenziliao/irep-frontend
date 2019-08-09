@@ -319,7 +319,7 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
   const successTips = (message = '', description = '') => {
     notification.success({
       message,
-      duration: 1,
+      duration: 1.5,
       description
     })
   }
@@ -358,13 +358,34 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
       }
     })
     if (res && res.status === 200 && res.data) {
-      handleDocs(res.data)
+      saveOperationStep(res.data)
+    } else {
+      setInvertedIndexLoading(false)
+      errorTips('获取当前词项倒排记录失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+    }
+  }
+
+  /**
+   * 保存操作步骤
+   */
+  const saveOperationStep = async (data: InvertedIndex[]) => {
+    const res = await requestFn(dispatch, {
+      url: '/score/createOperationRecord',
+      method: 'post',
+      data: {
+        experimentId: 3,
+        operationName: '仿真倒排索引表'
+      }
+    })
+    setInvertedIndexLoading(false)
+    if (res && res.status === 200 && res.data) {
+      handleDocs(data)
       setCurrentDoc(undefined)
       setOriginDoc(defaultOriginDoc)
+      successTips('获取当前词项倒排记录成功', '操作-"仿真倒排索引表"已保存')
     } else {
       errorTips('获取当前词项倒排记录失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
-    setInvertedIndexLoading(false)
   }
 
   /**
@@ -857,11 +878,9 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
           <div className={styles.OriginDoc}>{originDoc.content}</div>
         </Spin>
       </div>
-      <div className={styles.NextStep}>
-        <Button type="primary" onClick={handleClick}>
-          下一步
-        </Button>
-      </div>
+      <Button className={styles.NextStep} type="primary" onClick={handleClick}>
+        下一步
+      </Button>
     </div>
   )
 }

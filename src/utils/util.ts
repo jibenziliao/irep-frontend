@@ -93,3 +93,16 @@ export const removeLocalStore = (name: string) => {
 export const removeAllLocalStore = () => {
   window.localStorage.clear()
 }
+
+/**
+ * 获取url中的参数
+ */
+export const getUrlParam = (name: string) => {
+  const reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')
+  const param = window.location.search.substr(1).match(reg)
+  if (param) {
+    return decodeURIComponent(param[2])
+  } else {
+    return null
+  }
+}

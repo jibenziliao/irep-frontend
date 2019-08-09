@@ -22,6 +22,14 @@ import { getStore } from '../../../utils/util'
  */
 type columnAlignType = 'center' | 'left' | 'right' | undefined
 
+/**
+ * 保存操作步骤结果提示接口
+ */
+interface Tips {
+  success: { title: string; description: string }
+  error: { title: string; description: string }
+}
+
 const { Option } = Select
 
 const LanguageExperimentComponent = (props: RouteComponentProps) => {
@@ -210,7 +218,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
   const successTips = (message = '', description = '') => {
     notification.success({
       message,
-      duration: 1,
+      duration: 1.5,
       description
     })
   }
@@ -499,39 +507,103 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
         smoothParam
       }
     })
-    if (res && res.status === 200 && res.data) {
-      setSearchResult(res.data)
-      setCurrentStepIndex(0)
+    if (res && res.status === 200 && res.data && !res.data.msg) {
+      const tips: Tips = {
+        success: {
+          title: '检索成功',
+          description: '操作-"仿真语言模型"已保存'
+        },
+        error: {
+          title: '检索失败',
+          description: '操作-"仿真语言模型"保存失败'
+        }
+      }
+      saveOperationStep('仿真语言模型', tips, res.data)
     } else {
+      setSearchLoading(false)
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
-    setSearchLoading(false)
+  }
+
+  /**
+   * 保存操作步骤
+   */
+  const saveOperationStep = async (
+    operationName: string,
+    tips: Tips,
+    data: SearchResult[] | SearchResult[] | VectorSpacePreProcessQuery | QueryDocTFResult | QuerySimilarityResult[],
+    index = 0
+  ) => {
+    const res = await requestFn(dispatch, {
+      url: '/score/createOperationRecord',
+      method: 'post',
+      data: {
+        experimentId: 7,
+        operationName
+      }
+    })
+    if (res && res.status === 200 && res.data) {
+      handleAfterSaveOperationStep(operationName, data, index)
+      successTips(tips.success.title, tips.success.description)
+    } else {
+      setSearchLoading(false)
+      setStepLoading(false)
+      errorTips(tips.error.title, res && res.data && res.data.msg ? res.data.msg : tips.error.description)
+    }
+  }
+
+  /**
+   * 保存操作步骤与之后需要做的操作
+   */
+  const handleAfterSaveOperationStep = (
+    operationName: string,
+    data: SearchResult[] | VectorSpacePreProcessQuery | QueryDocTFResult | QuerySimilarityResult[],
+    index = 0
+  ) => {
+    if (operationName === '仿真语言模型') {
+      setSearchResult(data as SearchResult[])
+      setCurrentStepIndex(0)
+      setSearchLoading(false)
+    } else {
+      setCurrentStepIndex(index + 1)
+      handleStepSearchResult(index, data as VectorSpacePreProcessQuery | QueryDocTFResult | QuerySimilarityResult[])
+      if (index === 3) {
+        setLastStepIndex(index + 1)
+      }
+      setStepLoading(false)
+    }
   }
 
   /**
    * 仿真我的搜索引擎
    */
-  const getMonitorResult = async (url: string, index: number) => {
+  const getMonitorResult = async (param: { url: string; operationName: string }, index: number) => {
     setStepLoading(true)
     const res = await requestFn(dispatch, {
-      url,
+      url: param.url,
       method: 'post',
       params: {
-        ...(url.includes('tfsOfDoc') ? { docId: parseInt(getStore('docId')) } : {}),
+        ...(param.url.includes('tfsOfDoc') ? { docId: parseInt(getStore('docId')) } : {}),
         query,
         smoothParam
       }
     })
     if (res && res.status === 200 && res.data && !res.data.msg) {
-      setCurrentStepIndex(index + 1)
-      handleStepSearchResult(index, res.data)
-      if (index === 3) {
-        setLastStepIndex(index + 1)
+      const tips: Tips = {
+        success: {
+          title: '检索成功',
+          description: `操作-"${param.operationName}"已保存`
+        },
+        error: {
+          title: '检索失败',
+          description: `操作-"${param.operationName}"保存失败`
+        }
       }
+      saveOperationStep(param.operationName, tips, res.data, index)
     } else {
+      setStepLoading(false)
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
-    setStepLoading(false)
   }
 
   /**
@@ -602,13 +674,25 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
    * 处理当前步骤的按钮点击事件
    */
   const handleCurrentStep = (index: number) => {
-    const requestUrls = [
-      '/IRforCN/Retrieval/languageModel/ppq',
-      '/IRforCN/Retrieval/languageModel/tfsOfDoc',
-      '/IRforCN/Retrieval/languageModel/similarity',
-      '/IRforCN/Retrieval/languageModel/descendOrderSimilarity'
+    const requestParams = [
+      {
+        url: '/IRforCN/Retrieval/languageModel/ppq',
+        operationName: '查询预处理'
+      },
+      {
+        url: '/IRforCN/Retrieval/languageModel/tfsOfDoc',
+        operationName: '计算各文档LM'
+      },
+      {
+        url: '/IRforCN/Retrieval/languageModel/similarity',
+        operationName: '计算各文档生成查询概率'
+      },
+      {
+        url: '/IRforCN/Retrieval/languageModel/descendOrderSimilarity',
+        operationName: '按生成概率排序'
+      }
     ]
-    getMonitorResult(requestUrls[index], index)
+    getMonitorResult(requestParams[index], index)
   }
 
   /**

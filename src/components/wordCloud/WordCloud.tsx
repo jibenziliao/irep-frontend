@@ -74,7 +74,7 @@ const WordCloudComponent = (props: WordCloudProps) => {
         }
       })
       if (res && res.status === 200 && res.data && res.data.code === 0) {
-        successTips('分析成功', '动作-"词云分析"已保存')
+        successTips('分析成功', '操作-"词云分析"已保存')
       } else {
         errorTips('获取词云分析失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
       }
@@ -118,7 +118,7 @@ const WordCloudComponent = (props: WordCloudProps) => {
   const successTips = (message = '', description = '') => {
     notification.success({
       message,
-      duration: 1,
+      duration: 1.5,
       description
     })
   }

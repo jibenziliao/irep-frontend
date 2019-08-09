@@ -28,6 +28,14 @@ import {
 type columnAlignType = 'center' | 'left' | 'right' | undefined
 
 /**
+ * 保存操作步骤结果提示接口
+ */
+interface Tips {
+  success: { title: string; description: string }
+  error: { title: string; description: string }
+}
+
+/**
  * 向量空间模型--公式代码
  */
 const formulas = [
@@ -445,12 +453,93 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
       }
     })
     if (res && res.status === 200 && res.data && !res.data.msg) {
-      setSearchResult(res.data)
-      setCurrentStepIndex(0)
+      const tips: Tips = {
+        success: {
+          title: '检索成功',
+          description: '操作-"仿真空间向量模型"已保存'
+        },
+        error: {
+          title: '检索失败',
+          description: '操作-"仿真空间向量模型"保存失败'
+        }
+      }
+      saveOperationStep('仿真空间向量模型', tips, res.data)
     } else {
+      setSearchLoading(false)
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
-    setSearchLoading(false)
+  }
+
+  /**
+   * 保存操作步骤
+   */
+  const saveOperationStep = async (
+    operationName: string,
+    tips: Tips,
+    data:
+      | SearchResult[]
+      | IdfResult[]
+      | VectorSpacePreProcessQuery
+      | QueryTFResult[]
+      | QueryVectorResult[]
+      | QueryDocTFResult
+      | QueryDocVectorResult
+      | QuerySimilarityResult[],
+    index = 0
+  ) => {
+    const res = await requestFn(dispatch, {
+      url: '/score/createOperationRecord',
+      method: 'post',
+      data: {
+        experimentId: 5,
+        operationName
+      }
+    })
+    if (res && res.status === 200 && res.data) {
+      handleAfterSaveOperationStep(operationName, data, index)
+      successTips(tips.success.title, tips.success.description)
+    } else {
+      setSearchLoading(false)
+      setStepLoading(false)
+      errorTips(tips.error.title, res && res.data && res.data.msg ? res.data.msg : tips.error.description)
+    }
+  }
+
+  /**
+   * 保存操作步骤与之后需要做的操作
+   */
+  const handleAfterSaveOperationStep = (
+    operationName: string,
+    data:
+      | SearchResult[]
+      | IdfResult[]
+      | VectorSpacePreProcessQuery
+      | QueryTFResult[]
+      | QueryVectorResult[]
+      | QueryDocTFResult
+      | QueryDocVectorResult
+      | QuerySimilarityResult[],
+    index = 0
+  ) => {
+    if (operationName === '仿真空间向量模型') {
+      setSearchResult(data as SearchResult[])
+      setCurrentStepIndex(0)
+      setSearchLoading(false)
+    } else {
+      setCurrentStepIndex(index + 1)
+      handleStepSearchResult(index, data as
+        | IdfResult[]
+        | VectorSpacePreProcessQuery
+        | QueryTFResult[]
+        | QueryVectorResult[]
+        | QueryDocTFResult
+        | QueryDocVectorResult
+        | QuerySimilarityResult[])
+      if (index === 7) {
+        setLastStepIndex(index + 1)
+      }
+      setStepLoading(false)
+    }
   }
 
   /**
@@ -459,7 +548,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
   const successTips = (message = '', description = '') => {
     notification.success({
       message,
-      duration: 1,
+      duration: 1.5,
       description
     })
   }
@@ -515,28 +604,36 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
   /**
    * 仿真我的搜索引擎
    */
-  const getMonitorResult = async (url: string, index: number) => {
+  const getMonitorResult = async (param: { url: string; operationName: string }, index: number) => {
     setStepLoading(true)
     const res = await requestFn(dispatch, {
-      url,
+      url: param.url,
       method: 'post',
       params: {
-        ...(url.includes('tfsOfDoc') || url.includes('vectorOfDoc') ? { docId: parseInt(getStore('docId')) } : {}),
+        ...(param.url.includes('tfsOfDoc') || param.url.includes('vectorOfDoc')
+          ? { docId: parseInt(getStore('docId')) }
+          : {}),
         query,
         formulaId,
         smoothParam
       }
     })
     if (res && res.status === 200 && res.data && !res.data.msg) {
-      setCurrentStepIndex(index + 1)
-      handleStepSearchResult(index, res.data)
-      if (index === 7) {
-        setLastStepIndex(index + 1)
+      const tips: Tips = {
+        success: {
+          title: '检索成功',
+          description: `操作-"${param.operationName}"已保存`
+        },
+        error: {
+          title: '检索失败',
+          description: `操作-"${param.operationName}"保存失败`
+        }
       }
+      saveOperationStep(param.operationName, tips, res.data, index)
     } else {
+      setStepLoading(false)
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }
-    setStepLoading(false)
   }
 
   /**
@@ -824,17 +921,41 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
    * 处理当前步骤的按钮点击事件
    */
   const handleCurrentStep = (index: number) => {
-    const requestUrls = [
-      '/IRforCN/Retrieval/vectorSpaceModel/idf',
-      '/IRforCN/Retrieval/vectorSpaceModel/ppq',
-      '/IRforCN/Retrieval/vectorSpaceModel/tfOfQuery',
-      '/IRforCN/Retrieval/vectorSpaceModel/vectorOfQuery',
-      '/IRforCN/Retrieval/vectorSpaceModel/tfsOfDoc',
-      '/IRforCN/Retrieval/vectorSpaceModel/vectorOfDoc',
-      '/IRforCN/Retrieval/vectorSpaceModel/similarity',
-      '/IRforCN/Retrieval/vectorSpaceModel/descendOrderSimilarity'
+    const requestParams = [
+      {
+        url: '/IRforCN/Retrieval/vectorSpaceModel/idf',
+        operationName: '求文档IDF'
+      },
+      {
+        url: '/IRforCN/Retrieval/vectorSpaceModel/ppq',
+        operationName: '查询预处理'
+      },
+      {
+        url: '/IRforCN/Retrieval/vectorSpaceModel/tfOfQuery',
+        operationName: '求查询的TF'
+      },
+      {
+        url: '/IRforCN/Retrieval/vectorSpaceModel/vectorOfQuery',
+        operationName: '求查询向量'
+      },
+      {
+        url: '/IRforCN/Retrieval/vectorSpaceModel/tfsOfDoc',
+        operationName: '求各文档TF'
+      },
+      {
+        url: '/IRforCN/Retrieval/vectorSpaceModel/vectorOfDoc',
+        operationName: '求文档向量'
+      },
+      {
+        url: '/IRforCN/Retrieval/vectorSpaceModel/similarity',
+        operationName: '求相似度'
+      },
+      {
+        url: '/IRforCN/Retrieval/vectorSpaceModel/descendOrderSimilarity',
+        operationName: '求相似度'
+      }
     ]
-    getMonitorResult(requestUrls[index], index)
+    getMonitorResult(requestParams[index], index)
   }
 
   /**
