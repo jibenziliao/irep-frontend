@@ -2,6 +2,7 @@ import React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import styles from './Architecture.module.less'
 import VisitorChart from '../../components/visitorChart/VisitorChart'
+import constuctImg from '../../assets/home/irep系统架构图.png'
 
 const ArchitectureComponet = (props: RouteComponentProps) => {
   const switchRoute = (path: string) => {
@@ -83,6 +84,7 @@ const ArchitectureComponet = (props: RouteComponentProps) => {
               <div>
                 比较法可以让学生比较搜索引擎在不同参数情况下的性能响应，从而搜索引擎的设计。在索引器和检索器设计完毕后，由实验平台返回搜索引擎的各种数据指标，查准率、查全率、F１值、MAP、NDCG等，从而对不同参数的设计效果进行比较。
               </div>
+              <img className={styles.constuctImg} src={constuctImg} />
               <p></p>
             </div>
           </div>

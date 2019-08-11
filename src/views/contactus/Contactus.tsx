@@ -1,14 +1,80 @@
-import React from 'react'
-import { Input, Button } from 'antd'
+import React, { useState } from 'react'
+import { Dispatch } from 'redux'
+import { Input, Button, notification } from 'antd'
 import styles from './Contactus.module.less'
 import addressImg from '../../assets/Contactus/address.png'
 import answerImg from '../../assets/Contactus/answer.png'
 import falseImg from '../../assets/Contactus/false.png'
 import technologyImg from '../../assets/Contactus/technology.png'
+import { requestFn } from '../../utils/request'
+import { Actions } from '../../store/Actions'
+import { useDispatch } from '../../store/Store'
 
 const { TextArea } = Input
 
 const Contactus = () => {
+  const dispatch: Dispatch<Actions> = useDispatch()
+  //要提交的表单内容
+  const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
+  const [advice, setAdvice] = useState('')
+  const [submitLoding, setSubmitLoding] = useState(false)
+
+  /**
+   * 更新电话号码
+   */
+  const updatePhone = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPhone(event.target.value)
+  }
+
+  /**
+   * 更新电子邮箱
+   */
+  const updateEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value)
+  }
+
+  /**
+   * 更新建议内容
+   */
+  const updateAdvice = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setAdvice(event.target.value)
+  }
+  const saveAdvice = async () => {
+    setSubmitLoding(true)
+    const res = await requestFn(dispatch, {
+      url: '/opinion/add',
+      method: 'post',
+      data: {
+        oPhone: phone,
+        oEmail: email,
+        oContent: advice
+      }
+    })
+    if (res && res.status === 200 && res.data && res.data.code === 0) {
+      setSubmitLoding(false)
+      successTips('感谢您建议！', '')
+    } else {
+      setSubmitLoding(false)
+      errorTips('提交失败，请联系系统管理员！', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+    }
+  }
+
+  const successTips = (message = '', description = '') => {
+    notification.success({
+      message,
+      duration: 1.5,
+      description
+    })
+  }
+
+  const errorTips = (message = '', description = '') => {
+    notification.error({
+      message,
+      description
+    })
+  }
+
   return (
     <div className={styles.Container}>
       <div className={styles.topContainer}>
@@ -22,17 +88,17 @@ const Contactus = () => {
             <h3 className={styles.subTitle}>请您描述实验中的具体问题，我们会及时向您反馈</h3>
             <div className={styles.form}>
               <label className={styles.label}>您的电话：</label>
-              <Input className={styles.input} />
+              <Input className={styles.input} value={phone} onChange={updatePhone} />
             </div>
             <div className={styles.form}>
               <label className={styles.label}>您的邮箱：</label>
-              <Input className={styles.input} />
+              <Input className={styles.input} value={email} onChange={updateEmail} />
             </div>
             <div className={styles.form}>
               <label className={styles.textAreaLable}>详细描述：</label>
-              <TextArea className={styles.textArea} rows={4} />
+              <TextArea className={styles.textArea} rows={4} value={advice} onChange={updateAdvice} />
             </div>
-            <Button className={styles.button} type="primary">
+            <Button className={styles.button} type="primary" loading={submitLoding} onClick={saveAdvice}>
               提交
             </Button>
           </div>

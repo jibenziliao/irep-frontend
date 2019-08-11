@@ -11,6 +11,7 @@ import { setStore } from '../../utils/util'
 import Announcement from './Announcement'
 import LoginStatus from './LoginStatus'
 import videoSource from '../../assets/videos/irep.mp4'
+import videoPoster from '../../assets/login/video.jpg'
 
 interface Params {
   userName: string
@@ -88,7 +89,7 @@ const LoginForm = (props: LoginProp) => {
       <div className={styles.LoginContainer}>
         <div className={styles.FormWrapper}>
           <div className={styles.VideoWrapper}>
-            <video controls>
+            <video controls poster={videoPoster}>
               <source src={videoSource} type="video/mp4" />
             </video>
           </div>

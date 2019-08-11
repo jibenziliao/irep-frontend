@@ -17,7 +17,8 @@ import {
   RadarSelected,
   AveragePerformance,
   IndividualPerformance,
-  PerformaceKeys
+  PerformaceKeys,
+  ValueKeys
 } from '../../../modal/Performance'
 
 /**
@@ -113,30 +114,30 @@ const prSeriesData = [[0, 1], [0.2, 0.95], [0.4, 0.93], [0.57, 0.9], [0.8, 0.8],
  * 综合性能雷达图提示框配置
  */
 const radarIndicator = [
-  { name: '布尔模型', max: 1 },
-  { name: '向量空间模型', max: 1 },
-  { name: '概率检索模型', max: 1 },
-  { name: '语言模型', max: 1 }
+  { name: 'f1', max: 1 },
+  { name: 'map', max: 1 },
+  { name: 'ndcg', max: 1 },
+  { name: 'ndcg5', max: 1 },
+  { name: 'ndcg10', max: 1 },
+  { name: 'ndcg20', max: 1 },
+  { name: 'p5', max: 1 },
+  { name: 'p10', max: 1 },
+  { name: 'p20', max: 1 },
+  { name: 'precision', max: 1 },
+  { name: 'r5', max: 1 },
+  { name: 'r10', max: 1 },
+  { name: 'r20', max: 1 },
+  { name: 'recall', max: 1 }
 ]
 
 /**
  * 综合性能雷达图，每个维度数据项
  */
 const radarLegend = [
-  'f1',
-  'map',
-  'ndcg20',
-  'ndcg10',
-  'ndcg5',
-  'ndcg',
-  'r20',
-  'r10',
-  'r5',
-  'recall',
-  'p20',
-  'p10',
-  'p5',
-  'precision'
+  'boolModelPerformance',
+  'vsmPerformance',
+  'probabilityModelPerformance',
+  'languageModelPerformance'
 ]
 
 /**
@@ -145,59 +146,19 @@ const radarLegend = [
 const radarSeriesData: { name: PerformaceKeys; value: number[] }[] = [
   {
     value: [18.9, 22.2, 24.6, 32.45],
-    name: 'f1'
+    name: 'boolModelPerformance'
   },
   {
     value: [28.9, 24.6, 34.6, 12.45],
-    name: 'map'
+    name: 'vsmPerformance'
   },
   {
     value: [38.9, 28.9, 44.6, 28.45],
-    name: 'ndcg20'
+    name: 'probabilityModelPerformance'
   },
   {
     value: [48.9, 18, 41.6, 17.45],
-    name: 'ndcg10'
-  },
-  {
-    value: [58.9, 28.2, 37.6, 25.45],
-    name: 'ndcg5'
-  },
-  {
-    value: [68.9, 12.2, 54.6, 37.45],
-    name: 'ndcg'
-  },
-  {
-    value: [78.9, 32.2, 64.6, 42.45],
-    name: 'r20'
-  },
-  {
-    value: [88.9, 42.2, 57.6, 51.45],
-    name: 'r10'
-  },
-  {
-    value: [22.2, 52.2, 49.6, 46.45],
-    name: 'r5'
-  },
-  {
-    value: [32.45, 44.2, 14.6, 58.45],
-    name: 'recall'
-  },
-  {
-    value: [24.6, 62.2, 61.6, 62.45],
-    name: 'p20'
-  },
-  {
-    value: [42, 39.2, 45.6, 51.45],
-    name: 'p10'
-  },
-  {
-    value: [51, 47.2, 29.6, 43.45],
-    name: 'p5'
-  },
-  {
-    value: [18.9, 68.2, 23.6, 37.45],
-    name: 'precision'
+    name: 'languageModelPerformance'
   }
 ]
 
@@ -205,20 +166,10 @@ const radarSeriesData: { name: PerformaceKeys; value: number[] }[] = [
  * 综合性能雷达图默认要展示的列
  */
 const radarSelected: RadarSelected = {
-  f1: true,
-  map: false,
-  ndcg20: false,
-  ndcg10: false,
-  ndcg5: false,
-  ndcg: false,
-  r20: false,
-  r10: false,
-  r5: false,
-  recall: false,
-  p20: false,
-  p10: false,
-  p5: false,
-  precision: false
+  boolModelPerformance: true,
+  vsmPerformance: false,
+  probabilityModelPerformance: false,
+  languageModelPerformance: false
 }
 
 interface EvaluationExperimentProps extends RouteComponentProps, FormComponentProps {}
@@ -313,7 +264,7 @@ const EvaluationExperimentForm = (props: EvaluationExperimentProps) => {
       )
     },
     {
-      title: '相关度',
+      title: '是否相关',
       dataIndex: 'isExisting',
       key: 'isExisting',
       width: 60,
@@ -467,49 +418,6 @@ const EvaluationExperimentForm = (props: EvaluationExperimentProps) => {
   }
 
   /**
-   * 获取综合性能雷达图
-   */
-  const getRadarOption = (
-    indicator: { name: string; max: number }[],
-    seriesData: { name: string; value: number[] }[],
-    legend: string[],
-    selected: RadarSelected
-  ) => {
-    const option = {
-      tooltip: {},
-      radar: {
-        name: {
-          textStyle: {
-            color: '#fff',
-            backgroundColor: '#999',
-            borderRadius: 3,
-            padding: [3, 5]
-          }
-        },
-        center: ['60%', '50%'],
-        indicator: indicator
-      },
-      color: defaultChartColors,
-      legend: {
-        type: 'scroll',
-        orient: 'vertical',
-        top: 'middle',
-        left: 10,
-        data: legend,
-        selected
-      },
-      series: [
-        {
-          type: 'radar',
-          name: '综合性能雷达图',
-          data: seriesData
-        }
-      ]
-    }
-    return option
-  }
-
-  /**
    * 点击下一步
    *
    * 先选择仿真模型
@@ -577,81 +485,6 @@ const EvaluationExperimentForm = (props: EvaluationExperimentProps) => {
     const yAxisData = Object.keys(data)
     const seriesData: number[] = Object.values(data)
     return { yAxisData, seriesData }
-  }
-
-  /**
-   * 获取综合性能雷达图数据
-   */
-  const getRadarPerformance = async () => {
-    const res = await requestFn(dispatch, {
-      url: '/IRforCN/performance/averagePerformance',
-      method: 'post'
-    })
-    if (res && res.status === 200 && res.data) {
-      const series = handleAveragePerformanceResult(res.data)
-      const selected = handleRadarSelected(series)
-      const tmpRadarOption = getRadarOption(radarIndicator, series, radarLegend, selected)
-      setRadarOption(tmpRadarOption)
-    } else {
-      errorTips('获取综合性能数据失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
-    }
-    setPerformanceLoading(false)
-  }
-
-  /**
-   * 处理legend需要显示的标签
-   *
-   * 若四个维度的值都为0，则默认不显示
-   */
-  const handleRadarSelected = (series: { name: PerformaceKeys; value: number[] }[]) => {
-    let selected: RadarSelected = {
-      f1: true,
-      map: false,
-      ndcg20: false,
-      ndcg10: false,
-      ndcg5: false,
-      ndcg: false,
-      r20: false,
-      r10: false,
-      r5: false,
-      recall: false,
-      p20: false,
-      p10: false,
-      p5: false,
-      precision: false
-    }
-    for (let i of series) {
-      const key = i.name as PerformaceKeys
-      selected[key] = !i.value.every(j => j === 0)
-    }
-    return selected
-  }
-
-  /**
-   * 处理综合性能雷达图数据
-   */
-  const handleAveragePerformanceResult = (res: AveragePerformance) => {
-    const series = []
-    const bool = handleSinglePerformanceResult(res.boolModelPerformance)
-    const language = handleSinglePerformanceResult(res.languageModelPerformance)
-    const probability = handleSinglePerformanceResult(res.probabilityModelPerformance)
-    const vectorSpace = handleSinglePerformanceResult(res.vsmPerformance)
-    const keys = Object.keys(bool) as PerformaceKeys[]
-    for (let i of keys) {
-      series.push({
-        name: i,
-        value: [bool[i], vectorSpace[i], probability[i], language[i]]
-      })
-    }
-    return series
-  }
-
-  /**
-   * 取出综合性能数据中的单个模型数据
-   */
-  const handleSinglePerformanceResult = (res: IndividualPerformanceOrigin): IndividualPerformance => {
-    const { query, retrieverId, id, ...data } = res
-    return data
   }
 
   /**
@@ -815,7 +648,112 @@ const EvaluationExperimentForm = (props: EvaluationExperimentProps) => {
       return <div className={styles.GroupChart}></div>
     }
   }
-
+  // 雷达图 start
+  /**
+   * 获取综合性能雷达图
+   */
+  const getRadarOption = (
+    indicator: { name: string; max: number }[],
+    seriesData: { name: string; value: number[] }[],
+    legend: string[],
+    selected: RadarSelected
+  ) => {
+    const option = {
+      tooltip: {},
+      radar: {
+        name: {
+          textStyle: {
+            color: '#fff',
+            backgroundColor: '#999',
+            borderRadius: 3,
+            padding: [3, 5]
+          }
+        },
+        center: ['60%', '50%'],
+        indicator: indicator
+      },
+      color: defaultChartColors,
+      legend: {
+        type: 'scroll',
+        orient: 'vertical',
+        top: 'middle',
+        left: 10,
+        data: legend,
+        selected
+      },
+      series: [
+        {
+          type: 'radar',
+          name: '综合性能雷达图',
+          data: seriesData
+        }
+      ]
+    }
+    return option
+  }
+  /**
+   * 处理legend需要显示的标签
+   *
+   * 若四个维度的值都为0，则默认不显示
+   */
+  const handleRadarSelected = (series: { name: PerformaceKeys; value: number[] }[]) => {
+    let selected: RadarSelected = {
+      boolModelPerformance: true,
+      vsmPerformance: false,
+      probabilityModelPerformance: false,
+      languageModelPerformance: false
+    }
+    for (let i of series) {
+      const key = i.name as PerformaceKeys
+      selected[key] = !i.value.every(j => j === 0)
+    }
+    return selected
+  }
+  /**
+   * 处理综合性能雷达图数据
+   */
+  const handleAveragePerformanceResult = (res: AveragePerformance) => {
+    const series = []
+    const keys = Object.keys(res) as PerformaceKeys[]
+    for (let i of keys) {
+      const data = handleSinglePerformanceResult(res[i])
+      const list = []
+      const keys2 = Object.keys(data) as ValueKeys[]
+      for (let j of keys2) {
+        list.push(data[j])
+      }
+      series.push({
+        name: i,
+        value: list
+      })
+    }
+    return series
+  }
+  /**
+   * 取出综合性能数据中的单个模型数据
+   */
+  const handleSinglePerformanceResult = (res: IndividualPerformanceOrigin): IndividualPerformance => {
+    const { query, retrieverId, id, ...data } = res
+    return data
+  }
+  /**
+   * 获取综合性能雷达图数据
+   */
+  const getRadarPerformance = async () => {
+    const res = await requestFn(dispatch, {
+      url: '/IRforCN/performance/averagePerformance',
+      method: 'post'
+    })
+    if (res && res.status === 200 && res.data) {
+      const series = handleAveragePerformanceResult(res.data)
+      const selected = handleRadarSelected(series)
+      const tmpRadarOption = getRadarOption(radarIndicator, series, radarLegend, selected)
+      setRadarOption(tmpRadarOption)
+    } else {
+      errorTips('获取综合性能数据失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+    }
+    setPerformanceLoading(false)
+  }
   /**
    * 渲染雷达图
    */
@@ -837,6 +775,7 @@ const EvaluationExperimentForm = (props: EvaluationExperimentProps) => {
       return <div className={styles.PerformanceWrapper}></div>
     }
   }
+  // 雷达图 end
 
   /**
    * 渲染模型调试表格

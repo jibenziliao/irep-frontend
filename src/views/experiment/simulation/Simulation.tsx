@@ -8,7 +8,8 @@ import { requestFn } from '../../../utils/request'
 import { useDispatch } from '../../../store/Store'
 import { Actions } from '../../../store/Actions'
 import { SearchResult } from '../../../modal/Search'
-import { setStore } from '../../../utils/util'
+import { setStore, getStore } from '../../../utils/util'
+import SearchImg from '../../../assets/simulation/search.png'
 
 const { Search } = Input
 
@@ -97,7 +98,10 @@ const SimulationComponent = (props: RouteComponentProps) => {
       <Steps current="仿真我的搜索引擎" finishedItems={9} />
       <div className={styles.Content}>
         <div className={styles.MiddleSection} hidden={!showResult}>
-          <h1 className={styles.SectionTitle}>仿真我的搜索引擎</h1>
+          <img className={styles.logo} src={SearchImg} alt="icon"></img>
+          <span className={styles.SectionTitle}>
+            {getStore('user') ? getStore('user').username : '郭晨睿'}的搜索引擎
+          </span>
           <Search
             className={styles.InputSection}
             placeholder="输入检索式"
@@ -108,7 +112,8 @@ const SimulationComponent = (props: RouteComponentProps) => {
         </div>
         <div hidden={showResult}>
           <div className={styles.topSection}>
-            <div className={styles.topTitle}>仿真我的搜索引擎</div>
+            <img className={styles.logo} src={SearchImg} alt="icon"></img>
+            <div className={styles.topTitle}>{getStore('user') ? getStore('user').username : '郭晨睿'}的搜索引擎</div>
             <Search
               className={styles.InputSection}
               placeholder="输入检索式"

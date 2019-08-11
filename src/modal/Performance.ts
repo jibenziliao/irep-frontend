@@ -43,26 +43,22 @@ export interface AveragePerformance {
  * 综合性能雷达图 legend图标默认显示状态接口
  */
 export interface RadarSelected {
-  f1: boolean
-  map: boolean
-  ndcg: boolean
-  ndcg5: boolean
-  ndcg10: boolean
-  ndcg20: boolean
-  p5: boolean
-  p10: boolean
-  p20: boolean
-  precision: boolean
-  r5: boolean
-  r10: boolean
-  r20: boolean
-  recall: boolean
+  boolModelPerformance: boolean
+  vsmPerformance: boolean
+  probabilityModelPerformance: boolean
+  languageModelPerformance: boolean
 }
 
 /**
  * 综合性能数据字段类型
  */
 export type PerformaceKeys =
+  | 'boolModelPerformance'
+  | 'vsmPerformance'
+  | 'probabilityModelPerformance'
+  | 'languageModelPerformance'
+
+export type ValueKeys =
   | 'f1'
   | 'map'
   | 'ndcg20'

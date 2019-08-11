@@ -178,49 +178,49 @@ const invertedIndexCards: ExperimentCard[] = [
     index: -1
   },
   {
-    name: '词典',
+    name: '全体倒排记录表',
     current: false,
     disabled: false,
     correctIndex: 2,
     index: -1
   },
   {
-    name: '词项',
+    name: '倒排记录表',
     current: false,
     disabled: false,
     correctIndex: 3,
     index: -1
   },
   {
-    name: '全体倒排记录表',
+    name: '词项',
     current: false,
     disabled: false,
     correctIndex: 4,
     index: -1
   },
   {
-    name: '倒排记录表',
+    name: '文档频率',
     current: false,
     disabled: false,
     correctIndex: 5,
     index: -1
   },
   {
-    name: '全体倒排记录表',
+    name: '文档ID',
     current: false,
     disabled: false,
     correctIndex: 6,
     index: -1
   },
   {
-    name: '文档频率',
+    name: '词项频率',
     current: false,
     disabled: false,
     correctIndex: 7,
     index: -1
   },
   {
-    name: '文档频率',
+    name: '位置索引',
     current: false,
     disabled: false,
     correctIndex: 8,

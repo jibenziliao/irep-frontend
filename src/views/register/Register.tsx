@@ -151,12 +151,12 @@ const RegisterForm = (props: RegisterProp) => {
           </Form.Item>
           <Form.Item label="手机号">
             {getFieldDecorator('mobile', {
-              rules: [{ pattern: defaultMobileRegExp, message: '请输入正确的手机号' }]
+              rules: [{ required: true, pattern: defaultMobileRegExp, message: '请输入正确的手机号' }]
             })(<Input placeholder="请输入手机号" size="large" />)}
           </Form.Item>
           <Form.Item label="邮箱">
             {getFieldDecorator('email', {
-              rules: [{ pattern: defaultUserEmailRegExp, message: '请输入正确的邮箱地址' }]
+              rules: [{ required: true, pattern: defaultUserEmailRegExp, message: '请输入正确的邮箱地址' }]
             })(<Input placeholder="请输入邮箱" size="large" />)}
           </Form.Item>
           <Form.Item label="工作单位">

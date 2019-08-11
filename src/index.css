@@ -23,3 +23,19 @@ body {
   height: 100%;
   flex-direction: column;
 }
+
+@font-face{
+  font-family: "站酷高端黑";
+  src: url(./assets/font/站酷高端黑.ttf);
+}
+
+@font-face{
+  font-family: "站酷酷黑体";
+  src: url(./assets/font/站酷酷黑体.ttf);
+}
+
+@font-face{
+  font-family: "AliHYAiHei";
+  src: url(./assets/font/AliHYAiHei.ttf);
+}
+
