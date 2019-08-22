@@ -8,7 +8,7 @@ import Examination from '../../../components/examination/Examination'
 import { vectorSpaceCompletionQuestions, vectorSpaceChoiceQuestions } from '../../../config/Constant'
 import { vectorSpaceKnowledge } from '../../../config/vectorSpaceKnowledge'
 import VectorSpaceExperiment from './VectorSpaceExperiment'
-import { getUrlParam } from '../../../utils/util'
+import { getUrlParam, getStore } from '../../../utils/util'
 
 const { TabPane } = Tabs
 
@@ -20,6 +20,7 @@ const defaultTab = getUrlParam('tab')
 const VectorSpaceModalComponet = (props: RouteComponentProps) => {
   const [activeTabKey, setActiveTabKey] = useState(defaultTab || '1')
   const [tabDisabled, setTabDisabled] = useState(defaultTab !== '3')
+  const [buttonDisabled, setbuttonDisabled] = useState(!getStore("zhuanjia"))
 
   const handleClick = () => {
     props.history.replace('/experiment/probability')
@@ -53,6 +54,25 @@ const VectorSpaceModalComponet = (props: RouteComponentProps) => {
 
   const operations = <Button onClick={handleClick}>跳过(仅调试用)</Button>
 
+  // 专家进入的可切换前后步骤
+  const able=()=>{
+    if(getStore("zhuanjia")){
+      return false
+    }else{
+      return tabDisabled
+    }
+  }
+  
+  // 上一步
+  const lastStep=()=>{
+    props.history.replace('/experiment/boolean')
+  }
+  
+  // 下一步
+  const nextStep=()=>{
+    props.history.replace('/experiment/probability')
+  }
+
   return (
     <div className={styles.Container}>
       <Steps current="构建向量空间模型" finishedItems={5} />
@@ -69,10 +89,14 @@ const VectorSpaceModalComponet = (props: RouteComponentProps) => {
               goNextStep={goNextStep}
             />
           </TabPane>
-          <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>
+          <TabPane tab="构建模型页" key="3" disabled={able()}>
             <VectorSpaceExperiment />
           </TabPane>
         </Tabs>
+        <div className={styles.stepButton}>
+          <Button hidden={buttonDisabled} onClick={lastStep}>上一步</Button>
+          <Button hidden={buttonDisabled} onClick={nextStep}>下一步</Button>
+        </div>
       </div>
     </div>
   )

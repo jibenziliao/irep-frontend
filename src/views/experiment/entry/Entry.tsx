@@ -13,6 +13,7 @@ import { Actions } from '../../../store/Actions'
 import Knowledge from '../../../components/knowledge/Knowledge'
 import { entryKnowledge } from '../../../config/entryKnowledge'
 import { getUrlParam } from '../../../utils/util'
+import { getStore } from '../../../utils/util'
 
 const { TabPane } = Tabs
 
@@ -22,6 +23,7 @@ const EntryComponent = (props: RouteComponentProps) => {
   const [loading, setLoading] = useState(false)
   const [activeTabKey, setActiveTabKey] = useState(defaultTab || '1')
   const [tabDisabled, setTabDisabled] = useState(defaultTab !== '3')
+  const [buttonDisabled, setbuttonDisabled] = useState(!getStore("zhuanjia"))
   const dispatch: Dispatch<Actions> = useDispatch()
   const state: State = useMappedState(useCallback((globalState: State) => globalState, []))
 
@@ -122,6 +124,18 @@ const EntryComponent = (props: RouteComponentProps) => {
     </Button>
   )
 
+  const able=()=>{
+    if(getStore("zhuanjia")){
+      return false
+    }else{
+      return tabDisabled
+    }
+  }
+
+  const nextStep=()=>{
+    props.history.replace('/experiment/pretreatment')
+  }
+
   return (
     <div className={styles.Container}>
       <StepsExam />
@@ -138,11 +152,13 @@ const EntryComponent = (props: RouteComponentProps) => {
               goNextStep={goNextStep}
             />
           </TabPane>
-          <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>
+          <TabPane tab="构建模型页" key="3" disabled={able()}>
             <EntryExperiment save={saveExperiment} loading={loading} />
           </TabPane>
         </Tabs>
+        <Button className={styles.nextStep} hidden={buttonDisabled} onClick={nextStep}>下一步</Button>
       </div>
+      
     </div>
   )
 }

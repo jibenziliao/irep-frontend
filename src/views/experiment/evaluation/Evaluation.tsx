@@ -8,7 +8,7 @@ import Examination from '../../../components/examination/Examination'
 import { evaluationCompletionQuestions, evaluationChoiceQuestions } from '../../../config/Constant'
 import { evaluationKnowledge } from '../../../config/evaluationKnowledge'
 import EvluationExperiment from './EvaluationExperiment'
-import { getUrlParam } from '../../../utils/util'
+import { getUrlParam, getStore } from '../../../utils/util'
 
 const { TabPane } = Tabs
 
@@ -20,6 +20,7 @@ const defaultTab = getUrlParam('tab')
 const EvaluationComponet = (props: RouteComponentProps) => {
   const [activeTabKey, setActiveTabKey] = useState(defaultTab || '1')
   const [tabDisabled, setTabDisabled] = useState(defaultTab !== '3')
+  const [buttonDisabled, setbuttonDisabled] = useState(!getStore("zhuanjia"))
 
   const handleClick = () => {
     props.history.replace('/experiment/simulation')
@@ -53,6 +54,26 @@ const EvaluationComponet = (props: RouteComponentProps) => {
 
   const operations = <Button onClick={handleClick}>跳过(仅调试用)</Button>
 
+  
+  // 专家进入的可切换前后步骤
+  const able=()=>{
+    if(getStore("zhuanjia")){
+      return false
+    }else{
+      return tabDisabled
+    }
+  }
+  
+  // 上一步
+  const lastStep=()=>{
+    props.history.replace('/experiment/language')
+  }
+  
+  // 下一步
+  const nextStep=()=>{
+    props.history.replace('/experiment/simulation')
+  }
+
   return (
     <div className={styles.Container}>
       <Steps current="分析检索模型性能" finishedItems={8} />
@@ -69,10 +90,14 @@ const EvaluationComponet = (props: RouteComponentProps) => {
               goNextStep={goNextStep}
             />
           </TabPane>
-          <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>
+          <TabPane tab="构建模型页" key="3" disabled={able()}>
             <EvluationExperiment />
           </TabPane>
         </Tabs>
+        <div className={styles.stepButton}>
+          <Button hidden={buttonDisabled} onClick={lastStep}>上一步</Button>
+          <Button hidden={buttonDisabled} onClick={nextStep}>下一步</Button>
+        </div>
       </div>
     </div>
   )

@@ -51,6 +51,11 @@ const LoginForm = (props: LoginProp) => {
     setLoading(false)
     if (res && res.status === 200 && res.data && res.data.code === 101) {
       setStore('user', res.data.data || { username: '张三' })
+      if(fieldValue.userName=="zhuanjia"){
+        setStore('zhuanjia', true)
+      }else{
+        setStore('zhuanjia', false)
+      }
       successTips('登录成功', '')
       setTimeout(() => {
         // 使用原生跳转，以更新权限
@@ -149,7 +154,7 @@ const LoginForm = (props: LoginProp) => {
                 </Button>
               </Form.Item>
             </Form>
-            <p className={styles.Experience}>免注册在先体验</p>
+            <p className={styles.Experience}>免注册在线体验</p>
           </div>
         </div>
       </div>

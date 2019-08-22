@@ -9,6 +9,7 @@ import { pretreatmentCompletionQuestions, pretreatmentChoiceQuestions } from '..
 import { pretreatmentKnowledge } from '../../../config/pretreatmentKnowledge'
 import PretreatmentExperiment from './PretreatmentExperiment'
 import { getUrlParam } from '../../../utils/util'
+import { getStore } from '../../../utils/util'
 
 const { TabPane } = Tabs
 
@@ -20,6 +21,7 @@ const defaultTab = getUrlParam('tab')
 const PretreatmentComponet = (props: RouteComponentProps) => {
   const [activeTabKey, setActiveTabKey] = useState(defaultTab || '1')
   const [tabDisabled, setTabDisabled] = useState(defaultTab !== '3')
+  const [buttonDisabled, setbuttonDisabled] = useState(!getStore("zhuanjia"))
 
   const handleClick = () => {
     props.history.replace('/experiment/invertedIndex')
@@ -51,6 +53,25 @@ const PretreatmentComponet = (props: RouteComponentProps) => {
     setActiveTabKey(tabIndex)
   }
 
+  // 专家进入的可切换前后步骤
+  const able=()=>{
+    if(getStore("zhuanjia")){
+      return false
+    }else{
+      return tabDisabled
+    }
+  }
+
+  // 上一步
+  const lastStep=()=>{
+    props.history.replace('/experiment/entry')
+  }
+
+  // 下一步
+  const nextStep=()=>{
+    props.history.replace('/experiment/invertedIndex')
+  }
+
   const operations = <Button onClick={handleClick}>跳过(仅调试用)</Button>
 
   return (
@@ -69,10 +90,14 @@ const PretreatmentComponet = (props: RouteComponentProps) => {
               goNextStep={goNextStep}
             />
           </TabPane>
-          <TabPane tab="构建模型页" key="3" disabled={tabDisabled}>
+          <TabPane tab="构建模型页" key="3" disabled={able()}>
             <PretreatmentExperiment />
           </TabPane>
         </Tabs>
+        <div className={styles.stepButton}>
+          <Button hidden={buttonDisabled} onClick={lastStep}>上一步</Button>
+          <Button hidden={buttonDisabled} onClick={nextStep}>下一步</Button>
+        </div>
       </div>
     </div>
   )

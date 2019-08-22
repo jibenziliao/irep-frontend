@@ -5,6 +5,7 @@ import commentImage from '../../assets/discussion/comment.png'
 import peopleImage from '../../assets/discussion/people.png'
 import timeImage from '../../assets/discussion/time.png'
 import { compileFunction } from 'vm'
+import { getStore } from '../../utils/util';
 
 var commentList = [
   {
@@ -62,7 +63,7 @@ const Comments = () => {
     var date = new Date()
     var mytime = date.toLocaleString('chinese', { hour12: false })
     commentList[index].comments.push({
-      author: '昵称',
+      author: getStore('user') ? getStore('user').username : '郭晨睿',
       content: addCommentValue,
       time: mytime
     })
@@ -152,7 +153,7 @@ const Discussion = () => {
     var mytime = date.toLocaleString('chinese', { hour12: false })
     commentList.push({
       addCommentDisabled: '0',
-      author: '我',
+      author: getStore('user') ? getStore('user').username : '郭晨睿',
       content: myCommentValue,
       time: mytime,
       comments: []
