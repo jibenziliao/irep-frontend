@@ -89,6 +89,30 @@ const LoginForm = (props: LoginProp) => {
     window.location.href = window.location.origin
   }
 
+  // 专家入口/免注册在线体验
+  const expertEntrance=async ()=>{
+    const res = await requestFn(dispatch, {
+      url: '/user/login',
+      method: 'post',
+      params: {},
+      data: {
+        username: "zhuanjia",
+        password: "123456"
+      }
+    })
+    setLoading(false)
+    if (res && res.status === 200 && res.data && res.data.code === 101) {
+      setStore('user', res.data.data || { username: '张三' })
+      setStore('zhuanjia', true)
+      setTimeout(() => {
+        // 使用原生跳转，以更新权限
+        window.location.href = '/introduction/background'
+      }, 1000)
+    } else {
+      errorTips('请求错误，请重试！')
+    }
+  }
+
   return (
     <div>
       <div className={styles.LoginContainer}>
@@ -154,7 +178,7 @@ const LoginForm = (props: LoginProp) => {
                 </Button>
               </Form.Item>
             </Form>
-            <p className={styles.Experience}>免注册在线体验</p>
+            <p className={styles.Experience} onClick={expertEntrance}>免注册在线体验</p>
           </div>
         </div>
       </div>
