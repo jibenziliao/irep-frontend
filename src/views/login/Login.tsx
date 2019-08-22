@@ -178,7 +178,7 @@ const LoginForm = (props: LoginProp) => {
                 </Button>
               </Form.Item>
             </Form>
-            <p className={styles.Experience} onClick={expertEntrance}>免注册在线体验</p>
+            <p className={styles.Experience} onClick={expertEntrance}>专家入口</p>
           </div>
         </div>
       </div>
