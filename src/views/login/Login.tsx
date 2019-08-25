@@ -51,7 +51,7 @@ const LoginForm = (props: LoginProp) => {
     setLoading(false)
     if (res && res.status === 200 && res.data && res.data.code === 101) {
       setStore('user', res.data.data || { username: '张三' })
-      if (fieldValue.userName == 'zhuanjia') {
+      if (fieldValue.userName == '专家' || fieldValue.userName == 'zhuanjia') {
         setStore('zhuanjia', true)
       } else {
         setStore('zhuanjia', false)
@@ -96,7 +96,7 @@ const LoginForm = (props: LoginProp) => {
       method: 'post',
       params: {},
       data: {
-        username: 'zhuanjia',
+        username: '专家',
         password: '123456'
       }
     })

@@ -1,14 +1,15 @@
 import React from 'react'
 import styles from './Report.module.less'
 import { Table } from 'antd'
+import { getStore } from '../../utils/util';
 
 type columnAlignType = 'center' | 'left' | 'right' | undefined
 const columnAlignCenter: columnAlignType = 'center'
 
 const Report = () => {
-  const name = '蓝天辰'
-  const number = '2018201040002'
-  const studentClass = '16管工'
+  const name = getStore('user').username
+  const number = getStore('user').jobNumber
+  const studentClass = '15管工'
   const score = '75'
   const date = new Date()
   const time = date.toLocaleString()
