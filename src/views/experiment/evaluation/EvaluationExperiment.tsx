@@ -133,12 +133,7 @@ const radarIndicator = [
 /**
  * 综合性能雷达图，每个维度数据项
  */
-const radarLegend = [
-  'boolModelPerformance',
-  'vsmPerformance',
-  'probabilityModelPerformance',
-  'languageModelPerformance'
-]
+const radarLegend = ['布尔模型', '向量空间模型', '概率检索模型', '语言模型']
 
 /**
  * 综合性能雷达图假数据

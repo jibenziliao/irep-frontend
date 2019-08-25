@@ -27,7 +27,7 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
   const [tabDisabled, setTabDisabled] = useState(defaultTab !== '3')
   const dispatch: Dispatch<Actions> = useDispatch()
   const state: State = useMappedState(useCallback((globalState: State) => globalState, []))
-  const [buttonDisabled, setbuttonDisabled] = useState(!getStore("zhuanjia"))
+  const [buttonDisabled, setbuttonDisabled] = useState(!getStore('zhuanjia'))
 
   useEffect(() => {
     /**
@@ -117,21 +117,21 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
   const operations = <Button onClick={handleClick}>跳过(仅调试用)</Button>
 
   // 专家进入的可切换前后步骤
-  const able=()=>{
-    if(getStore("zhuanjia")){
+  const able = () => {
+    if (getStore('zhuanjia')) {
       return false
-    }else{
+    } else {
       return tabDisabled
     }
   }
-  
+
   // 上一步
-  const lastStep=()=>{
+  const lastStep = () => {
     props.history.replace('/experiment/pretreatment')
   }
-  
+
   // 下一步
-  const nextStep=()=>{
+  const nextStep = () => {
     props.history.replace('/experiment/boolean')
   }
 
@@ -156,8 +156,12 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
           </TabPane>
         </Tabs>
         <div className={styles.stepButton}>
-          <Button hidden={buttonDisabled} onClick={lastStep}>上一步</Button>
-          <Button hidden={buttonDisabled} onClick={nextStep}>下一步</Button>
+          <Button hidden={buttonDisabled} onClick={lastStep}>
+            上一步
+          </Button>
+          <Button hidden={buttonDisabled} onClick={nextStep}>
+            下一步
+          </Button>
         </div>
       </div>
     </div>

@@ -51,9 +51,9 @@ const LoginForm = (props: LoginProp) => {
     setLoading(false)
     if (res && res.status === 200 && res.data && res.data.code === 101) {
       setStore('user', res.data.data || { username: '张三' })
-      if(fieldValue.userName=="zhuanjia"){
+      if (fieldValue.userName == 'zhuanjia') {
         setStore('zhuanjia', true)
-      }else{
+      } else {
         setStore('zhuanjia', false)
       }
       successTips('登录成功', '')
@@ -90,14 +90,14 @@ const LoginForm = (props: LoginProp) => {
   }
 
   // 专家入口/免注册在线体验
-  const expertEntrance=async ()=>{
+  const expertEntrance = async () => {
     const res = await requestFn(dispatch, {
       url: '/user/login',
       method: 'post',
       params: {},
       data: {
-        username: "zhuanjia",
-        password: "123456"
+        username: 'zhuanjia',
+        password: '123456'
       }
     })
     setLoading(false)
@@ -178,7 +178,9 @@ const LoginForm = (props: LoginProp) => {
                 </Button>
               </Form.Item>
             </Form>
-            <p className={styles.Experience} onClick={expertEntrance}>专家入口</p>
+            <p className={styles.Experience} onClick={expertEntrance}>
+              专家评审入口
+            </p>
           </div>
         </div>
       </div>
@@ -192,7 +194,7 @@ const LoginForm = (props: LoginProp) => {
       </div>
       <div className={styles.BrowserWrapper}>
         <span>为保证实验效果，建议使用</span>
-        <span className={styles.Brower}>Chrome、FireFox</span>
+        <span className={styles.Brower}>Chrome、FireFox、Edge</span>
         <span>浏览器打开</span>
       </div>
     </div>

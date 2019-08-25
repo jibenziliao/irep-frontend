@@ -38,6 +38,7 @@ export interface SaveOrderBtn {
  * 全局state接口
  */
 export interface State {
+  onlineUserNumLoading: boolean
   pageLoading: boolean
   entryExperimentCards: ExperimentCard[]
   steps: { name: string }[]
@@ -529,6 +530,7 @@ const saveOrderBtn: SaveOrderBtn = {
  * 全局初始状态
  */
 export const INITIAL_STATE: State = {
+  onlineUserNumLoading: true, //加载当前登录人数请求状态
   pageLoading: false,
   entryExperimentCards,
   steps,
