@@ -23,7 +23,7 @@ const EntryComponent = (props: RouteComponentProps) => {
   const [loading, setLoading] = useState(false)
   const [activeTabKey, setActiveTabKey] = useState(defaultTab || '1')
   const [tabDisabled, setTabDisabled] = useState(defaultTab !== '3')
-  const [buttonDisabled, setbuttonDisabled] = useState(!getStore("zhuanjia"))
+  const [buttonDisabled, setbuttonDisabled] = useState(!getStore('zhuanjia'))
   const dispatch: Dispatch<Actions> = useDispatch()
   const state: State = useMappedState(useCallback((globalState: State) => globalState, []))
 
@@ -116,23 +116,24 @@ const EntryComponent = (props: RouteComponentProps) => {
 
   const operations = (
     <Button
+      hidden={buttonDisabled}
       onClick={() => {
         props.history.replace('/experiment/pretreatment')
       }}
     >
-      跳过(仅调试用)
+      下一步
     </Button>
   )
 
-  const able=()=>{
-    if(getStore("zhuanjia")){
+  const able = () => {
+    if (getStore('zhuanjia')) {
       return false
-    }else{
+    } else {
       return tabDisabled
     }
   }
 
-  const nextStep=()=>{
+  const nextStep = () => {
     props.history.replace('/experiment/pretreatment')
   }
 
@@ -156,9 +157,7 @@ const EntryComponent = (props: RouteComponentProps) => {
             <EntryExperiment save={saveExperiment} loading={loading} />
           </TabPane>
         </Tabs>
-        <Button className={styles.nextStep} hidden={buttonDisabled} onClick={nextStep}>下一步</Button>
       </div>
-      
     </div>
   )
 }

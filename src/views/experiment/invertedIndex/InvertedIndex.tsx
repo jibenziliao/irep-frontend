@@ -74,10 +74,6 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
     initLoadIndex(state.loadindexLoading)
   }, [dispatch, state.loadindexLoading])
 
-  const handleClick = () => {
-    props.history.replace('/experiment/boolean')
-  }
-
   /**
    * 错误提示
    */
@@ -114,8 +110,6 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
     setActiveTabKey(tabIndex)
   }
 
-  const operations = <Button onClick={handleClick}>跳过(仅调试用)</Button>
-
   // 专家进入的可切换前后步骤
   const able = () => {
     if (getStore('zhuanjia')) {
@@ -134,6 +128,12 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
   const nextStep = () => {
     props.history.replace('/experiment/boolean')
   }
+
+  const operations = (
+    <Button hidden={buttonDisabled} onClick={lastStep}>
+      上一步
+    </Button>
+  )
 
   return (
     <div className={styles.Container}>
@@ -155,14 +155,6 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
             <InvertedIndexExperiment />
           </TabPane>
         </Tabs>
-        <div className={styles.stepButton}>
-          <Button hidden={buttonDisabled} onClick={lastStep}>
-            上一步
-          </Button>
-          <Button hidden={buttonDisabled} onClick={nextStep}>
-            下一步
-          </Button>
-        </div>
       </div>
     </div>
   )

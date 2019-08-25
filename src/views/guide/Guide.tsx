@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './Guide.module.less'
-import videoSource from '../../assets/videos/irep.mp4'
+import guideVideo from '../../assets/videos/guide.mp4'
 
 const Guide = () => {
   return (
@@ -11,7 +11,7 @@ const Guide = () => {
       </div>
       <div className={styles.videoContainer}>
         <video controls>
-          <source src={videoSource} type="video/mp4" />
+          <source src={guideVideo} type="video/mp4" />
         </video>
       </div>
     </div>

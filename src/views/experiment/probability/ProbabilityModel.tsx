@@ -20,11 +20,7 @@ const defaultTab = getUrlParam('tab')
 const ProbabilityModalComponet = (props: RouteComponentProps) => {
   const [activeTabKey, setActiveTabKey] = useState(defaultTab || '1')
   const [tabDisabled, setTabDisabled] = useState(defaultTab !== '3')
-  const [buttonDisabled, setbuttonDisabled] = useState(!getStore("zhuanjia"))
-
-  const handleClick = () => {
-    props.history.replace('/experiment/language')
-  }
+  const [buttonDisabled, setbuttonDisabled] = useState(!getStore('zhuanjia'))
 
   /**
    * 知识自查，完成后前往构建模型tab页
@@ -52,26 +48,35 @@ const ProbabilityModalComponet = (props: RouteComponentProps) => {
     setActiveTabKey(tabIndex)
   }
 
-  const operations = <Button onClick={handleClick}>跳过(仅调试用)</Button>
-
   // 专家进入的可切换前后步骤
-  const able=()=>{
-    if(getStore("zhuanjia")){
+  const able = () => {
+    if (getStore('zhuanjia')) {
       return false
-    }else{
+    } else {
       return tabDisabled
     }
   }
-  
+
   // 上一步
-  const lastStep=()=>{
+  const lastStep = () => {
     props.history.replace('/experiment/vectorSpace')
   }
-  
+
   // 下一步
-  const nextStep=()=>{
+  const nextStep = () => {
     props.history.replace('/experiment/language')
   }
+
+  const operations = (
+    <div>
+      <Button className={styles.controlButton} hidden={buttonDisabled} onClick={lastStep}>
+        上一步
+      </Button>
+      <Button className={styles.controlButton} hidden={buttonDisabled} onClick={nextStep}>
+        下一步
+      </Button>
+    </div>
+  )
 
   return (
     <div className={styles.Container}>
@@ -94,8 +99,12 @@ const ProbabilityModalComponet = (props: RouteComponentProps) => {
           </TabPane>
         </Tabs>
         <div className={styles.stepButton}>
-          <Button hidden={buttonDisabled} onClick={lastStep}>上一步</Button>
-          <Button hidden={buttonDisabled} onClick={nextStep}>下一步</Button>
+          <Button hidden={buttonDisabled} onClick={lastStep}>
+            上一步
+          </Button>
+          <Button hidden={buttonDisabled} onClick={nextStep}>
+            下一步
+          </Button>
         </div>
       </div>
     </div>
