@@ -89,7 +89,7 @@ export const requestFn = (dispatch: Dispatch<Actions>, params: Params): AxiosPro
       .request({
         url: params.url,
         method: params.method || 'get',
-        baseURL: `${API_URL}`,
+        baseURL: `/api/${API_URL}`,
         params: params.params || {},
         paramsSerializer: arg => {
           // https://github.com/ljharb/qs

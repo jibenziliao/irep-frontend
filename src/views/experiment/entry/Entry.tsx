@@ -133,10 +133,6 @@ const EntryComponent = (props: RouteComponentProps) => {
     }
   }
 
-  const nextStep = () => {
-    props.history.replace('/experiment/pretreatment')
-  }
-
   return (
     <div className={styles.Container}>
       <StepsExam />
