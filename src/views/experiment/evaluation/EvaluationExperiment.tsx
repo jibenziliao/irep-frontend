@@ -262,7 +262,7 @@ const EvaluationExperimentForm = (props: EvaluationExperimentProps) => {
       title: '是否相关',
       dataIndex: 'isExisting',
       key: 'isExisting',
-      width: 60,
+      width: 80,
       align: columnAlignCenter,
       render: (isExisting: boolean) => renderIsExisting(isExisting)
     }
@@ -770,7 +770,6 @@ const EvaluationExperimentForm = (props: EvaluationExperimentProps) => {
       return <div className={styles.PerformanceWrapper}></div>
     }
   }
-  // 雷达图 end
 
   /**
    * 渲染模型调试表格
@@ -811,8 +810,7 @@ const EvaluationExperimentForm = (props: EvaluationExperimentProps) => {
         <div
           key={i.name}
           className={`${styles.Modal} ${modelType === i.value ? styles.Active : ''}`}
-          onClick={() => updateModelType(i.value)}
-        >
+          onClick={() => updateModelType(i.value)}>
           {i.name}
         </div>
       )
@@ -832,14 +830,12 @@ const EvaluationExperimentForm = (props: EvaluationExperimentProps) => {
             </Select>
           )}
         </Form.Item>
-
         <Button
           type="primary"
           size="large"
           loading={calculationLoading}
           disabled={calculationDisabled}
-          onClick={calculate}
-        >
+          onClick={calculate}>
           计算
         </Button>
       </div>
@@ -848,8 +844,7 @@ const EvaluationExperimentForm = (props: EvaluationExperimentProps) => {
           defaultValue="boolModel"
           buttonStyle="solid"
           className={`GlobalEvaluationRadioGroup ${styles.RadioGroup}`}
-          onChange={updateModelName}
-        >
+          onChange={updateModelName}>
           <Radio.Button value="boolModel">布尔模型</Radio.Button>
           <Radio.Button value="vsm">向量空间模型</Radio.Button>
           <Radio.Button value="probabilityModel">概率模型</Radio.Button>
@@ -866,8 +861,7 @@ const EvaluationExperimentForm = (props: EvaluationExperimentProps) => {
         disabled={selectedQuery === ''}
         className={styles.PerformanceBtn}
         onClick={getPerformance}
-        loading={performanceLoading}
-      >
+        loading={performanceLoading}>
         检索模型性能对比
       </Button>
       <Spin spinning={performanceLoading}>{renderPerformanceChart()}</Spin>

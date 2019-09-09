@@ -41,8 +41,7 @@ const EntryExperiment = (props: ExperimaentProps) => {
         <div
           key={index}
           className={`${styles.Card} ${i.disabled ? styles.CardDisabled : ''}`}
-          onClick={() => selectCard(i.name, index, i.disabled)}
-        >
+          onClick={() => selectCard(i.name, index, i.disabled)}>
           {i.name}
         </div>
       )
@@ -81,8 +80,7 @@ const EntryExperiment = (props: ExperimaentProps) => {
         type="primary"
         disabled={renderSaveButtonDisabled()}
         onClick={handleClick}
-        loading={props.loading}
-      >
+        loading={props.loading}>
         保存
       </Button>
     </div>

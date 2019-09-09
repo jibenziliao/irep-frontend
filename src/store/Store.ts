@@ -4,9 +4,7 @@ import { create } from 'redux-react-hook'
 import { Actions } from './Actions'
 import reducer from './Reducer'
 
-/**
- * 实验流程卡片数组接口
- */
+/** 实验流程卡片数组接口 */
 export interface ExperimentCard {
   name: string
   current: boolean
@@ -15,17 +13,13 @@ export interface ExperimentCard {
   index: number
 }
 
-/**
- * 单个排序卡片实验，保存按钮的状态
- */
+/** 单个排序卡片实验，保存按钮的状态 */
 interface SaveOrderBtnStatus {
   completed: boolean
   saved: boolean
 }
 
-/**
- * 全部排序卡片实验中，保存按钮的状态
- */
+/** 全部排序卡片实验中，保存按钮的状态 */
 export interface SaveOrderBtn {
   bool: SaveOrderBtnStatus
   invertedIndex: SaveOrderBtnStatus
@@ -34,9 +28,7 @@ export interface SaveOrderBtn {
   probability: SaveOrderBtnStatus
 }
 
-/**
- * 全局state接口
- */
+/** 全局state接口 */
 export interface State {
   pageLoading: boolean
   entryExperimentCards: ExperimentCard[]
@@ -56,9 +48,7 @@ export interface State {
   saveOrderBtn: SaveOrderBtn
 }
 
-/**
- * 创建全局store
- */
+/** 创建全局store */
 export const makeStore = (): Store<State, Actions> => {
   return createStore(reducer, INITIAL_STATE, composeWithDevTools())
 }
@@ -301,8 +291,7 @@ const booleanExperimentSteps = [
   }
 ]
 
-/**
- * 向量空间默认卡片
+/** 向量空间默认卡片
  *
  * 包含正确的顺序
  */
@@ -365,8 +354,7 @@ const vectorSpaceCards: ExperimentCard[] = [
   }
 ]
 
-/**
- * 向量空间顺序
+/** 向量空间顺序
  *
  * 用户自己排的顺序
  */
@@ -397,8 +385,7 @@ const vectorSteps = [
   }
 ]
 
-/**
- * 概率模型默认卡片
+/** 概率模型默认卡片
  *
  * 包含正确的顺序
  */
@@ -448,8 +435,7 @@ const probabilityExperimentSteps = [
   }
 ]
 
-/**
- * 语言模型默认卡片
+/** 语言模型默认卡片
  *
  * 包含正确的顺序
  */
@@ -499,9 +485,7 @@ const languageExperimentSteps = [
   }
 ]
 
-/**
- * 几个默认卡片顺序保存按钮的状态
- */
+/** 几个默认卡片顺序保存按钮的状态 */
 const saveOrderBtn: SaveOrderBtn = {
   bool: {
     completed: false,
@@ -525,9 +509,7 @@ const saveOrderBtn: SaveOrderBtn = {
   }
 }
 
-/**
- * 全局初始状态
- */
+/** 全局初始状态 */
 export const INITIAL_STATE: State = {
   pageLoading: false,
   entryExperimentCards,

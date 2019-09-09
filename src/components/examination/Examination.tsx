@@ -12,17 +12,13 @@ import { Actions } from '../../store/Actions'
 
 const CheckboxGroup = Checkbox.Group
 
-/**
- * 保存分数方法接口
- */
+/** 保存分数方法接口 */
 export interface ScoreObj {
   completionSore: number
   choiceScore: number
 }
 
-/**
- * 知识自查表单组件接口
- */
+/** 知识自查表单组件接口 */
 interface ExamFormProps extends FormComponentProps {
   completionQuestions: OriginCompletionQuestion[]
   choiceQuestions: ChoiceQuestion[]
@@ -30,9 +26,7 @@ interface ExamFormProps extends FormComponentProps {
   goNextStep?: () => void
 }
 
-/**
- * 知识自查表单组件
- */
+/** 知识自查表单组件 */
 const ExamForm = (props: ExamFormProps) => {
   const dispatch: Dispatch<Actions> = useDispatch()
   const [completionQuestions, setCompletionQuestions] = useState<ProcessedCompletionQuestion[]>([])
@@ -42,9 +36,7 @@ const ExamForm = (props: ExamFormProps) => {
   const { getFieldDecorator, validateFields, getFieldsValue } = props.form
 
   useEffect(() => {
-    /**
-     * 将原始完成题目处理成页面可用的完成题目
-     */
+    /** 将原始完成题目处理成页面可用的完成题目 */
     const handleCompletionQuestions = (questions: OriginCompletionQuestion[]) => {
       const newCompletionQuestions = questions.map(i => {
         return {
@@ -60,9 +52,7 @@ const ExamForm = (props: ExamFormProps) => {
     handleCompletionQuestions(props.completionQuestions)
   }, [props.completionQuestions])
 
-  /**
-   * 点击确认答案
-   */
+  /** 点击确认答案 */
   const confirmAnswer = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     validateFields((err: any) => {
@@ -77,14 +67,12 @@ const ExamForm = (props: ExamFormProps) => {
     })
   }
 
-  /**
-   * 保存用户填写的知识自查答案到后台
-   */
+  /** 保存用户填写的知识自查答案到后台 */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const saveExaminationAnswer = async (answer: any) => {
     setLoading(true)
     const res = await requestFn(dispatch, {
-      url: '/score/updateChoiceAndCompletionScore', // 接口还没完成，这里是个假的示例
+      url: '/score/updateChoiceAndCompletionScore',
       method: 'post',
       data: {
         experimentId: props.experimentId,
@@ -105,9 +93,7 @@ const ExamForm = (props: ExamFormProps) => {
     }
   }
 
-  /**
-   * 成功提示
-   */
+  /** 成功提示 */
   const successTips = (message = '', description = '') => {
     notification.success({
       message,
@@ -116,9 +102,7 @@ const ExamForm = (props: ExamFormProps) => {
     })
   }
 
-  /**
-   * 错误提示
-   */
+  /** 错误提示 */
   const errorTips = (message = '', description = '') => {
     notification.error({
       message,
@@ -126,8 +110,7 @@ const ExamForm = (props: ExamFormProps) => {
     })
   }
 
-  /**
-   * 处理用户的答案
+  /** 处理用户的答案
    *
    * 将选择题由数组变成字符串(若多选，则直接元素拼接)
    */
@@ -141,16 +124,12 @@ const ExamForm = (props: ExamFormProps) => {
     return answer
   }
 
-  /**
-   * 清除提示信息
-   */
+  /** 清除提示信息 */
   const clearErrorTips = () => {
     setValidError(false)
   }
 
-  /**
-   * 渲染完成题组件
-   */
+  /** 渲染完成题组件 */
   const renderCompletionQuestion = () => {
     return completionQuestions.map((i, index) => {
       return (
@@ -167,9 +146,7 @@ const ExamForm = (props: ExamFormProps) => {
     })
   }
 
-  /**
-   * 渲染选择题的选项框
-   */
+  /** 渲染选择题的选项框 */
   const renderCheckbox = (options: Option[]) => {
     return options.map((i, index) => {
       return (
@@ -180,9 +157,7 @@ const ExamForm = (props: ExamFormProps) => {
     })
   }
 
-  /**
-   * 渲染选择题组件
-   */
+  /** 渲染选择题组件 */
   const renderChoiceQuestion = () => {
     return props.choiceQuestions.map((i: ChoiceQuestion, index) => {
       return (
@@ -225,8 +200,7 @@ const ExamForm = (props: ExamFormProps) => {
   )
 }
 
-/**
- * 知识自查
+/** 知识自查
  *
  * 所有的实验项目通用
  */

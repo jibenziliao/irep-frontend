@@ -209,8 +209,7 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
             loading={analyticalContentLoading}
             disabled={savedContent || analysisText === ''}
             onClick={concludeConfirm}
-            type="primary"
-          >
+            type="primary">
             确定
           </Button>
         </div>
@@ -239,8 +238,7 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
           className={styles.NextBtn}
           type="primary"
           onClick={handleClick}
-          disabled={saveStepIndex < 1 || !preProcessed}
-        >
+          disabled={saveStepIndex < 1 || !preProcessed}>
           下一步
         </Button>
       </div>

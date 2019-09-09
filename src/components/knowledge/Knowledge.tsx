@@ -5,9 +5,7 @@ interface KnowledgeProps {
   knowledge: { title: string; content: string }[]
 }
 
-/**
- * 温故知新
- */
+/** 温故知新 */
 const Knowledge = (props: KnowledgeProps) => {
   useEffect(() => {
     // @ts-ignore

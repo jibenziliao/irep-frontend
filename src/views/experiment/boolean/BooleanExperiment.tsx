@@ -15,25 +15,19 @@ type Operator = 'or' | 'and' | 'not' | 'OR' | 'AND' | 'NOT'
 
 interface BooleanExperimentProps extends FormComponentProps, RouteComponentProps {}
 
-/**
- * 查询预处理结果接口
- */
+/** 查询预处理结果接口 */
 interface PreProcessQuery {
   query: string
   result: string
 }
 
-/**
- * 计算布尔向量结果接口
- */
+/** 计算布尔向量结果接口 */
 interface BoolVector {
   docIds: number[]
   term: string
 }
 
-/**
- * 运行布尔运算结果接口
- */
+/** 运行布尔运算结果接口 */
 interface BooleanOperation {
   leftSet: number[]
   leftTerm: string
@@ -43,18 +37,14 @@ interface BooleanOperation {
   rightTerm: string
 }
 
-/**
- * 召回目标文档结果接口
- */
+/** 召回目标文档结果接口 */
 interface CallBackResult {
   docId: number
   similarity: number
   title: string
 }
 
-/**
- * 仿真我的搜索引擎的检索结果接口
- */
+/** 仿真我的搜索引擎的检索结果接口 */
 interface SearchResult {
   content: string
   docId: number
@@ -62,27 +52,19 @@ interface SearchResult {
   url: string
 }
 
-/**
- * 保存操作步骤结果提示接口
- */
+/** 保存操作步骤结果提示接口 */
 interface Tips {
   success: { title: string; description: string }
   error: { title: string; description: string }
 }
 
-/**
- * 默认的检索关键词
- */
+/** 默认的检索关键词 */
 const defaultSearchTerms = ['', '', '']
 
-/**
- * 默认的检索条件逻辑关系符
- */
+/** 默认的检索条件逻辑关系符 */
 const defaultOperators: Operator[] = ['or', 'or']
 
-/**
- * 默认的查询预处理结果
- */
+/** 默认的查询预处理结果 */
 const defaultPreProcessQuery: PreProcessQuery = {
   query: '',
   result: ''
@@ -117,9 +99,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
 
   const { getFieldDecorator, validateFields, getFieldsValue } = props.form
 
-  /**
-   * 保存用户选择的构建顺序
-   */
+  /** 保存用户选择的构建顺序 */
   const saveOrder = async () => {
     setSaveOrderLoading(true)
     const res = await requestFn(dispatch, {
@@ -139,9 +119,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     setSaveOrderLoading(false)
   }
 
-  /**
-   * 成功提示
-   */
+  /** 成功提示 */
   const successTips = (message = '', description = '') => {
     notification.success({
       message,
@@ -150,9 +128,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     })
   }
 
-  /**
-   * 错误提示
-   */
+  /** 错误提示 */
   const errorTips = (message = '', description = '') => {
     notification.error({
       message,
@@ -160,9 +136,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     })
   }
 
-  /**
-   * 获取用户排序的索引
-   */
+  /** 获取用户排序的索引 */
   const getStepIndex = (steps: { name: string }[], cards: ExperimentCard[]) => {
     const newCards = cards.map(i => i)
     newCards.sort((pre, cur) => pre.correctIndex - cur.correctIndex)
@@ -183,9 +157,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     }
   }
 
-  /**
-   * 点击方框移除已放入的卡片
-   */
+  /** 点击方框移除已放入的卡片 */
   const removeCard = (name: string, index: number) => {
     dispatch({
       type: 'handle_booleanExperiment_card',
@@ -197,9 +169,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     })
   }
 
-  /**
-   * 点击方框放入卡片
-   */
+  /** 点击方框放入卡片 */
   const addCard = (index: number) => {
     const currentIndex = state.booleanExperimentCards.findIndex(i => i.current)
     if (currentIndex === -1) {
@@ -215,9 +185,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     })
   }
 
-  /**
-   * 更新布尔模型实验，保存顺序按钮的状态
-   */
+  /** 更新布尔模型实验，保存顺序按钮的状态 */
   const updateSaveOrderBtnStatus = () => {
     dispatch({
       type: 'update_saveOrderBtnStatus',
@@ -227,9 +195,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     })
   }
 
-  /**
-   * 渲染方框中的卡片
-   */
+  /** 渲染方框中的卡片 */
   const renderCard = (name: string, index: number) => {
     if (name) {
       return (
@@ -249,9 +215,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     }
   }
 
-  /**
-   * 选中卡片
-   */
+  /** 选中卡片 */
   const selectCard = (name: string, index: number, disabled: boolean) => {
     if (disabled) {
       return false
@@ -266,9 +230,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     })
   }
 
-  /**
-   * 渲染卡片排序区域
-   */
+  /** 渲染卡片排序区域 */
   const renderCardSection = () => {
     return (
       <>
@@ -317,8 +279,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
             type="primary"
             disabled={!state.saveOrderBtn.bool.completed || state.saveOrderBtn.bool.saved}
             loading={saveOrderLoading}
-            onClick={saveOrder}
-          >
+            onClick={saveOrder}>
             保存
           </Button>
         </div>
@@ -326,26 +287,21 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     )
   }
 
-  /**
-   * 渲染卡片列表
-   */
+  /** 渲染卡片列表 */
   const renderCards = () => {
     return state.booleanExperimentCards.map((i, index) => {
       return (
         <div
           key={index}
           className={`${styles.Card} ${i.disabled ? styles.CardDisabled : i.current ? styles.CurrentCard : ''}`}
-          onClick={() => selectCard(i.name, index, i.disabled)}
-        >
+          onClick={() => selectCard(i.name, index, i.disabled)}>
           {i.name}
         </div>
       )
     })
   }
 
-  /**
-   * 仿真我的搜索引擎，点击检索按钮
-   */
+  /** 仿真我的搜索引擎，点击检索按钮 */
   const beforeSearch = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     validateFields((err: any) => {
@@ -358,9 +314,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     })
   }
 
-  /**
-   * 处理仿真我的搜索引擎表单参数
-   */
+  /** 处理仿真我的搜索引擎表单参数 */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSearchQuery = (fieldValue: any) => {
     let str = ''
@@ -374,9 +328,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     return str
   }
 
-  /**
-   * 检索请求
-   */
+  /** 检索请求 */
   const searchQuery = async (query: string) => {
     setSearchLoading(true)
     const res = await requestFn(dispatch, {
@@ -404,9 +356,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     }
   }
 
-  /**
-   * 保存操作步骤
-   */
+  /** 保存操作步骤 */
   const saveOperationStep = async (
     operationName: string,
     tips: Tips,
@@ -431,9 +381,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     }
   }
 
-  /**
-   * 保存操作步骤与之后需要做的操作
-   */
+  /** 保存操作步骤与之后需要做的操作 */
   const handleAfterSaveOperationStep = (
     operationName: string,
     data: SearchResult[] | PreProcessQuery | BoolVector[] | BooleanOperation[] | CallBackResult[],
@@ -453,17 +401,13 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     }
   }
 
-  /**
-   * 仿真搜索引擎添加表单项
-   */
+  /** 仿真搜索引擎添加表单项 */
   const addSearchFormItem = () => {
     setSearchTerms([...searchTerms, ''])
     setSearchOperators([...searchOperators, 'or'])
   }
 
-  /**
-   * 仿真搜索引擎移除一个表单项
-   */
+  /** 仿真搜索引擎移除一个表单项 */
   const removeSearchFormItem = (index: number) => {
     const newTerms = searchTerms.filter((_, idx) => idx !== index)
     const newOperators = searchOperators.filter((_, idx) => idx !== index)
@@ -471,9 +415,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     setSearchOperators(newOperators)
   }
 
-  /**
-   * 渲染仿真我的搜索引擎单个表单项
-   */
+  /** 渲染仿真我的搜索引擎单个表单项 */
   const renderSearchFormItem = () => {
     return searchTerms.map((i, index) => {
       return (
@@ -491,9 +433,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     })
   }
 
-  /**
-   * 渲染仿真我的搜索引擎表单项的新增和删除按钮
-   */
+  /** 渲染仿真我的搜索引擎表单项的新增和删除按钮 */
   const renderSearchFormAddBtn = (index: number) => {
     if (index === 0) {
       return (
@@ -510,9 +450,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     }
   }
 
-  /**
-   * 渲染仿真我的搜索引擎表单中的下拉选择框
-   */
+  /** 渲染仿真我的搜索引擎表单中的下拉选择框 */
   const renderSelectItem = (index: number) => {
     if (index === 0) {
       return <span className={styles.SearchLabel}>基础条件:</span>
@@ -533,9 +471,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     }
   }
 
-  /**
-   * 渲染仿真我的搜索引擎表单中的检索按钮
-   */
+  /** 渲染仿真我的搜索引擎表单中的检索按钮 */
   const renderSearchBtn = (showBtn: boolean) => {
     if (showBtn) {
       return (
@@ -545,17 +481,14 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
           disabled={!state.saveOrderBtn.bool.saved}
           loading={searchLoading}
           className={styles.SearchFormBtn}
-          onClick={beforeSearch}
-        >
+          onClick={beforeSearch}>
           检索
         </Button>
       )
     }
   }
 
-  /**
-   * 仿真我的搜索引擎
-   */
+  /** 仿真我的搜索引擎 */
   const getMonitorResult = async (param: { url: string; operationName: string }, index: number) => {
     setStepLoading(true)
     const res = await requestFn(dispatch, {
@@ -583,9 +516,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     }
   }
 
-  /**
-   * 处理每一步检索的结果
-   */
+  /** 处理每一步检索的结果 */
   const handleStepSearchResult = (
     index: number,
     result: PreProcessQuery | BoolVector[] | BooleanOperation[] | CallBackResult[]
@@ -609,9 +540,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     }
   }
 
-  /**
-   * 处理当前步骤的按钮点击事件
-   */
+  /** 处理当前步骤的按钮点击事件 */
   const handleCurrentStep = (index: number) => {
     const requestParams = [
       {
@@ -634,9 +563,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     getMonitorResult(requestParams[index], index)
   }
 
-  /**
-   * 渲染仿真我的搜索引擎模块，每个步骤按钮的点击状态
-   */
+  /** 渲染仿真我的搜索引擎模块，每个步骤按钮的点击状态 */
   const renderStepButton = (name: string, loading: boolean, setpIndex: number) => {
     if (currentStepIndex >= setpIndex) {
       return (
@@ -644,8 +571,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
           loading={currentStepIndex === setpIndex && loading}
           type="link"
           className={styles.LinkButton}
-          onClick={() => handleCurrentStep(setpIndex)}
-        >
+          onClick={() => handleCurrentStep(setpIndex)}>
           {name}
         </Button>
       )
@@ -654,9 +580,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     }
   }
 
-  /**
-   * 渲染检索步骤
-   */
+  /** 渲染检索步骤 */
   const renderSearchSteps = () => {
     if (state.saveOrderBtn.bool.saved) {
       return (
@@ -665,8 +589,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
             <div className={styles.BoxWrapper}>
               <div className={styles.BoxGroup}>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 0 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 0 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('查询预处理', stepLoading, 0)}
                 </div>
               </div>
@@ -677,8 +600,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
               </div>
               <div className={styles.BoxGroup}>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 1 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 1 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('计算布尔向量', stepLoading, 1)}
                 </div>
               </div>
@@ -689,8 +611,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
               </div>
               <div className={styles.BoxGroup}>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 2 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 2 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('进行布尔运算', stepLoading, 2)}
                 </div>
               </div>
@@ -701,8 +622,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
               </div>
               <div className={styles.BoxGroup}>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 3 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 3 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('召回目标文档', stepLoading, 3)}
                 </div>
               </div>
@@ -715,9 +635,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     }
   }
 
-  /**
-   * 渲染搜索结果
-   */
+  /** 渲染搜索结果 */
   const renderSearchResult = (index: number) => {
     switch (index) {
       case 0:
@@ -735,15 +653,12 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     }
   }
 
-  /**
-   * 渲染点击检索按钮后的结果
-   */
+  /** 渲染点击检索按钮后的结果 */
   const renderCommonSearchResult = () => {
     return <div className={styles.CommonResult}>{renderSearchResultList()}</div>
   }
 
-  /**
-   * 渲染检索结果列表
+  /** 渲染检索结果列表
    *
    * 仅适用于直接点击检索按钮时
    */
@@ -760,9 +675,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     })
   }
 
-  /**
-   * 渲染查询预处理的结果
-   */
+  /** 渲染查询预处理的结果 */
   const renderPreProcessQueryResult = () => {
     return (
       <div className={styles.Result}>
@@ -778,9 +691,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     )
   }
 
-  /**
-   * 渲染计算布尔向量结果
-   */
+  /** 渲染计算布尔向量结果 */
   const renderBoolVectorResult = () => {
     return (
       <div className={styles.BoolVectorResult}>
@@ -802,9 +713,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     )
   }
 
-  /**
-   * 渲染运行布尔运算结果
-   */
+  /** 渲染运行布尔运算结果 */
   const renderBooleanOperationResult = () => {
     return (
       <div className={styles.BooleanOperationResult}>
@@ -842,9 +751,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     )
   }
 
-  /**
-   * 渲染召回目标文档结果
-   */
+  /** 渲染召回目标文档结果 */
   const renderCallBackResult = () => {
     return (
       <div className={styles.CallBackResult}>
@@ -870,9 +777,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
     )
   }
 
-  /**
-   * 页面底部，点击前往下一步
-   */
+  /** 页面底部，点击前往下一步 */
   const goNextExperiment = async () => {
     setNextLoading(true)
     const res = await requestFn(dispatch, {
@@ -908,8 +813,7 @@ const BooleanExperimentComponent = (props: BooleanExperimentProps) => {
         loading={nextLoading}
         disabled={lastStepIndex !== 4}
         onClick={goNextExperiment}
-        className={styles.NextBtn}
-      >
+        className={styles.NextBtn}>
         下一步
       </Button>
     </div>
@@ -920,6 +824,7 @@ const BooleanExperimentWithoutRouter = Form.create<BooleanExperimentProps>({ nam
   BooleanExperimentComponent
 )
 
+/** 布尔模型实验 */
 const BooleanExperiment = withRouter(BooleanExperimentWithoutRouter)
 
 export default BooleanExperiment

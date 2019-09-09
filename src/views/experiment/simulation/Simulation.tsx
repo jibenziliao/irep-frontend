@@ -22,7 +22,7 @@ const SimulationComponent = (props: RouteComponentProps) => {
   const [results, setResults] = useState<SearchResult[]>([])
   const [loading, setLoading] = useState(false)
   const [query, setQuery] = useState('')
-  const [buttonDisabled, setbuttonDisabled] = useState(!getStore("zhuanjia"))
+  const [buttonDisabled, setbuttonDisabled] = useState(!getStore('zhuanjia'))
 
   /**
    * 点击完成按钮，前往试验报告页面
@@ -33,7 +33,7 @@ const SimulationComponent = (props: RouteComponentProps) => {
   }
 
   // 专家系统 返回上一步
-  const lastStep=()=>{
+  const lastStep = () => {
     props.history.replace('/experiment/evaluation')
   }
 
@@ -136,7 +136,9 @@ const SimulationComponent = (props: RouteComponentProps) => {
         <Button type="primary" hidden={showResult} onClick={handleClick} className={styles.NextBtn}>
           完成
         </Button>
-        <Button className={styles.lastStep} hidden={buttonDisabled} onClick={lastStep}>上一步</Button>
+        <Button className={styles.lastStep} hidden={buttonDisabled} onClick={lastStep}>
+          上一步
+        </Button>
       </div>
     </div>
   )

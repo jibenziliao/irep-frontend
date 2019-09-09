@@ -1,6 +1,4 @@
-/**
- * 检索模型性能对比数据接口
- */
+/** 检索模型性能对比数据接口 */
 export interface IndividualPerformance {
   f1: number
   map: number
@@ -18,8 +16,7 @@ export interface IndividualPerformance {
   recall: number
 }
 
-/**
- * 检索模型性能对比参数接口
+/** 检索模型性能对比参数接口
  *
  * 接口返回的数据类型接口
  */
@@ -29,9 +26,7 @@ export interface IndividualPerformanceOrigin extends IndividualPerformance {
   id: number
 }
 
-/**
- * 综合性能雷达图数据接口
- */
+/** 综合性能雷达图数据接口 */
 export interface AveragePerformance {
   boolModelPerformance: IndividualPerformanceOrigin
   vsmPerformance: IndividualPerformanceOrigin
@@ -39,9 +34,7 @@ export interface AveragePerformance {
   languageModelPerformance: IndividualPerformanceOrigin
 }
 
-/**
- * 综合性能雷达图 legend图标默认显示状态接口
- */
+/** 综合性能雷达图 legend图标默认显示状态接口 */
 export interface RadarSelected {
   boolModelPerformance: boolean
   vsmPerformance: boolean
@@ -49,9 +42,7 @@ export interface RadarSelected {
   languageModelPerformance: boolean
 }
 
-/**
- * 综合性能数据字段类型
- */
+/** 综合性能数据字段类型 */
 export type PerformaceKeys =
   | 'boolModelPerformance'
   | 'vsmPerformance'

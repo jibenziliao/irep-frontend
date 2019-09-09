@@ -12,6 +12,7 @@ import { useDispatch } from '../../store/Store'
 
 const { TextArea } = Input
 
+/** 联系我们 */
 const Contactus = () => {
   const dispatch: Dispatch<Actions> = useDispatch()
   //要提交的表单内容
@@ -20,26 +21,21 @@ const Contactus = () => {
   const [advice, setAdvice] = useState('')
   const [submitLoding, setSubmitLoding] = useState(false)
 
-  /**
-   * 更新电话号码
-   */
+  /** 更新电话号码 */
   const updatePhone = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPhone(event.target.value)
   }
 
-  /**
-   * 更新电子邮箱
-   */
+  /** 更新电子邮箱 */
   const updateEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value)
   }
 
-  /**
-   * 更新建议内容
-   */
+  /** 更新建议内容 */
   const updateAdvice = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setAdvice(event.target.value)
   }
+
   const saveAdvice = async () => {
     setSubmitLoding(true)
     const res = await requestFn(dispatch, {

@@ -119,8 +119,7 @@ const EntryComponent = (props: RouteComponentProps) => {
       hidden={buttonDisabled}
       onClick={() => {
         props.history.replace('/experiment/pretreatment')
-      }}
-    >
+      }}>
       下一步
     </Button>
   )

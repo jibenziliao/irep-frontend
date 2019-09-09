@@ -158,8 +158,7 @@ const LoginForm = (props: LoginProp) => {
                   htmlType="submit"
                   loading={loading}
                   size="large"
-                  className={`${styles.FormButton} ${styles.LoginButton}`}
-                >
+                  className={`${styles.FormButton} ${styles.LoginButton}`}>
                   登录
                 </Button>
                 <Button
@@ -167,8 +166,7 @@ const LoginForm = (props: LoginProp) => {
                   ghost
                   size="large"
                   className={`${styles.FormButton}`}
-                  onClick={() => goRoute('/register')}
-                >
+                  onClick={() => goRoute('/register')}>
                   注册
                 </Button>
               </Form.Item>

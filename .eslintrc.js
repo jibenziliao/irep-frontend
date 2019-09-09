@@ -26,7 +26,7 @@ module.exports = {
     'import/imports-first': ['error', 'absolute-first'],
     'import/newline-after-import': 'error',
     'import/no-unresolved': 'off',
-    'prettier/prettier': ['error', { singleQuote: true }],
+    'prettier/prettier': ['error', { singleQuote: true, jsxBracketSameLine: true, printWidth: 120 }],
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     '@typescript-eslint/explicit-member-accessibility': 'off',

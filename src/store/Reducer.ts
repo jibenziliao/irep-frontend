@@ -1,13 +1,9 @@
 import { Actions } from './Actions'
 import { State, INITIAL_STATE } from './Store'
 
-/**
- * 导出默认reducer
- */
+/** 导出默认reducer */
 export default function reducer(state: State = INITIAL_STATE, action: Actions) {
-  /**
-   * 更新保存按钮的状态
-   */
+  /** 更新保存按钮的状态 */
   const updateSaveOrderBtnStatus = (field: 'bool' | 'invertedIndex' | 'vectorSpace' | 'language' | 'probability') => {
     switch (field) {
       case 'bool':

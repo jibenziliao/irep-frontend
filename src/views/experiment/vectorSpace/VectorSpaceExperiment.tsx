@@ -273,10 +273,10 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
       )
     },
     {
-      title: '相关度',
+      title: '是否相关',
       dataIndex: 'isExisting',
       key: 'isExisting',
-      width: 60,
+      width: 80,
       align: columnAlignCenter,
       render: (isExisting: boolean) => renderIsExisting(isExisting)
     }
@@ -704,8 +704,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
         <div
           key={index}
           className={`${styles.Card} ${i.disabled ? styles.CardDisabled : i.current ? styles.CurrentCard : ''}`}
-          onClick={() => selectCard(i.name, index, i.disabled)}
-        >
+          onClick={() => selectCard(i.name, index, i.disabled)}>
           {i.name}
         </div>
       )
@@ -720,8 +719,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
       return (
         <div
           className={`${styles.Name}`}
-          onClick={() => shouldRemoveCard(!state.saveOrderBtn.vectorSpace.saved, name, index)}
-        >
+          onClick={() => shouldRemoveCard(!state.saveOrderBtn.vectorSpace.saved, name, index)}>
           <span>{`${index + 1}.${name}`}</span>
           <div className={styles.IconWrapper}>
             <Icon type="close-circle" className={styles.Icon} />
@@ -747,14 +745,12 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
           <div className={styles.BoxWrapper}>
             <div className={styles.BoxGroup}>
               <div
-                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}
-              >
+                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}>
                 {renderCard(state.vectorSteps[3].name, 3)}
               </div>
               <img className={`${styles.Arrow} ${styles.Down}`} src={Arrow} alt="箭头" />
               <div
-                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}
-              >
+                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}>
                 {renderCard(state.vectorSteps[4].name, 4)}
               </div>
             </div>
@@ -768,13 +764,11 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
             </div>
             <div className={styles.BoxGroup}>
               <div
-                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}
-              >
+                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}>
                 {renderCard(state.vectorSteps[2].name, 2)}
               </div>
               <div
-                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}
-              >
+                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}>
                 {renderCard(state.vectorSteps[5].name, 5)}
               </div>
             </div>
@@ -788,13 +782,11 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
             </div>
             <div className={styles.BoxGroup}>
               <div
-                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}
-              >
+                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}>
                 {renderCard(state.vectorSteps[1].name, 1)}
               </div>
               <div
-                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}
-              >
+                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}>
                 {renderCard(state.vectorSteps[6].name, 6)}
               </div>
             </div>
@@ -808,13 +800,11 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
             </div>
             <div className={styles.BoxGroup}>
               <div
-                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}
-              >
+                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}>
                 {renderCard(state.vectorSteps[0].name, 0)}
               </div>
               <div
-                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}
-              >
+                className={`${styles.BoxItem} ${state.saveOrderBtn.vectorSpace.saved ? styles.BoxItemDisabled : ''}`}>
                 {renderCard(state.vectorSteps[7].name, 7)}
               </div>
             </div>
@@ -826,8 +816,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
             type="primary"
             disabled={!state.saveOrderBtn.vectorSpace.completed || state.saveOrderBtn.vectorSpace.saved}
             loading={saveOrderLoading}
-            onClick={saveOrder}
-          >
+            onClick={saveOrder}>
             保存
           </Button>
         </div>
@@ -894,8 +883,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
           size="large"
           loading={calculationLoading}
           disabled={selectedQuery === ''}
-          onClick={testRetriever}
-        >
+          onClick={testRetriever}>
           计算
         </Button>
       </div>
@@ -968,8 +956,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
           loading={currentStepIndex === setpIndex && loading}
           type="link"
           className={styles.LinkButton}
-          onClick={() => handleCurrentStep(setpIndex)}
-        >
+          onClick={() => handleCurrentStep(setpIndex)}>
           {name}
         </Button>
       )
@@ -989,14 +976,12 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
             <div className={styles.BoxWrapper}>
               <div className={styles.BoxGroup}>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 3 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 3 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('求查询向量', stepLoading, 3)}
                 </div>
                 <img className={`${styles.Arrow} ${styles.Down}`} src={Arrow} alt="箭头" />
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 4 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 4 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('求各文档TF', stepLoading, 4)}
                 </div>
               </div>
@@ -1010,13 +995,11 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
               </div>
               <div className={styles.BoxGroup}>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 2 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 2 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('求查询的TF', stepLoading, 2)}
                 </div>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 5 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 5 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('求文档向量', stepLoading, 5)}
                 </div>
               </div>
@@ -1030,13 +1013,11 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
               </div>
               <div className={styles.BoxGroup}>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 1 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 1 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('查询预处理', stepLoading, 1)}
                 </div>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 6 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 6 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('求相似度', stepLoading, 6)}
                 </div>
               </div>
@@ -1050,13 +1031,11 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
               </div>
               <div className={styles.BoxGroup}>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 0 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 0 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('求文档IDF', stepLoading, 0)}
                 </div>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 7 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 7 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('求相似度降序排序', stepLoading, 7)}
                 </div>
               </div>
@@ -1363,8 +1342,7 @@ const VectorSpaceExperimentComponent = (props: RouteComponentProps) => {
         loading={nextLoading}
         disabled={lastStepIndex !== 8}
         onClick={goNextExperiment}
-        className={styles.NextBtn}
-      >
+        className={styles.NextBtn}>
         下一步
       </Button>
     </div>

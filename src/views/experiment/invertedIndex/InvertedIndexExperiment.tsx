@@ -459,8 +459,7 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
         <div
           key={index}
           className={`${styles.Card} ${i.disabled ? styles.CardDisabled : i.current ? styles.CurrentCard : ''}`}
-          onClick={() => selectCard(i.name, index, i.disabled)}
-        >
+          onClick={() => selectCard(i.name, index, i.disabled)}>
           {i.name}
         </div>
       )
@@ -475,8 +474,7 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
       return (
         <div
           className={`${styles.Name}`}
-          onClick={() => shouldRemoveCard(!state.saveOrderBtn.invertedIndex.saved, name, index)}
-        >
+          onClick={() => shouldRemoveCard(!state.saveOrderBtn.invertedIndex.saved, name, index)}>
           <span>{`${index + 1}.${name}`}</span>
           <div className={styles.IconWrapper}>
             <Icon type="close-circle" className={styles.Icon} />
@@ -668,8 +666,7 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
           <tr
             key={i.id}
             className={currentTerm && currentTerm.id === i.id ? styles.Active : ''}
-            onClick={() => getInvertedIndex(i)}
-          >
+            onClick={() => getInvertedIndex(i)}>
             <td className={styles.TermTd}>{i.term}</td>
             <td>{i.df}</td>
             <td className={styles.CollipsisTd}>{i.ids}</td>
@@ -699,8 +696,7 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
           <tr
             key={i.id}
             className={currentDoc && currentDoc.id === i.id ? styles.Active : ''}
-            onClick={() => getRecordDoc(i)}
-          >
+            onClick={() => getRecordDoc(i)}>
             <td>{i.docId}</td>
             <td>{i.tf}</td>
             <td className={styles.CollipsisTd}>{i.locations}</td>
@@ -730,23 +726,20 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
               <div
                 className={`${styles.BoxLeftTop} ${styles.BoxItem} ${
                   state.saveOrderBtn.invertedIndex.saved ? styles.BoxItemDisabled : ''
-                }`}
-              >
+                }`}>
                 {renderCard(state.invertedSteps[0].name, 0)}
               </div>
               <div className={styles.BoxLeftBottom}>
                 <div
                   className={`${styles.BoxItem} ${
                     state.saveOrderBtn.invertedIndex.saved ? styles.BoxItemDisabled : ''
-                  }`}
-                >
+                  }`}>
                   {renderCard(state.invertedSteps[3].name, 3)}
                 </div>
                 <div
                   className={`${styles.BoxItem} ${
                     state.saveOrderBtn.invertedIndex.saved ? styles.BoxItemDisabled : ''
-                  }`}
-                >
+                  }`}>
                   {renderCard(state.invertedSteps[4].name, 4)}
                 </div>
               </div>
@@ -754,38 +747,33 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
             <div
               className={`${styles.BoxMiddle} ${styles.BoxItem} ${
                 state.saveOrderBtn.invertedIndex.saved ? styles.BoxItemDisabled : ''
-              }`}
-            >
+              }`}>
               {renderCard(state.invertedSteps[1].name, 1)}
             </div>
             <div className={styles.BoxRight}>
               <div
                 className={`${styles.BoxRightTop} ${styles.BoxItem} ${
                   state.saveOrderBtn.invertedIndex.saved ? styles.BoxItemDisabled : ''
-                }`}
-              >
+                }`}>
                 {renderCard(state.invertedSteps[2].name, 2)}
               </div>
               <div className={styles.BoxRightBottom}>
                 <div
                   className={`${styles.BoxItem} ${
                     state.saveOrderBtn.invertedIndex.saved ? styles.BoxItemDisabled : ''
-                  }`}
-                >
+                  }`}>
                   {renderCard(state.invertedSteps[5].name, 5)}
                 </div>
                 <div
                   className={`${styles.BoxItem} ${
                     state.saveOrderBtn.invertedIndex.saved ? styles.BoxItemDisabled : ''
-                  }`}
-                >
+                  }`}>
                   {renderCard(state.invertedSteps[6].name, 6)}
                 </div>
                 <div
                   className={`${styles.BoxItem} ${
                     state.saveOrderBtn.invertedIndex.saved ? styles.BoxItemDisabled : ''
-                  }`}
-                >
+                  }`}>
                   {renderCard(state.invertedSteps[7].name, 7)}
                 </div>
               </div>
@@ -802,8 +790,7 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
             type="primary"
             loading={saveOrderLoading}
             disabled={!state.saveOrderBtn.invertedIndex.completed || state.saveOrderBtn.invertedIndex.saved}
-            onClick={saveOrderRequest}
-          >
+            onClick={saveOrderRequest}>
             保存
           </Button>
         </div>
@@ -815,8 +802,7 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
       <div className={styles.Section}>
         <div
           className={`${styles.RunBtn} ${state.loadindexLoading ? styles.RunBtnDisabled : ''}`}
-          onClick={canGetFullIndex}
-        >
+          onClick={canGetFullIndex}>
           构建我的倒排索引表
         </div>
         <div className={styles.TableGroup}>

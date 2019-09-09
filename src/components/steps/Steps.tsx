@@ -75,8 +75,7 @@ const Steps = (props: Steps) => {
       return (
         <div
           key={i.name}
-          className={`${styles.Item} ${i.finished ? styles.Finished : i.current ? styles.Current : ''}`}
-        >
+          className={`${styles.Item} ${i.finished ? styles.Finished : i.current ? styles.Current : ''}`}>
           <span>{i.name}</span>
           <img src={i.finished ? checkedImg : unChekedImg} alt="" className={styles.Status} />
         </div>

@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import { List } from 'antd'
 import styles from './Discussion.module.less'
-import { Comment, Tooltip, List, Pagination } from 'antd'
 import commentImage from '../../assets/discussion/comment.png'
 import peopleImage from '../../assets/discussion/people.png'
 import timeImage from '../../assets/discussion/time.png'
-import { compileFunction } from 'vm'
-import { getStore } from '../../utils/util';
+import { getStore } from '../../utils/util'
 
-var commentList = [
+const commentList = [
   {
     addCommentDisabled: '0',
     author: '方荣甫',
@@ -47,18 +46,15 @@ var commentList = [
 ]
 
 const Comments = () => {
-  const [addCommentDisabled, setAddCommentDisabled] = useState(true)
   const [addCommentValue, setAddCommentValue] = useState('')
 
-  // 点击回复按钮
+  /** 点击回复按钮 */
   const addComment = (index: number) => {
-    setAddCommentDisabled(false)
     commentList[index].addCommentDisabled = '1'
   }
 
-  // 点击确定回复按钮
+  /** 点击确定回复按钮 */
   const confirmAddComment = (index: number) => {
-    setAddCommentDisabled(true)
     commentList[index].addCommentDisabled = '0'
     var date = new Date()
     var mytime = date.toLocaleString('chinese', { hour12: false })
@@ -70,19 +66,18 @@ const Comments = () => {
     setAddCommentValue('')
   }
 
-  // 点击取消回复按钮
+  /** 点击取消回复按钮 */
   const cancelAddComment = (index: number) => {
-    setAddCommentDisabled(true)
     commentList[index].addCommentDisabled = '0'
     setAddCommentValue('')
   }
 
-  // 处理输入框的变化
-  const handleTextareaChange = (event: any) => {
+  /** 处理输入框的变化 */
+  const handleTextareaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setAddCommentValue(event.target.value)
   }
 
-  // 评论主体部分
+  /** 评论主体部分 */
   return commentList.map((item, index) => {
     return (
       <div className={styles.CommentView} key={index}>
@@ -91,17 +86,17 @@ const Comments = () => {
             <div>{item.content}</div>
             <div style={{ marginTop: 8 }}>
               <span>
-                <img src={peopleImage}></img>
+                <img src={peopleImage} alt="" />
                 {item.author}
               </span>
               <span>
-                <img src={timeImage}></img>
+                <img src={timeImage} alt="" />
                 {item.time}
               </span>
             </div>
           </div>
           <div className={styles.rightView}>
-            <img src={commentImage}></img>
+            <img src={commentImage} alt="" />
             <button onClick={() => addComment(index)}>回复</button>
           </div>
         </div>
@@ -144,7 +139,7 @@ const Comments = () => {
 const Discussion = () => {
   const [myCommentValue, setMyCommentValue] = useState('')
 
-  const handleMyCommentChange = (event: any) => {
+  const handleMyCommentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMyCommentValue(event.target.value)
   }
 
@@ -174,8 +169,7 @@ const Discussion = () => {
             className={styles.textInput}
             placeholder="说说你的想法，或者有什么问题？和大家一起讨论吧！"
             onChange={handleMyCommentChange}
-            value={myCommentValue}
-          ></textarea>
+            value={myCommentValue}></textarea>
           <button className={styles.confirmButton} onClick={handleMyCommentConfirm}>
             马上发表
           </button>

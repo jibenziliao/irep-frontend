@@ -15,9 +15,7 @@ const notices = [
   }
 ]
 
-/**
- * 登录页的通知公告组件
- */
+/** 登录页的通知公告组件 */
 const AnnouncementComponet = (props: RouteComponentProps) => {
   const goRoute = (path: string) => {
     props.history.push(path)
@@ -49,6 +47,7 @@ const AnnouncementComponet = (props: RouteComponentProps) => {
   )
 }
 
+/** 通知公告 */
 const Announcement = withRouter(AnnouncementComponet)
 
 export default Announcement

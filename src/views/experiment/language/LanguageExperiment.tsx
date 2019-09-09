@@ -120,10 +120,10 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
       )
     },
     {
-      title: '相关度',
+      title: '是否相关',
       dataIndex: 'isExisting',
       key: 'isExisting',
-      width: 60,
+      width: 80,
       align: columnAlignCenter,
       render: (isExisting: boolean) => renderIsExisting(isExisting)
     }
@@ -280,8 +280,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
         <div
           key={index}
           className={`${styles.Card} ${i.disabled ? styles.CardDisabled : i.current ? styles.CurrentCard : ''}`}
-          onClick={() => selectCard(i.name, index, i.disabled)}
-        >
+          onClick={() => selectCard(i.name, index, i.disabled)}>
           {i.name}
         </div>
       )
@@ -296,8 +295,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
       return (
         <div
           className={`${styles.Name}`}
-          onClick={() => shouldRemoveCard(!state.saveOrderBtn.language.saved, name, index)}
-        >
+          onClick={() => shouldRemoveCard(!state.saveOrderBtn.language.saved, name, index)}>
           <span>{`${index + 1}.${name}`}</span>
           <div className={styles.IconWrapper}>
             <Icon type="close-circle" className={styles.Icon} />
@@ -364,8 +362,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
             type="primary"
             disabled={!state.saveOrderBtn.language.completed || state.saveOrderBtn.language.saved}
             loading={saveOrderLoading}
-            onClick={saveOrder}
-          >
+            onClick={saveOrder}>
             保存
           </Button>
         </div>
@@ -647,8 +644,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
           size="large"
           loading={calculationLoading}
           disabled={selectedQuery === ''}
-          onClick={testRetriever}
-        >
+          onClick={testRetriever}>
           计算
         </Button>
       </div>
@@ -705,8 +701,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
           loading={currentStepIndex === setpIndex && loading}
           type="link"
           className={styles.LinkButton}
-          onClick={() => handleCurrentStep(setpIndex)}
-        >
+          onClick={() => handleCurrentStep(setpIndex)}>
           {name}
         </Button>
       )
@@ -726,8 +721,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
             <div className={styles.BoxWrapper}>
               <div className={styles.BoxGroup}>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 0 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 0 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('查询预处理', stepLoading, 0)}
                 </div>
               </div>
@@ -738,8 +732,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
               </div>
               <div className={styles.BoxGroup}>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 1 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 1 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('计算LM', stepLoading, 1)}
                 </div>
               </div>
@@ -750,8 +743,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
               </div>
               <div className={styles.BoxGroup}>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 2 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 2 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('计算生成概率', stepLoading, 2)}
                 </div>
               </div>
@@ -762,8 +754,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
               </div>
               <div className={styles.BoxGroup}>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 3 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 3 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('按生成概率降序排序', stepLoading, 3)}
                 </div>
               </div>
@@ -944,8 +935,7 @@ const LanguageExperimentComponent = (props: RouteComponentProps) => {
         loading={nextLoading}
         disabled={lastStepIndex !== 4}
         onClick={goNextExperiment}
-        className={styles.NextBtn}
-      >
+        className={styles.NextBtn}>
         下一步
       </Button>
     </div>

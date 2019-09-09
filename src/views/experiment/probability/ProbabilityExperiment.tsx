@@ -261,10 +261,10 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
       )
     },
     {
-      title: '相关度',
+      title: '是否相关',
       dataIndex: 'isExisting',
       key: 'isExisting',
-      width: 60,
+      width: 80,
       align: columnAlignCenter,
       render: (isExisting: boolean) => renderIsExisting(isExisting)
     }
@@ -428,8 +428,7 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
       return (
         <div
           className={`${styles.Name}`}
-          onClick={() => shouldRemoveCard(!state.saveOrderBtn.probability.saved, name, index)}
-        >
+          onClick={() => shouldRemoveCard(!state.saveOrderBtn.probability.saved, name, index)}>
           <span>{`${index + 1}.${name}`}</span>
           <div className={styles.IconWrapper}>
             <Icon type="close-circle" className={styles.Icon} />
@@ -543,8 +542,7 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
         <div
           key={index}
           className={`${styles.Card} ${i.disabled ? styles.CardDisabled : i.current ? styles.CurrentCard : ''}`}
-          onClick={() => selectCard(i.name, index, i.disabled)}
-        >
+          onClick={() => selectCard(i.name, index, i.disabled)}>
           {i.name}
         </div>
       )
@@ -581,8 +579,7 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
             type="primary"
             disabled={!state.saveOrderBtn.probability.completed || state.saveOrderBtn.probability.saved}
             loading={saveOrderLoading}
-            onClick={saveOrder}
-          >
+            onClick={saveOrder}>
             保存
           </Button>
         </div>
@@ -647,8 +644,7 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
           size="large"
           loading={calculationLoading}
           disabled={selectedQuery === ''}
-          onClick={testRetriever}
-        >
+          onClick={testRetriever}>
           计算
         </Button>
       </div>
@@ -919,8 +915,7 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
           loading={currentStepIndex === setpIndex && loading}
           type="link"
           className={styles.LinkButton}
-          onClick={() => handleCurrentStep(setpIndex)}
-        >
+          onClick={() => handleCurrentStep(setpIndex)}>
           {name}
         </Button>
       )
@@ -940,8 +935,7 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
             <div className={styles.BoxWrapper}>
               <div className={styles.BoxGroup}>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 0 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 0 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('求索引项', stepLoading, 0)}
                 </div>
               </div>
@@ -952,8 +946,7 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
               </div>
               <div className={styles.BoxGroup}>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 1 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 1 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('求系数Bij', stepLoading, 1)}
                 </div>
               </div>
@@ -964,8 +957,7 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
               </div>
               <div className={styles.BoxGroup}>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 2 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 2 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('求相似度', stepLoading, 2)}
                 </div>
               </div>
@@ -976,8 +968,7 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
               </div>
               <div className={styles.BoxGroup}>
                 <div
-                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 3 ? styles.DisabledBox : ''}`}
-                >
+                  className={`${styles.BoxItem} ${styles.StepItem} ${currentStepIndex < 3 ? styles.DisabledBox : ''}`}>
                   {renderStepButton('求相似度降序排序', stepLoading, 3)}
                 </div>
               </div>
@@ -1145,8 +1136,7 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
           loading={nextLoading}
           disabled={lastStepIndex !== 4}
           onClick={goNextExperiment}
-          className={styles.NextBtn}
-        >
+          className={styles.NextBtn}>
           下一步
         </Button>
       </div>

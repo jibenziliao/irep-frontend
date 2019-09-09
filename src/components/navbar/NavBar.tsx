@@ -60,9 +60,7 @@ const NavBarComponet = (props: RouteComponentProps) => {
     return window.location.pathname.includes(path)
   }
 
-  /**
-   * 点击导航栏菜单项
-   */
+  /** 点击导航栏菜单项 */
   const goRoute = (path: string) => {
     const currentPath = window.location.pathname
     if (currentPath.includes('experiment') && path === '/experiment') {

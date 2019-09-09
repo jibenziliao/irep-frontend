@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import React from 'react'
-import styles from './Report.module.less'
 import { Table } from 'antd'
-import { getStore } from '../../utils/util';
+import styles from './Report.module.less'
+import { getStore } from '../../utils/util'
 
 type columnAlignType = 'center' | 'left' | 'right' | undefined
 const columnAlignCenter: columnAlignType = 'center'
