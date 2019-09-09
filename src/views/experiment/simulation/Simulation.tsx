@@ -18,7 +18,7 @@ const { Search } = Input
  */
 const SimulationComponent = (props: RouteComponentProps) => {
   const dispatch: Dispatch<Actions> = useDispatch()
-  const [showResult, setShowResult] = useState(true)
+  const [showResult, setShowResult] = useState(false)
   const [results, setResults] = useState<SearchResult[]>([])
   const [loading, setLoading] = useState(false)
   const [finishLoading, setFinishLoading] = useState(false)
@@ -31,20 +31,20 @@ const SimulationComponent = (props: RouteComponentProps) => {
       url: '/platform/sendData',
       method: 'post',
       data: {
-        username: getStore('user').username,
+        username: getStore('user').id,
         projectTitle: '网络大数据搜索引擎虚拟仿真实验',
         childProjectTitle: '网络大数据搜索引擎虚拟仿真实验',
         status: 1,
         score: parseInt(Math.random() * 20 + 80 + ''),
         startDate: getStore('startDate') || new Date().getTime() - 15 * 60 * 1000,
         endDate: new Date().getTime(),
-        timeUsed: handleEndDate(new Date().getTime(), getStore('startDate') || new Date().getTime() - 15 * 60 * 1000),
+        timeUsed: handleEndDate(getStore('startDate') || new Date().getTime() - 15 * 60 * 1000, new Date().getTime()),
         issuerId: '',
         attachmentId: ''
       }
     })
     setFinishLoading(false)
-    if (res && res.status === 200 && res.data && res.data.code === '0') {
+    if (res && res.status === 200 && res.data && res.data.code === 0) {
       setStore('finishedAllExperiments', 'yes')
       props.history.replace('/report')
     } else {
@@ -84,6 +84,7 @@ const SimulationComponent = (props: RouteComponentProps) => {
       if (res.data.push) {
         const newResults = res.data.filter((_: SearchResult, index: number) => index < 5)
         setResults(newResults)
+        setShowResult(true)
       }
     } else {
       errorTips('检索失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
@@ -105,7 +106,6 @@ const SimulationComponent = (props: RouteComponentProps) => {
    * 点击搜索按钮
    */
   const handleSearch = (value: string) => {
-    setShowResult(false)
     search(value)
   }
 
@@ -133,7 +133,7 @@ const SimulationComponent = (props: RouteComponentProps) => {
     <div className={styles.Container}>
       <Steps current="仿真我的搜索引擎" finishedItems={9} />
       <div className={styles.Content}>
-        <div className={styles.MiddleSection} hidden={!showResult}>
+        <div className={styles.MiddleSection} hidden={showResult}>
           <img className={styles.logo} src={SearchImg} alt="icon"></img>
           <span className={styles.SectionTitle}>
             {getStore('user') ? getStore('user').username : '郭晨睿'}的搜索引擎
@@ -146,7 +146,7 @@ const SimulationComponent = (props: RouteComponentProps) => {
             onSearch={handleSearch}
           />
         </div>
-        <div hidden={showResult}>
+        <div hidden={!showResult}>
           <div className={styles.topSection}>
             <img className={styles.logo} src={SearchImg} alt="icon"></img>
             <div className={styles.topTitle}>{getStore('user') ? getStore('user').username : '郭晨睿'}的搜索引擎</div>
@@ -166,7 +166,7 @@ const SimulationComponent = (props: RouteComponentProps) => {
         <Button
           type="primary"
           loading={finishLoading}
-          hidden={showButton()}
+          hidden={!showResult}
           onClick={saveScore}
           className={styles.NextBtn}>
           完成
