@@ -27,8 +27,8 @@ const OAuthLoginWithoutRouter = (props: RouteComponentProps) => {
           token: encodeURI(token)
         }
       })
-      if (res && res.status === 200 && res.data && res.data.id) {
-        setStore('user', { username: res.data.dis })
+      if (res && res.status === 200 && res.data && res.data.code === 101) {
+        setStore('user', { username: res.data.data.u1, id: res.data.data.username })
         setSuccessed(true)
         setLoading(false)
         setTimeout(() => {
