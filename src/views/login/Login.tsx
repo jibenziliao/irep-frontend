@@ -192,7 +192,7 @@ const LoginForm = (props: LoginProp) => {
       </div>
       <div className={styles.BrowserWrapper}>
         <span>为保证实验效果，建议使用</span>
-        <span className={styles.Brower}>Chrome、FireFox、Edge</span>
+        <span className={styles.Brower}>Chrome、Edge</span>
         <span>浏览器打开</span>
       </div>
     </div>
