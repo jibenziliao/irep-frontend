@@ -51,7 +51,7 @@ const LoginForm = (props: LoginProp) => {
     setLoading(false)
     if (res && res.status === 200 && res.data && res.data.code === 101) {
       setStore('user', res.data.data || { username: '张三' })
-      if (fieldValue.userName == '专家' || fieldValue.userName == 'zhuanjia') {
+      if (fieldValue.userName === '专家' || fieldValue.userName === 'zhuanjia') {
         setStore('zhuanjia', true)
       } else {
         setStore('zhuanjia', false)
@@ -89,7 +89,7 @@ const LoginForm = (props: LoginProp) => {
     window.location.href = window.location.origin
   }
 
-  // 专家入口/免注册在线体验
+  /** 专家入口/免注册在线体验 */
   const expertEntrance = async () => {
     const res = await requestFn(dispatch, {
       url: '/user/login',

@@ -7,7 +7,8 @@ import NavBar from './components/navbar/NavBar'
 import NavBarLogin from './components/navbar/NavBarLogin'
 import CopyRight from './components/footer/CopyRight'
 import './App.less'
-import { getStore } from './utils/util'
+import { getStore, getUrlParam } from './utils/util'
+import OAuthLogin from './views/login/OAuthLogin'
 
 const history = createBrowserHistory()
 
@@ -42,6 +43,15 @@ const routerMatch = () => {
 }
 
 const App: React.FC = () => {
+  const renderOAuthRedirectRouter = () => {
+    const token = getUrlParam('token')
+    if (token) {
+      return <OAuthLogin />
+    } else {
+      return <Redirect to="/login" />
+    }
+  }
+
   const renderLogin = () => {
     return (
       <div className="GlobalLoginPage">
@@ -56,8 +66,9 @@ const App: React.FC = () => {
   return (
     <Router history={history}>
       <Switch>
+        <Route path={'/oauth'} key={'/oauth'} render={() => <OAuthLogin />} />
         <Route path={'/login'} key={'/login'} render={renderLogin} />
-        <Route path="/" exact={true} render={() => <Redirect to="/login" />} />
+        <Route path="/" exact={true} render={renderOAuthRedirectRouter} />
         <Route path="/introduction" exact={true} render={() => <Redirect to="/introduction/background" />} />
         <Route path="/experiment" exact={true} render={() => <Redirect to="/experiment/index" />} />
         {routerMatch()}

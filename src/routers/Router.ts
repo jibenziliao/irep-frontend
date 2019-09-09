@@ -21,6 +21,7 @@ const Report = loadable(() => import('../views/report/Report'))
 const Notice = loadable(() => import('../views/notice/Notice'))
 const Discussion = loadable(() => import('../views/discussion/Discussion'))
 const Contactus = loadable(() => import('../views/contactus/Contactus'))
+const OAuthLogin = loadable(() => import('../views/login/OAuthLogin'))
 
 const routes = [
   {
@@ -134,6 +135,11 @@ const routes = [
     component: Register,
     path: '/register',
     name: '注册'
+  },
+  {
+    component: OAuthLogin,
+    path: '/oauth',
+    name: 'OAuth'
   }
 ]
 
