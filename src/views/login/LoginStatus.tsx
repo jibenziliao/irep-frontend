@@ -1,81 +1,55 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Dispatch } from 'redux'
-import { Actions } from '../../store/Actions'
 import { notification } from 'antd'
+import { Actions } from '../../store/Actions'
 import styles from './LoginStatus.module.less'
 import { requestFn } from '../../utils/request'
-import { useDispatch, useMappedState, State } from '../../store/Store'
+import { useDispatch } from '../../store/Store'
 
-const userCount = 500
+const defaultUserCount = 500
 
-/**
- * 登录页的登录人数统计组件
- */
+/** 登录页的登录人数统计组件 */
 const LoginStatus = () => {
   const [numberStrs, setNumberStrs] = useState([''])
   const dispatch: Dispatch<Actions> = useDispatch()
-  const state: State = useMappedState(useCallback((globalState: State) => globalState, []))
-
   const [onlineUserNum, setOnlineUserNum] = useState(0)
 
-  /**
-   * 更新当前在线人数
-   */
   useEffect(() => {
+    /** 更新在线人数 */
     const onlineUserNumReuqest = async () => {
       const res = await requestFn(dispatch, {
         url: '/user/queryOnline',
         method: 'get'
       })
       if (res && res.status === 200 && res.data && res.data.code === 0) {
-        successTips('更新当前在线人数成功', '')
         setOnlineUserNum(res.data.data)
       } else {
         errorTips('更新当前在线人数失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
       }
     }
-    /**
-     * 根据loading状态判断是否需要加载索引
-     */
-    const initOnlineUserNum = (loading: boolean) => {
-      if (loading) {
-        onlineUserNumReuqest()
-      }
-    }
 
-    /**
-     * state.onlineUserNumLoading发生变换时，触发此钩子中的函数
-     */
-    initOnlineUserNum(state.onlineUserNumLoading)
-  }, [dispatch, state.onlineUserNumLoading])
+    onlineUserNumReuqest()
+  }, [dispatch])
 
-  const successTips = (message = '', description = '') => {
-    notification.success({
-      message,
-      duration: 1.5,
-      description
-    })
-  }
-
+  /** 错误提示 */
   const errorTips = (message = '', description = '') => {
     notification.error({
       message,
       description
     })
   }
-  const handleNumberStrs = (count: number) => {
-    return count.toString().split('')
-  }
 
   useEffect(() => {
+    /** 获取用户总数 */
     const getLoginUserCounts = (count: number) => {
-      const userNumberStrs = handleNumberStrs(count)
+      const userNumberStrs = count.toString().split('')
       setNumberStrs(userNumberStrs)
     }
 
-    getLoginUserCounts(userCount)
+    getLoginUserCounts(defaultUserCount)
   }, [])
 
+  /** 渲染登录过的用户数量 */
   const renderUserCount = () => {
     return numberStrs.map((i, index: number) => {
       return (
@@ -89,7 +63,7 @@ const LoginStatus = () => {
   return (
     <div className={styles.Container}>
       <div className={styles.NumberRow}>{renderUserCount()}</div>
-      <div className={styles.Tips}>您是第{userCount}位使用该系统的用户</div>
+      <div className={styles.Tips}>您是第{defaultUserCount}位使用该系统的用户</div>
       <div className={styles.OnlineCount}>
         <span>当前在线人数</span>
         <span className={styles.OnlineNumber}>{onlineUserNum}</span>
