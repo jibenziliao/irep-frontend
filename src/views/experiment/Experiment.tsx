@@ -1,10 +1,9 @@
 import React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router'
-import styles from './Experiment.module.less'
 import { Button, Icon } from 'antd'
-/**
- * 实验进入页
- */
+import styles from './Experiment.module.less'
+
+/** 实验入口页 */
 const ExperimentComponent = (props: RouteComponentProps) => {
   const handleClick = () => {
     props.history.replace('/experiment/entry')
@@ -30,6 +29,7 @@ const ExperimentComponent = (props: RouteComponentProps) => {
   )
 }
 
+/** 实验入口页 */
 const Experiment = withRouter(ExperimentComponent)
 
 export default Experiment
