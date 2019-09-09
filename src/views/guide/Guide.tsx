@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './Guide.module.less'
-import guideVideo from '../../assets/videos/irep.mp4'
+import guideVideo from '../../assets/videos/guide.mp4'
 
 const Guide = () => {
   return (
