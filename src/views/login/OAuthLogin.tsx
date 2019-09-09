@@ -28,8 +28,9 @@ const OAuthLoginWithoutRouter = (props: RouteComponentProps) => {
         }
       })
       if (res && res.status === 200 && res.data && res.data.id) {
-        setStore('user', res.data.dis || { username: '张三', id: res.data.id, account: res.data.un })
+        setStore('user', { username: res.data.dis })
         setSuccessed(true)
+        setLoading(false)
         setTimeout(() => {
           // 使用原生跳转，以更新权限
           window.location.href = '/experiment/index'
