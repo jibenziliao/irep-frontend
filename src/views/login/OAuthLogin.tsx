@@ -19,42 +19,22 @@ const OAuthLoginWithoutRouter = (props: RouteComponentProps) => {
   const dispatch: Dispatch<Actions> = useDispatch()
 
   useEffect(() => {
-    const loginRequest = async (fieldValue: Params) => {
+    /** 解析token */
+    const parseToken = async (token: string) => {
       const res = await requestFn(dispatch, {
-        url: '/user/login',
+        url: '/platform/decode',
         method: 'post',
         data: {
-          username: fieldValue.userName,
-          password: fieldValue.password
+          token
         }
       })
-      setLoading(false)
-      if (res && res.status === 200 && res.data && res.data.code === 101) {
-        setStore('user', res.data.data || { username: '张三' })
+      if (res && res.status === 200 && res.data && res.data.id) {
+        setStore('user', res.data.dis || { username: '张三', id: res.data.id, account: res.data.un })
         setSuccessed(true)
         setTimeout(() => {
           // 使用原生跳转，以更新权限
           window.location.href = '/experiment/index'
         }, 1500)
-      } else {
-        setSuccessed(false)
-        setTimeout(() => {
-          props.history.replace('/login')
-        }, 1500)
-      }
-    }
-
-    const parseToken = async (token: string) => {
-      const res = await requestFn(dispatch, {
-        url: '/user/login',
-        method: 'post',
-        params: {},
-        data: {
-          token
-        }
-      })
-      if (res && res.status === 200 && res.data && res.data.code === 101) {
-        loginRequest({ userName: '', password: '' })
       } else {
         setLoading(false)
         setSuccessed(false)

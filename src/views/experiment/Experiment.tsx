@@ -2,10 +2,12 @@ import React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { Button, Icon } from 'antd'
 import styles from './Experiment.module.less'
+import { setStore } from '../../utils/util'
 
 /** 实验入口页 */
 const ExperimentComponent = (props: RouteComponentProps) => {
   const handleClick = () => {
+    setStore('startDate', new Date().getTime())
     props.history.replace('/experiment/entry')
   }
 

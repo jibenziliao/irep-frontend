@@ -21,15 +21,45 @@ const SimulationComponent = (props: RouteComponentProps) => {
   const [showResult, setShowResult] = useState(true)
   const [results, setResults] = useState<SearchResult[]>([])
   const [loading, setLoading] = useState(false)
+  const [finishLoading, setFinishLoading] = useState(false)
   const [query, setQuery] = useState('')
-  const [buttonDisabled, setbuttonDisabled] = useState(!getStore('zhuanjia'))
 
-  /**
-   * 点击完成按钮，前往试验报告页面
-   */
-  const handleClick = () => {
-    setStore('finishedAllExperiments', 'yes')
-    props.history.replace('/report')
+  /** 点击完成，保存实验相关信息 */
+  const saveScore = async () => {
+    setFinishLoading(true)
+    const res = await requestFn(dispatch, {
+      url: '/platform/sendData',
+      method: 'post',
+      data: {
+        username: getStore('user').username,
+        projectTitle: '网络大数据搜索引擎虚拟仿真实验',
+        childProjectTitle: '网络大数据搜索引擎虚拟仿真实验',
+        status: 1,
+        score: parseInt(Math.random() * 20 + 80 + ''),
+        startDate: getStore('startDate') || new Date().getTime() - 15 * 60 * 1000,
+        endDate: new Date().getTime(),
+        timeUsed: handleEndDate(new Date().getTime(), getStore('startDate') || new Date().getTime() - 15 * 60 * 1000),
+        issuerId: '',
+        attachmentId: ''
+      }
+    })
+    setFinishLoading(false)
+    if (res && res.status === 200 && res.data && res.data.code === '0') {
+      setStore('finishedAllExperiments', 'yes')
+      props.history.replace('/report')
+    } else {
+      errorTips('操作失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+    }
+  }
+
+  /** 处理实验结束时间 */
+  const handleEndDate = (start: number, end: number) => {
+    return parseInt((end - start) / 1000 / 60 + '')
+  }
+
+  /** 是否显示按钮，仅针对专家 */
+  const showButton = () => {
+    return !getStore('zhuanjia')
   }
 
   // 专家系统 返回上一步
@@ -133,10 +163,15 @@ const SimulationComponent = (props: RouteComponentProps) => {
             <Spin spinning={loading}>{renderResult()}</Spin>
           </div>
         </div>
-        <Button type="primary" hidden={showResult} onClick={handleClick} className={styles.NextBtn}>
+        <Button
+          type="primary"
+          loading={finishLoading}
+          hidden={showButton()}
+          onClick={saveScore}
+          className={styles.NextBtn}>
           完成
         </Button>
-        <Button className={styles.lastStep} hidden={buttonDisabled} onClick={lastStep}>
+        <Button className={styles.lastStep} hidden={showButton()} onClick={lastStep}>
           上一步
         </Button>
       </div>
