@@ -23,7 +23,6 @@ const OAuthLoginWithoutRouter = (props: RouteComponentProps) => {
     const parseToken = async (token: string) => {
       const res = await requestFn(dispatch, {
         url: '/platform/decode',
-        method: 'post',
         params: {
           token: encodeURI(token)
         }
