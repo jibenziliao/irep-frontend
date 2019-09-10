@@ -49,7 +49,6 @@ export const requestFn = (dispatch: Dispatch<Actions>, params: Params): AxiosPro
         return response
       },
       error => {
-        console.log(error)
         if (error.response && error.response.status === 401 && error.response.config.url.indexOf('/login') === -1) {
           tokenExpired()
           return reject(error)
