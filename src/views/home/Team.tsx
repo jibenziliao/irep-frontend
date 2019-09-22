@@ -54,7 +54,8 @@ const TeamComponet = (props: RouteComponentProps) => {
                 <img src={require('../../assets/introduction/time.png')} className={styles.icon} alt=""></img>
                 <span>实验课时 </span>
               </div>
-              <div className={styles.infoText}>实验课时20</div>
+              <div className={styles.infoText}>实验课程课时：48课时</div>
+              <div className={styles.infoText}>实验项目课时：6课时</div>
             </div>
           </div>
           <div className={styles.chooseButton}>

@@ -104,7 +104,7 @@ export const vectorSpaceKnowledge = [
   {
     title: '实现步骤',
     content: `
-      <p>1.计算
+      <p>1.计算
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <mi> i </mi>
           <mi> d </mi>
@@ -130,7 +130,7 @@ export const vectorSpaceKnowledge = [
         </msub>
       </math>
       参数求出各个词项逆文档频率</p>
-      <p>逆文档频率因子（
+      <p>逆文档频率因子（
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <mi> i </mi>
           <mi> d </mi>
@@ -144,7 +144,7 @@ export const vectorSpaceKnowledge = [
           </msub>
         </math>
       ）&ndash;全局（文档集合）</p>
-      <p>计算公式：
+      <p>计算公式：
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <mi> i </mi>
           <mi> d </mi>
@@ -292,7 +292,7 @@ export const vectorSpaceKnowledge = [
             </mrow>
           </msub>
         </math>
-      </p>
+       </p>
       <p>4.相似度计算：查询与某文档的相似度为查询向量和文档向量余弦值。（或查询向量的单位向量与文档向量的单位向量的点积）</p>
       <p style="text-align: center">
         <math xmlns="http://www.w3.org/1998/Math/MathML">

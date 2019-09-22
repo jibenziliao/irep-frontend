@@ -15,7 +15,7 @@ export const evaluationKnowledge = [
     title: '评价标准数据集',
     content: `
       <p style="text-indent: 2em;">
-        本研究采用搜狗实验室提供的标准数据集。
+        本研究采用搜狗实验室提供的标准数据集,数据集大小约80G，涵盖537366个标准查询和9046737个网站的HTML文档。
       </p>
     `
   },
@@ -567,7 +567,7 @@ export const evaluationKnowledge = [
         其中 |REL| 表示，结果按照相关性从大到小的顺序排序，取前p个结果组成的集合。也就是按照最优的方式对结果进行排序。
       </p>
       <p><strong>2、平均检索性能评价指标</strong></p>
-      <p style="text-indent: 2em;">平均检索性能评价指标，是对多个查询式（本系统使用10个）的检索性能评价指标求均值得到。</p>
+      <p style="text-indent: 2em;">平均检索性能评价指标，是在多个查询式（本系统使用10个）的检索性能评价指标的基础上的期望。</p>
     `
   }
 ]

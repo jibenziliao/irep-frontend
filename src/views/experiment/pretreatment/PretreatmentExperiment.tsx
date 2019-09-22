@@ -221,7 +221,6 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
             <div className={styles.title}>选择分词器：</div>
             <Select defaultValue="standard" style={{ width: 150 }} onChange={handleChoose}>
               <Option value="standard">标准分词器</Option>
-              <Option value="whitespace">空格分词器</Option>
               <Option value="simple">简单分词器</Option>
               <Option value="CJK">二分法分词器</Option>
               <Option value="smartChinese">中文智能分词器</Option>
