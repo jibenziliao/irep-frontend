@@ -85,9 +85,9 @@ const LoginForm = (props: LoginProp) => {
     props.history.push(path)
   }
 
-  const goLabSpace = () => {
-    window.location.href = window.location.origin
-  }
+  // const goLabSpace = () => {
+  //   window.location.href = window.location.origin
+  // }
 
   /** 专家入口/免注册在线体验 */
   const expertEntrance = async () => {
@@ -170,11 +170,11 @@ const LoginForm = (props: LoginProp) => {
                   注册
                 </Button>
               </Form.Item>
-              <Form.Item>
+              {/* <Form.Item>
                 <Button type="primary" ghost block size="large" onClick={goLabSpace}>
                   实验空间账号登录
                 </Button>
-              </Form.Item>
+              </Form.Item> */}
             </Form>
             <p className={styles.Experience} onClick={expertEntrance}>
               专家评审入口
