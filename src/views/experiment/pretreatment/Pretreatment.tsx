@@ -23,9 +23,9 @@ const PretreatmentComponet = (props: RouteComponentProps) => {
   const [tabDisabled, setTabDisabled] = useState(defaultTab !== '3')
   const [buttonDisabled, setbuttonDisabled] = useState(!getStore('zhuanjia'))
 
-  const handleClick = () => {
-    props.history.replace('/experiment/invertedIndex')
-  }
+  // const handleClick = () => {
+  //   props.history.replace('/experiment/invertedIndex')
+  // }
 
   /**
    * 知识自查，完成后前往构建模型tab页
@@ -68,9 +68,9 @@ const PretreatmentComponet = (props: RouteComponentProps) => {
   }
 
   // 下一步
-  const nextStep = () => {
-    props.history.replace('/experiment/invertedIndex')
-  }
+  // const nextStep = () => {
+  //   props.history.replace('/experiment/invertedIndex')
+  // }
 
   const operations = (
     <Button className={styles.controlButton} hidden={buttonDisabled} onClick={lastStep}>

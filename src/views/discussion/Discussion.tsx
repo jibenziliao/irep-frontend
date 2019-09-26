@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState} from 'react'
 import styles from './Discussion.module.less'
-import { List,Pagination } from 'antd';
+import { List} from 'antd';
 import commentImage from '../../assets/discussion/comment.png'
 import peopleImage from "../../assets/discussion/people.png"
 import timeImage from "../../assets/discussion/time.png"
@@ -89,23 +89,23 @@ const Comments =()=> {
           <div className={styles.leftView}>
             <div>{item.content}</div>
             <div style={{marginTop:8}}>
-              <span><img src={peopleImage}></img>{item.author}</span>
-              <span><img src={timeImage}></img>{item.time}</span>
+              <span><img src={peopleImage} alt=''></img>{item.author}</span>
+              <span><img src={timeImage} alt=''></img>{item.time}</span>
             </div>
           </div>
           <div className={styles.rightView}>
-            <img src={commentImage}></img>
+            <img src={commentImage} alt=''></img>
             <button onClick={()=>addComment(index)}>回复</button>
           </div>
         </div>
-        <div className={styles.addCommentView} hidden={item.addCommentDisabled=='0'} key={index}>
+        <div className={styles.addCommentView} hidden={item.addCommentDisabled==='0'} key={index}>
           <textarea className={styles.commentInput} value={addCommentValue} onChange={handleTextareaChange}></textarea>
           <div className={styles.buttonView}>
             <button className={styles.button1} onClick={()=>cancelAddComment(index)}>取消</button>
             <button className={styles.button2} onClick={()=>confirmAddComment(index)}>确定</button>
           </div>
         </div>
-        <div hidden={item.comments.length==0}>
+        <div hidden={item.comments.length===0}>
           <List
             className={styles.childrenCommentView}
             itemLayout="horizontal"
