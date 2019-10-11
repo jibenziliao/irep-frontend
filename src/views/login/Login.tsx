@@ -50,6 +50,7 @@ const LoginForm = (props: LoginProp) => {
     })
     setLoading(false)
     if (res && res.status === 200 && res.data && res.data.code === 101) {
+      setStore("source",'0')
       setStore('user', res.data.data || { username: '张三' })
       if (fieldValue.userName === '专家' || fieldValue.userName === 'zhuanjia') {
         setStore('zhuanjia', true)
@@ -104,6 +105,7 @@ const LoginForm = (props: LoginProp) => {
     if (res && res.status === 200 && res.data && res.data.code === 101) {
       setStore('user', res.data.data || { username: '张三' })
       setStore('zhuanjia', true)
+      setStore("source",'0')
       setTimeout(() => {
         // 使用原生跳转，以更新权限
         window.location.href = '/introduction/background'
