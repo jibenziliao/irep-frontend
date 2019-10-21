@@ -27,28 +27,35 @@ const SimulationComponent = (props: RouteComponentProps) => {
   /** 点击完成，保存实验相关信息 */
   const saveScore = async () => {
     setFinishLoading(true)
-    const res = await requestFn(dispatch, {
-      url: '/platform/sendData',
-      method: 'post',
-      data: {
-        username: getStore('user').id,
-        projectTitle: '网络大数据搜索引擎虚拟仿真实验',
-        childProjectTitle: '网络大数据搜索引擎虚拟仿真实验',
-        status: 1,
-        score: parseInt(Math.random() * 20 + 80 + ''),
-        startDate: getStore('startDate') || new Date().getTime() - 15 * 60 * 1000,
-        endDate: new Date().getTime(),
-        timeUsed: handleEndDate(getStore('startDate') || new Date().getTime() - 15 * 60 * 1000, new Date().getTime()),
-        issuerId: '',
-        attachmentId: ''
-      }
-    })
-    setFinishLoading(false)
-    if (res && res.status === 200 && res.data && res.data.code === 0) {
+    // alert(getStore("source"))
+    if(getStore("source")=="0"){
       setStore('finishedAllExperiments', 'yes')
       props.history.replace('/report')
-    } else {
-      errorTips('操作失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+    }
+    else if(getStore("source")=="1"){
+      const res = await requestFn(dispatch, {
+        url: '/platform/sendData',
+        method: 'post',
+        data: {
+          username: getStore('user').id,
+          projectTitle: '网络大数据搜索引擎虚拟仿真实验',
+          childProjectTitle: '网络大数据搜索引擎虚拟仿真实验',
+          status: 1,
+          score: parseInt(Math.random() * 20 + 80 + ''),
+          startDate: getStore('startDate') || new Date().getTime() - 15 * 60 * 1000,
+          endDate: new Date().getTime(),
+          timeUsed: handleEndDate(getStore('startDate') || new Date().getTime() - 15 * 60 * 1000, new Date().getTime()),
+          issuerId: '',
+          attachmentId: ''
+        }
+      })
+      setFinishLoading(false)
+      if (res && res.status === 200 && res.data && res.data.code === 0) {
+        setStore('finishedAllExperiments', 'yes')
+        props.history.replace('/report')
+      } else {
+        errorTips('操作失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+      }
     }
   }
 

@@ -31,6 +31,7 @@ const OAuthLoginWithoutRouter = (props: RouteComponentProps) => {
         setStore('user', { username: res.data.data.u1, id: res.data.data.username })
         setSuccessed(true)
         setLoading(false)
+        setStore("source",'1')
         setTimeout(() => {
           // 使用原生跳转，以更新权限
           window.location.href = '/experiment/index'

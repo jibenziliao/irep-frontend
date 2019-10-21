@@ -50,6 +50,7 @@ const LoginForm = (props: LoginProp) => {
     })
     setLoading(false)
     if (res && res.status === 200 && res.data && res.data.code === 101) {
+      setStore("source",'0')
       setStore('user', res.data.data || { username: '张三' })
       if (fieldValue.userName === '专家' || fieldValue.userName === 'zhuanjia') {
         setStore('zhuanjia', true)
@@ -85,9 +86,9 @@ const LoginForm = (props: LoginProp) => {
     props.history.push(path)
   }
 
-  const goLabSpace = () => {
-    window.location.href = window.location.origin
-  }
+  // const goLabSpace = () => {
+  //   window.location.href = window.location.origin
+  // }
 
   /** 专家入口/免注册在线体验 */
   const expertEntrance = async () => {
@@ -104,6 +105,7 @@ const LoginForm = (props: LoginProp) => {
     if (res && res.status === 200 && res.data && res.data.code === 101) {
       setStore('user', res.data.data || { username: '张三' })
       setStore('zhuanjia', true)
+      setStore("source",'0')
       setTimeout(() => {
         // 使用原生跳转，以更新权限
         window.location.href = '/introduction/background'
@@ -170,11 +172,11 @@ const LoginForm = (props: LoginProp) => {
                   注册
                 </Button>
               </Form.Item>
-              <Form.Item>
+              {/* <Form.Item>
                 <Button type="primary" ghost block size="large" onClick={goLabSpace}>
                   实验空间账号登录
                 </Button>
-              </Form.Item>
+              </Form.Item> */}
             </Form>
             <p className={styles.Experience} onClick={expertEntrance}>
               专家评审入口
