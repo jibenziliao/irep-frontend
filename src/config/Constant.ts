@@ -183,94 +183,94 @@ export const pretreatmentCompletionQuestions: OriginCompletionQuestion[] = [
  */
 export const pretreatmentChoiceQuestions: ChoiceQuestion[] = [
   {
-    title: '以下哪个选项不属于信息检索实验的子实验？',
+    title: '以下哪些不是常用的中文分词器？',
     answer: Choice.D,
     score: 25,
     options: [
       {
         key: Choice.A,
-        value: '文档预处理'
+        value: '标准分词器'
       },
       {
         key: Choice.B,
-        value: '构建倒排索引'
+        value: '空格分词器'
       },
       {
         key: Choice.C,
-        value: '构建倒排索引'
+        value: 简单分词器
       },
       {
         key: Choice.D,
-        value: '构建倒排索引'
+        value: '二元分词器'
       }
     ]
   },
   {
-    title: '以下哪个选项不属于信息检索实验的子实验？',
+    title: '以下哪些不是常用的机械分词方法？',
     answer: Choice.D,
     score: 25,
     options: [
       {
         key: Choice.A,
-        value: '文档预处理'
+        value: '正向最大匹配法'
       },
       {
         key: Choice.B,
-        value: '构建倒排索引'
+        value: '逆向最大匹配法'
       },
       {
         key: Choice.C,
-        value: '构建倒排索引'
+        value: '最少切分法'
       },
       {
         key: Choice.D,
-        value: '构建倒排索引'
+        value: '双向最小匹配法'
       }
     ]
   },
   {
-    title: '以下哪个选项不属于信息检索实验的子实验？',
+    title: '基于理解的分词方法通常不包括哪些部分？',
     answer: Choice.D,
     score: 25,
     options: [
       {
         key: Choice.A,
-        value: '文档预处理'
+        value: '分词子系统'
       },
       {
         key: Choice.B,
-        value: '构建倒排索引'
+        value: '句法语义子系统'
       },
       {
         key: Choice.C,
-        value: '构建倒排索引'
+        value: '总控部分'
       },
       {
         key: Choice.D,
-        value: '构建倒排索引'
+        value: '二分法分词器'
       }
     ]
   },
   {
-    title: '以下哪个选项不属于信息检索实验的子实验？',
+    title: '以下哪个不是常见的停用词？',
     answer: Choice.D,
     score: 25,
     options: [
       {
         key: Choice.A,
-        value: '文档预处理'
+        value: '我们'
       },
       {
         key: Choice.B,
-        value: '构建倒排索引'
+        value: '在'
       },
       {
         key: Choice.C,
-        value: '构建倒排索引'
+        value: '接着'
       },
       {
         key: Choice.D,
-        value: '构建倒排索引'
+        value: '学校'
       }
     ]
   }
