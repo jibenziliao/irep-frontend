@@ -197,7 +197,7 @@ export const pretreatmentChoiceQuestions: ChoiceQuestion[] = [
       },
       {
         key: Choice.C,
-        value: 简单分词器
+        value: '简单分词器'
       },
       {
         key: Choice.D,
