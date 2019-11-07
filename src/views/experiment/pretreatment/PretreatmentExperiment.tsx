@@ -174,8 +174,20 @@ const PretreatmentExperimentComponent = (props: RouteComponentProps) => {
   /**
    * 点击底部下一步按钮
    */
-  const handleClick = () => {
-    props.history.replace('/experiment/invertedIndex')
+  const handleClick = async () => {
+    const res_1 = await requestFn(dispatch, {
+      url: '/score/updateSubScore',
+      method: 'post',
+      params: {
+        experimentId: 2,
+      }
+    })
+    if(res_1 && res_1.status === 200 && res_1.data && res_1.data.code === 0){
+      successTips('子实验分数保存成功', '')
+      props.history.replace('/experiment/invertedIndex')
+    }else{
+      errorTips("子实验分数保存失败")
+    } 
   }
 
   /**

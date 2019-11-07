@@ -1097,20 +1097,35 @@ const ProbabilityExperimentComponent = (props: RouteComponentProps) => {
    */
   const goNextExperiment = async () => {
     setNextLoading(true)
-    const res = await requestFn(dispatch, {
-      url: '/IRforCN/Retrieval/probabilityModel/quit',
+    const res_1 = await requestFn(dispatch, {
+      url: '/score/updateSubScore',
       method: 'post',
       params: {
-        query,
-        k,
-        b
+        experimentId:6,
       }
     })
     setNextLoading(false)
-    if (res && res.status === 200 && res.data && res.data.code === 0) {
-      props.history.replace('/experiment/language')
-    } else {
-      errorTips('保存实验操作失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+    if(res_1 && res_1.status === 200 && res_1.data && res_1.data.code === 0){
+      successTips('子实验分数保存成功', '')
+      setNextLoading(true)
+      const res = await requestFn(dispatch, {
+        url: '/IRforCN/Retrieval/probabilityModel/quit',
+        method: 'post',
+        params: {
+          query,
+          k,
+          b
+        }
+      })
+      setNextLoading(false)
+      if (res && res.status === 200 && res.data && res.data.code === 0) {
+        successTips('保存实验操作成功', '')
+        props.history.replace('/experiment/language')
+      } else {
+        errorTips('保存实验操作失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+      }
+    }else{
+      errorTips("子实验分数保存失败", res_1 && res_1.data && res_1.data.msg ? res_1.data.msg : '请求错误，请重试！')
     }
   }
 

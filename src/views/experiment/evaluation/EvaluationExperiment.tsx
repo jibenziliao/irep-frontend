@@ -428,7 +428,31 @@ const EvaluationExperimentForm = (props: EvaluationExperimentProps) => {
     })
     setSelecteModelLoading(false)
     if (res && res.status === 200 && res.data && res.data.code === '1') {
-      props.history.replace('/experiment/simulation')
+      const res_2 = await requestFn(dispatch, {
+        url: '/score/updateBestRetrieverScore',
+        method: 'post',
+        params: {
+          modelName: modelType
+        }
+      })
+      if(res_2&& res_2.status === 200 && res_2.data && res_2.data.code === 0){
+        successTips('选择最优模型并仿真分数保存成功', '')
+      }else{
+        errorTips("选择最优模型并仿真分数保存失败")
+      }
+      const res_1 = await requestFn(dispatch, {
+        url: '/score/updateSubScore',
+        method: 'post',
+        params: {
+          experimentId:8,
+        }
+      })
+      if(res_1 && res_1.status === 200 && res_1.data && res_1.data.code === 0){
+        successTips('子实验分数保存成功', '')
+        props.history.replace('/experiment/simulation')
+      }else{
+        errorTips("子实验分数保存失败")
+      }
     } else {
       errorTips('选择仿真模型失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
     }

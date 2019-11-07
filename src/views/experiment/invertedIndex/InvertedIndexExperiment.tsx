@@ -208,9 +208,42 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
   const [terms, setTerms] = useState<FullIndex[]>([])
   const [docs, setDocs] = useState<InvertedIndex[]>([])
   const [originDoc, setOriginDoc] = useState<OriginDoc>(defaultOriginDoc)
+  const[quiz1,setQuiz1]=useState('')
+  const[quiz2,setQuiz2]=useState('')
+  const[quiz3,setQuiz3]=useState('')
+  const[quiz4,setQuiz4]=useState('')
+  const[quiz5,setQuiz5]=useState('')
+  const[quiz6,setQuiz6]=useState('')
+  const[quiz7,setQuiz7]=useState('')
+  const[quiz8,setQuiz8]=useState('')
+  const[quiz9,setQuiz9]=useState('')
+  const[quiz10,setQuiz10]=useState('')
+  const[quiz11,setQuiz11]=useState('')
+  const[quiz12,setQuiz12]=useState('')
+  const[quiz13,setQuiz13]=useState('')
+  const[quiz14,setQuiz14]=useState('')
+  const[quiz15,setQuiz15]=useState('')
+  const[quiz16,setQuiz16]=useState('')
+  const[quiz17,setQuiz17]=useState('')
+  const[quiz18,setQuiz18]=useState('')
+  const[quiz19,setQuiz19]=useState('')
+  const[quiz20,setQuiz20]=useState('')
 
-  const handleClick = () => {
-    props.history.replace('/experiment/boolean')
+
+  const handleClick = async () => {
+    const res_1 = await requestFn(dispatch, {
+      url: '/score/updateSubScore',
+      method: 'post',
+      params: {
+        experimentId:3,
+      }
+    })
+    if(res_1 && res_1.status === 200 && res_1.data && res_1.data.code === 0){
+      successTips('子实验分数保存成功', '')
+      props.history.replace('/experiment/boolean')
+    }else{
+      errorTips("子实验分数保存失败")
+    }
   }
 
   const shouldRemoveCard = (bool: boolean, name: string, index: number) => {
@@ -505,6 +538,103 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
     }
   }
 
+  // 传回倒排索引小练习的用户答案
+  const quizhandleClick=async ()=>{
+    const res = await requestFn(dispatch, {
+      url: '/score/updateInvertedScore',
+      method: 'post',
+      data: {
+        "1"	:quiz1	,
+        "2"	:	quiz2	,
+        "3"	:	quiz3	,
+        "4"	:	quiz4	,
+        "5"	:	quiz5,
+        "6"	: quiz6,
+        "7"	:	quiz7,
+        "8"	:	quiz8	,
+        "9"	:	quiz9	,
+        "10"	:	quiz10	,
+        "11"	:	quiz11	,
+        "12"	:	quiz12	,
+        "13"	:	quiz13	,
+        "14"	:	quiz14	,
+        "15"	:	quiz15	,
+        "16"	:	quiz16	,
+        "17"	:	quiz17	,
+        "18"	:	quiz18	,
+        "19"	:	quiz19	,
+        "20"	:	quiz20	
+      }
+    })
+    if (res && res.status === 200 && res.data && res.data.code === 0) {
+      successTips('提交成功', '')
+    } else {
+      errorTips('提交失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+    }
+  }
+
+  // 更新倒排索引题答案
+  const Quiz1 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz1(event.target.value)
+  }
+  const Quiz2 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz2(event.target.value)
+  }
+  const Quiz3 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz3(event.target.value)
+  }
+  const Quiz4 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz4(event.target.value)
+  }
+  const Quiz5 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz5(event.target.value)
+  }
+  const Quiz6 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz6(event.target.value)
+  }
+  const Quiz7 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz7(event.target.value)
+  }
+  const Quiz8 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz8(event.target.value)
+  }
+  const Quiz9 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz9(event.target.value)
+  }
+  const Quiz10 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz10(event.target.value)
+  }
+  const Quiz11 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz11(event.target.value)
+  }
+  const Quiz12 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz12(event.target.value)
+  }
+  const Quiz13 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz13(event.target.value)
+  }
+  const Quiz14 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz14(event.target.value)
+  }
+  const Quiz15 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz15(event.target.value)
+  }
+  const Quiz16 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz16(event.target.value)
+  }
+  const Quiz17 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz17(event.target.value)
+  }
+  const Quiz18 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz18(event.target.value)
+  }
+  const Quiz19 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz19(event.target.value)
+  }
+  const Quiz20 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuiz20(event.target.value)
+  }
+
   /**
    * 渲染倒排索引词典表格题目
    */
@@ -542,19 +672,19 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
             breakthough
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz1} onChange={(e)=>Quiz1(e)} />
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz2} onChange={(e)=>Quiz2(e)} />
           </Col>
           <Col span={4} className={styles.FormItem}>
             0
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz15} onChange={(e)=>Quiz15(e)}/>
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz16} onChange={(e)=>Quiz16(e)}/>
           </Col>
         </Row>
         <Row>
@@ -562,19 +692,19 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
             drug
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz3} onChange={(e)=>Quiz3(e)}/>
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz4} onChange={(e)=>Quiz4(e)}/>
           </Col>
           <Col span={4} className={styles.FormItem}>
             1
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz17} onChange={(e)=>Quiz17(e)}/>
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz18} onChange={(e)=>Quiz18(e)}/>
           </Col>
         </Row>
         <Row>
@@ -582,19 +712,19 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
             for
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz5} onChange={(e)=>Quiz5(e)}/>
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz6} onChange={(e)=>Quiz6(e)}/>
           </Col>
           <Col span={4} className={styles.FormItem}>
             2
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz19} onChange={(e)=>Quiz19(e)}/>
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz20} onChange={(e)=>Quiz20(e)}/>
           </Col>
         </Row>
         <Row>
@@ -602,10 +732,10 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
             schizophrenia
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz7} onChange={(e)=>Quiz7(e)}/>
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz8} onChange={(e)=>Quiz8(e)}/>
           </Col>
           <Col span={12} className={styles.TableName}>
             b.倒排记录表
@@ -616,10 +746,10 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
             new
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz9} onChange={(e)=>Quiz9(e)}/>
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz10} onChange={(e)=>Quiz10(e)}/>
           </Col>
         </Row>
         <Row>
@@ -627,10 +757,10 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
             hopes
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz11} onChange={(e)=>Quiz11(e)}/>
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz12} onChange={(e)=>Quiz12(e)}/>
           </Col>
         </Row>
         <Row>
@@ -638,10 +768,10 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
             patients
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz13} onChange={(e)=>Quiz13(e)}/>
           </Col>
           <Col span={4} className={styles.FormItem}>
-            <input />
+            <input value={quiz14} onChange={(e)=>Quiz14(e)}/>
           </Col>
         </Row>
         <Row>
@@ -650,7 +780,7 @@ const InvertedIndexExperimentComponent = (props: RouteComponentProps) => {
           </Col>
         </Row>
         <div className={styles.ConfirmBtn}>
-          <Button type="primary">确认</Button>
+          <Button type="primary" onClick={quizhandleClick}>确认</Button>
         </div>
       </div>
     )

@@ -104,10 +104,23 @@ const EntryComponent = (props: RouteComponentProps) => {
     })
     if (res && res.status === 200 && res.data && res.data.code === 0) {
       successTips('保存顺序成功', '')
-      setTimeout(() => {
-        setLoading(false)
-        props.history.replace('/experiment/pretreatment')
-      }, 1000)
+      const res_1 = await requestFn(dispatch, {
+        url: '/score/updateSubScore',
+        method: 'post',
+        params: {
+          experimentId: 1,
+        }
+      })
+      console.log(res_1)
+      if(res_1 && res_1.status === 200 && res_1.data && res_1.data.code === 0){
+        successTips('子实验分数保存成功', '')
+        setTimeout(() => {
+          setLoading(false)
+          props.history.replace('/experiment/pretreatment')
+        }, 1000)
+      }else{
+        errorTips("子实验分数保存失败",res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+      }
     } else {
       setLoading(false)
       errorTips('保存顺序失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')

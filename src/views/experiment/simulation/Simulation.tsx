@@ -27,35 +27,57 @@ const SimulationComponent = (props: RouteComponentProps) => {
   /** 点击完成，保存实验相关信息 */
   const saveScore = async () => {
     setFinishLoading(true)
-    // alert(getStore("source"))
-    if(getStore("source")=="0"){
-      setStore('finishedAllExperiments', 'yes')
-      props.history.replace('/report')
-    }
-    else if(getStore("source")=="1"){
-      const res = await requestFn(dispatch, {
-        url: '/platform/sendData',
-        method: 'post',
-        data: {
-          username: getStore('user').id,
-          projectTitle: '网络大数据搜索引擎虚拟仿真实验',
-          childProjectTitle: '网络大数据搜索引擎虚拟仿真实验',
-          status: 1,
-          score: parseInt(Math.random() * 20 + 80 + ''),
-          startDate: getStore('startDate') || new Date().getTime() - 15 * 60 * 1000,
-          endDate: new Date().getTime(),
-          timeUsed: handleEndDate(getStore('startDate') || new Date().getTime() - 15 * 60 * 1000, new Date().getTime()),
-          issuerId: '',
-          attachmentId: ''
-        }
-      })
-      setFinishLoading(false)
-      if (res && res.status === 200 && res.data && res.data.code === 0) {
+    // 更新用户总成绩
+    const res_2 = await requestFn(dispatch, {
+      url: '/score/updateUserScore',
+      method: 'post',
+    })
+    console.log(res_2)
+    if(res_2&& res_2.status === 200 && res_2.data && res_2.data.code === 0){
+      successTips('总成绩保存成功', '')
+      if(getStore("source")=="0"){
         setStore('finishedAllExperiments', 'yes')
         props.history.replace('/report')
-      } else {
-        errorTips('操作失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
       }
+      else if(getStore("source")=="1"){
+        // 获取总成绩？需要与后台讨论
+        const res_1 = await requestFn(dispatch, {
+          url: '/report/getReport',
+          method: 'get'
+        })
+        console.log(res_1)
+        if (res_1 && res_1.status === 200&& res_1.data.code!=-1) {
+          var score=res_1.data.score
+        } else {
+          score=85
+        }
+        const res = await requestFn(dispatch, {
+          url: '/platform/sendData',
+          method: 'post',
+          data: {
+            username: getStore('user').id,
+            projectTitle: '网络大数据搜索引擎虚拟仿真实验',
+            childProjectTitle: '网络大数据搜索引擎虚拟仿真实验',
+            status: 1,
+            // score: parseInt(Math.random() * 20 + 80 + ''),
+            score:score,
+            startDate: getStore('startDate') || new Date().getTime() - 15 * 60 * 1000,
+            endDate: new Date().getTime(),
+            timeUsed: handleEndDate(getStore('startDate') || new Date().getTime() - 15 * 60 * 1000, new Date().getTime()),
+            issuerId: '',
+            attachmentId: ''
+          }
+        })
+        setFinishLoading(false)
+        if (res && res.status === 200 && res.data && res.data.code === 0) {
+          setStore('finishedAllExperiments', 'yes')
+          props.history.replace('/report')
+        } else {
+          errorTips('操作失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
+        }
+      }
+    }else{
+      errorTips("总成绩保存失败")
     }
   }
 
@@ -100,6 +122,17 @@ const SimulationComponent = (props: RouteComponentProps) => {
   }
 
   /**
+   * 成功提示
+   */
+  const successTips = (message = '', description = '') => {
+    notification.success({
+      message,
+      duration: 1.5,
+      description
+    })
+  }
+
+  /**
    * 错误提示
    */
   const errorTips = (message = '', description = '') => {
@@ -112,7 +145,7 @@ const SimulationComponent = (props: RouteComponentProps) => {
   /**
    * 点击搜索按钮
    */
-  const handleSearch = (value: string) => {
+  const handleSearch = async (value: string) => {
     search(value)
   }
 

@@ -102,14 +102,14 @@ const LanguageModalComponet = (props: RouteComponentProps) => {
             <LanguageExperiment />
           </TabPane>
         </Tabs>
-        <div className={styles.stepButton}>
+        {/* <div className={styles.stepButton}>
           <Button hidden={buttonDisabled} onClick={lastStep}>
             上一步
           </Button>
           <Button hidden={buttonDisabled} onClick={nextStep}>
             下一步
           </Button>
-        </div>
+        </div> */}
       </div>
     </div>
   )
