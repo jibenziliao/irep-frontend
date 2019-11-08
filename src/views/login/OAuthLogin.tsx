@@ -24,7 +24,7 @@ const OAuthLoginWithoutRouter = (props: RouteComponentProps) => {
       const res = await requestFn(dispatch, {
         url: '/platform/decode',
         params: {
-          token: encodeURI(token)
+          token: encodeURI(encodeURI(token))
         }
       })
       if (res && res.status === 200 && res.data && res.data.code === 101) {
