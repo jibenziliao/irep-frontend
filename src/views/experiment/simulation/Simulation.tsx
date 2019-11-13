@@ -40,17 +40,18 @@ const SimulationComponent = (props: RouteComponentProps) => {
         props.history.replace('/report')
       }
       else if(getStore("source")=="1"){
-        // 获取总成绩？需要与后台讨论
-        const res_1 = await requestFn(dispatch, {
-          url: '/report/getReport',
-          method: 'get'
-        })
-        console.log(res_1)
-        if (res_1 && res_1.status === 200&& res_1.data.code!=-1) {
-          var score=res_1.data.score
-        } else {
-          score=85
-        }
+        // // 获取总成绩？需要与后台讨论
+        // const res_1 = await requestFn(dispatch, {
+        //   url: '/report/getReport',
+        //   method: 'get'
+        // })
+        // console.log(res_1)
+        // if (res_1 && res_1.status === 200&& res_1.data.code!=-1) {
+        //   var score=res_1.data.score
+        //   alert(score)
+        // } else {
+        //   score=50
+        // }
         const res = await requestFn(dispatch, {
           url: '/platform/sendData',
           method: 'post',
@@ -59,8 +60,7 @@ const SimulationComponent = (props: RouteComponentProps) => {
             projectTitle: '网络大数据搜索引擎虚拟仿真实验',
             childProjectTitle: '网络大数据搜索引擎虚拟仿真实验',
             status: 1,
-            // score: parseInt(Math.random() * 20 + 80 + ''),
-            score:score,
+            score:0,
             startDate: getStore('startDate') || new Date().getTime() - 15 * 60 * 1000,
             endDate: new Date().getTime(),
             timeUsed: handleEndDate(getStore('startDate') || new Date().getTime() - 15 * 60 * 1000, new Date().getTime()),
