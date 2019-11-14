@@ -20,7 +20,7 @@ const ExperimentComponent = (props: RouteComponentProps) => {
 
   // 隐藏实验口
   const autoExperiment=async ()=>{
-    alert("点击")
+    // alert("点击")
     const res = await requestFn(dispatch, {
       url: '/platform/sendData',
       method: 'post',
@@ -38,9 +38,10 @@ const ExperimentComponent = (props: RouteComponentProps) => {
       }
     })
     if(res && res.status === 200 && res.data && res.data.code === 0){
-      alert("网络大数据搜索引擎虚拟仿真实验")
+      props.history.replace('/introduction/background')
+      // alert("网络大数据搜索引擎虚拟仿真实验")
     }else{
-      alert("请重新进入系统")
+      // alert("请重新进入系统")
     }
   }
 

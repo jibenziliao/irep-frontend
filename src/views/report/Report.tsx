@@ -19,7 +19,7 @@ const Report= () => {
   var name = getStore('user').username
   var number = getStore('user').jobNumber
   const studentClass = ''
-  const [score,setScore]=useState("85")
+  const [score,setScore]=useState(" ")
   const [experiment1,setExperiment1]=useState()
   const [experiment2,setExperiment2]=useState()
   const [experiment3,setExperiment3]=useState()
@@ -41,21 +41,25 @@ const Report= () => {
       })
       console.log(res)
       if (res && res.status === 200) {
-        name = res.data.userName
-        number=res.data.jobNumber
-        const report=res.data
-        setReport(report)
-        setScore(report.score)
-        setExperiment1(report.experiment1.records)
-        setExperiment2(report.experiment2.records)
-        setExperiment3(report.experiment3.records)
-        setExperiment4(report.experiment4.records)
-        setExperiment5(report.experiment5.records)
-        setScore1(report.experiment1.score)
-        setScore2(report.experiment2.score)
-        setScore3(report.experiment3.score)
-        setScore4(report.experiment4.score)
-        setScore5(report.experiment5.score)
+        if(res.data==null){
+          alert("暂无实验报告，请前往'我的实验'")
+        }else{
+          name = res.data.userName
+          number=res.data.jobNumber
+          const report=res.data
+          setReport(report)
+          setScore(report.score)
+          setExperiment1(report.experiment1.records)
+          setExperiment2(report.experiment2.records)
+          setExperiment3(report.experiment3.records)
+          setExperiment4(report.experiment4.records)
+          setExperiment5(report.experiment5.records)
+          setScore1(report.experiment1.score)
+          setScore2(report.experiment2.score)
+          setScore3(report.experiment3.score)
+          setScore4(report.experiment4.score)
+          setScore5(report.experiment5.score)      
+        }
       } else {
         errorTips('获取实验报告失败', res && res.data && res.data.msg ? res.data.msg : '请求错误，请重试！')
       }
