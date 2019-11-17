@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Dispatch } from 'redux'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { Button, Icon } from 'antd'
@@ -11,6 +11,7 @@ import { useDispatch } from '../../store/Store'
 
 /** 实验入口页 */
 const ExperimentComponent = (props: RouteComponentProps) => {
+
   const handleClick = () => {
     setStore('startDate', new Date().getTime())
     props.history.replace('/experiment/entry')
@@ -37,11 +38,13 @@ const ExperimentComponent = (props: RouteComponentProps) => {
         attachmentId: ''
       }
     })
+    console.log(res)
+    
     if(res && res.status === 200 && res.data && res.data.code === 0){
       props.history.replace('/introduction/background')
       // alert("网络大数据搜索引擎虚拟仿真实验")
     }else{
-      // alert("请重新进入系统")
+      alert("请从实验平台重新进入系统")
     }
   }
 
@@ -51,7 +54,7 @@ const ExperimentComponent = (props: RouteComponentProps) => {
         <h1 className={styles.heading} onClick={autoExperiment}>网络大数据搜索引擎虚拟仿真实验</h1>
         <div className={styles.line}></div>
         <h2 className={styles.subHeading}>准确理解搜索引擎</h2>
-        <h2 className={styles.subHeading}>让信息检索技术触手可及</h2>
+        <h2 className={styles.subHeading} onClick={autoExperiment}>让信息检索技术触手可及</h2>
         <Button className={styles.button} type="default" onClick={handleClick}>
           <span>
             开启你的搜索引擎
