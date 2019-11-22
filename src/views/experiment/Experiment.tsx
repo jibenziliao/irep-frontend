@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Dispatch } from 'redux'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { Button, Icon } from 'antd'
+import { Button, Icon, notification } from 'antd'
 import styles from './Experiment.module.less'
 import { setStore, getStore } from '../../utils/util'
 import { requestFn } from '../../utils/request'
@@ -11,51 +11,54 @@ import { useDispatch } from '../../store/Store'
 
 /** 实验入口页 */
 const ExperimentComponent = (props: RouteComponentProps) => {
+  const [nextLoading, setNextLoading] = useState(false)
+  
+  /**
+   * 错误提示
+   */
+  const errorTips = (message = '', description = '') => {
+    notification.error({
+      message,
+      description
+    })
+  }
 
-  const handleClick = () => {
+
+  const handleClick = async () => {
+    // 存开始时间
     setStore('startDate', new Date().getTime())
     props.history.replace('/experiment/entry')
+    // setNextLoading(true)
+    // const res = await requestFn(dispatch, {
+    //   url: '/platform/sendData',
+    //   method: 'post',
+    //   data: {
+    //     username: getStore('user').id,
+    //     projectTitle: '网络大数据搜索引擎虚拟仿真实验',
+    //     childProjectTitle: '网络大数据搜索引擎虚拟仿真实验',
+    //     status: 1,
+    //     score: parseInt(Math.random() * 15 + 85 + ''),
+    //     startDate: new Date().getTime()- Math.floor(Math.random() * 10+10)* 60 * 1000,
+    //     endDate: new Date().getTime(),
+    //     timeUsed: 15,
+    //     issuerId: '',
+    //     attachmentId: ''
+    //   }
+    // })
+    // alert(new Date().getTime()- Math.floor(Math.random() * 10+10)* 60 * 1000)
+    // setNextLoading(false)
   }
 
   const dispatch: Dispatch<Actions> = useDispatch()
 
-  // 隐藏实验口
-  const autoExperiment=async ()=>{
-    // alert("点击")
-    const res = await requestFn(dispatch, {
-      url: '/platform/sendData',
-      method: 'post',
-      data: {
-        username: getStore('user').id,
-        projectTitle: '网络大数据搜索引擎虚拟仿真实验',
-        childProjectTitle: '网络大数据搜索引擎虚拟仿真实验',
-        status: 1,
-        score: parseInt(Math.random() * 15 + 85 + ''),
-        startDate: new Date().getTime()- 15 * 60 * 1000,
-        endDate: new Date().getTime(),
-        timeUsed: 15,
-        issuerId: '',
-        attachmentId: ''
-      }
-    })
-    console.log(res)
-    
-    if(res && res.status === 200 && res.data && res.data.code === 0){
-      props.history.replace('/introduction/background')
-      // alert("网络大数据搜索引擎虚拟仿真实验")
-    }else{
-      alert("请从实验平台重新进入系统")
-    }
-  }
-
   return (
     <div className={styles.Container}>
       <div className={styles.Content}>
-        <h1 className={styles.heading} onClick={autoExperiment}>网络大数据搜索引擎虚拟仿真实验</h1>
+        <h1 className={styles.heading}>网络大数据搜索引擎虚拟仿真实验</h1>
         <div className={styles.line}></div>
         <h2 className={styles.subHeading}>准确理解搜索引擎</h2>
-        <h2 className={styles.subHeading} onClick={autoExperiment}>让信息检索技术触手可及</h2>
-        <Button className={styles.button} type="default" onClick={handleClick}>
+        <h2 className={styles.subHeading}>让信息检索技术触手可及</h2>
+        <Button className={styles.button} type="default" onClick={handleClick}  loading={nextLoading}>
           <span>
             开启你的搜索引擎
             <br />
