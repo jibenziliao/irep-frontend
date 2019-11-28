@@ -70,7 +70,7 @@ const VectorSpaceModalComponet = (props: RouteComponentProps) => {
   /** 渲染专家操作按钮组 */
   const renderOperations = (
     <div>
-      <Button className={styles.controlButton} hidden={showButton()} onClick={lastStep}>
+      <Button className={styles.controlButton} onClick={lastStep}>
         上一步
       </Button>
       <Button className={styles.controlButton} hidden={showButton()} onClick={nextStep}>

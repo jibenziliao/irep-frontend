@@ -211,7 +211,7 @@ const SimulationComponent = (props: RouteComponentProps) => {
           className={styles.NextBtn}>
           完成
         </Button>
-        <Button className={styles.lastStep} hidden={showButton()} onClick={lastStep}>
+        <Button className={styles.lastStep} onClick={lastStep}>
           上一步
         </Button>
       </div>

@@ -73,7 +73,7 @@ const PretreatmentComponet = (props: RouteComponentProps) => {
   // }
 
   const operations = (
-    <Button className={styles.controlButton} hidden={buttonDisabled} onClick={lastStep}>
+    <Button className={styles.controlButton}  onClick={lastStep}>
       上一步
     </Button>
   )

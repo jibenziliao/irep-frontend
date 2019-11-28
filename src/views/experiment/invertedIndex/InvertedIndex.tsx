@@ -130,7 +130,7 @@ const InvertedIndexComponent = (props: RouteComponentProps) => {
   }
 
   const operations = (
-    <Button hidden={buttonDisabled} onClick={lastStep}>
+    <Button onClick={lastStep}>
       上一步
     </Button>
   )
